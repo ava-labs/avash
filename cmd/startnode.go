@@ -23,8 +23,8 @@ import (
 // Metadata struct for storing metadata, available to commands
 type Metadata struct {
 	Serverhost     string `json:"public-ip"`
-	Serverport     string `json:"staking-port"`
-	Jrpcport       string `json:"http-port"`
+	Stakingport    string `json:"staking-port"`
+	HTTPport       string `json:"http-port"`
 	Dbdir          string `json:"db-dir"`
 	Datadir        string `json:"data-dir"`
 	Logsdir        string `json:"log-dir"`
@@ -201,12 +201,12 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 
 	args := []string{
 		"--assertions-enabled=" + useassertions,
-		"--ava-tx-fee=" + strconv.ParseUint(txfee),
+		"--ava-tx-fee=" + strconv.FormatUint(uint64(txfee), 10),
 		"--public-ip=" + sh,
 		"--network-id=" + networkid,
-		"--xput-port=" + strconv.ParseUint(rp),
+		"--xput-port=" + strconv.FormatUint(uint64(rp), 10),
 		"--signature-verification-enabled=" + sigverenabled,
-		"--http-port=" + strconv.ParseUint(hp),
+		"--http-port=" + strconv.FormatUint(uint64(hp), 10),
 		"--http-tls-enabled=" + httptlsenabled,
 		"--http-tls-cert-file=" + hcert,
 		"--http-tls-key-file=" + hkey,
@@ -224,15 +224,15 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--protocol-virtuous-commit-threshold=" + strconv.Itoa(beta1),
 		"--protocol-rogue-commit-threshold=" + strconv.Itoa(beta2),
 		"--staking-tls-enabled=" + requirestaking,
-		"--staking-port=" + strconv.ParseUint(sp),
+		"--staking-port=" + strconv.FormatUint(uint64(sp), 10),
 		"--staking-tls-cert-file=" + stakerCertFile,
 		"--staking-tls-key-file=" + stakerKeyFile,
 	}
 
 	metadata := Metadata{
 		Serverhost:     sh,
-		Stakingport:    sp,
-		Jrpcport:       hp,
+		Stakingport:    strconv.FormatUint(uint64(sp), 10),
+		HTTPport:       strconv.FormatUint(uint64(hp), 10),
 		Dbdir:          basedir + "/" + dbdir,
 		Datadir:        basedir + "/" + datadir,
 		Logsdir:        basedir + "/" + logdir,
