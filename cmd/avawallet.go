@@ -12,6 +12,8 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"github.com/ava-labs/gecko/snow"
+
 	pmgr "github.com/ava-labs/avash/processmgr"
 	dagwallet "github.com/ava-labs/avash/wallets/dags"
 	"github.com/ava-labs/gecko/ids"
@@ -38,12 +40,15 @@ var AVAWalletCmd = &cobra.Command{
 
 // AVAWalletCreateCmd creates a new named wallet
 var AVAWalletCreateCmd = &cobra.Command{
-	Use:   "create [wallet name]",
+	Use:   "create [wallet name] [networkID] [subnetID] [txFee]",
 	Short: "Creates a wallet.",
 	Long:  `Creates a wallet persistent for this session.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 1 {
-			dagwallet.Wallets[args[0]] = dagwallet.NewWallet()
+		if len(args) >= 4 {
+			networkID, _ := strconv.ParseUint(args[1], 10, 0)
+			subnetID, _ := ids.ShortFromString(args[2])
+			txfee, _ := strconv.ParseUint(args[3], 10, 0)
+			dagwallet.Wallets[args[0]] = dagwallet.NewWallet(uint32(networkID), subnetID.ID(), uint64(txfee))
 			fmt.Printf("wallet created: %s\n", args[0])
 		} else {
 			cmd.Help()
@@ -114,7 +119,10 @@ var AVAWalletMakeTxCmd = &cobra.Command{
 					}
 					signedTx := w.CreateTx(amount, 0, 1, []ids.ShortID{toAddr})
 					if signedTx != nil {
-						if err := signedTx.Verify(0); err == nil {
+						ctx := snow.DefaultContextTest()
+						ctx.NetworkID = w.GetNetworkID()
+						ctx.SubnetID = w.GetSubnetID()
+						if err := signedTx.Verify(ctx, 0); err == nil {
 							fb.Bytes = signedTx.Bytes()
 							fmt.Printf("Tx:%s\n", fb.String())
 						} else {
@@ -205,7 +213,7 @@ var AVAWalletSendCmd = &cobra.Command{
 				var md Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
-					jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Jrpchost, md.Jrpcport)
+					jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Serverhost, md.HTTPport)
 					rpcClient := jsonrpc.NewClient(jrpcloc)
 					response, err := rpcClient.Call("Ava.IssueTx", struct {
 						Tx string
@@ -252,7 +260,7 @@ var AVAWalletStatusCmd = &cobra.Command{
 				var md Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
-					jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Jrpchost, md.Jrpcport)
+					jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Serverhost, md.HTTPport)
 					rpcClient := jsonrpc.NewClient(jrpcloc)
 					response, err := rpcClient.Call("Ava.GetTxStatus", struct {
 						TxID string
@@ -299,7 +307,7 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 				var md Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
-					jrpcloc := fmt.Sprintf("http://%s:%s/ext/wallet", md.Jrpchost, md.Jrpcport)
+					jrpcloc := fmt.Sprintf("http://%s:%s/ext/wallet", md.Serverhost, md.HTTPport)
 					rpcClient := jsonrpc.NewClient(jrpcloc)
 					response, err := rpcClient.Call("Wallet.GetBalance", struct {
 						SubnetAlias string
@@ -351,7 +359,7 @@ var AVAWalletRefreshCmd = &cobra.Command{
 					var md Metadata
 					metaBytes := []byte(meta)
 					if err := json.Unmarshal(metaBytes, &md); err == nil {
-						jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Jrpchost, md.Jrpcport)
+						jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Serverhost, md.HTTPport)
 						rpcClient := jsonrpc.NewClient(jrpcloc)
 
 						response, err := rpcClient.Call("Ava.GetUTXOs", struct {

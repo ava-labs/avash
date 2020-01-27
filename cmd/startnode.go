@@ -61,10 +61,10 @@ startnode 127.0.0.1 9001 localhost 9002 9008`,
 		}
 		f := cmd.Flags()
 
-		k, _ := f.GetInt("protocol-sample-size")
-		alpha, _ := f.GetInt("protocol-quorum-size")
-		beta1, _ := f.GetInt("protocol-virtuous-commit-threshold")
-		beta2, _ := f.GetInt("protocol-rogue-commit-threshold")
+		k, _ := f.GetInt("snow-sample-size")
+		alpha, _ := f.GetInt("snow-quorum-size")
+		beta1, _ := f.GetInt("snow-virtuous-commit-threshold")
+		beta2, _ := f.GetInt("snow-rogue-commit-threshold")
 
 		err := validateConsensusArgs(k, alpha, beta1, beta2)
 		if err != nil {
@@ -192,12 +192,12 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 	}
 
 	// Consensus parameters
-	k, _ := f.GetInt("protocol-sample-size")
-	alpha, _ := f.GetInt("protocol-quorum-size")
-	beta1, _ := f.GetInt("protocol-virtuous-commit-threshold")
-	beta2, _ := f.GetInt("protocol-rogue-commit-threshold")
-	batch, _ := f.GetInt("protocol-avalanche-batch-size")
-	numparents, _ := f.GetInt("protocol-avalanche-num-parents")
+	k, _ := f.GetInt("snow-sample-size")
+	alpha, _ := f.GetInt("snow-quorum-size")
+	beta1, _ := f.GetInt("snow-virtuous-commit-threshold")
+	beta2, _ := f.GetInt("snow-rogue-commit-threshold")
+	batch, _ := f.GetInt("snow-avalanche-batch-size")
+	numparents, _ := f.GetInt("snow-avalanche-num-parents")
 
 	args := []string{
 		"--assertions-enabled=" + useassertions,
@@ -214,15 +214,14 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--bootstrap-ids=" + bootstrapids,
 		"--db-enabled=" + usedb,
 		"--db-dir=" + basedir + "/" + dbdir,
-		"--data-dir=" + basedir + "/" + datadir,
 		"--log-level=" + logLevel,
 		"--log-dir=" + basedir + "/" + logdir,
-		"--protocol-avalanche-batch-size=" + strconv.Itoa(batch),
-		"--protocol-avalanche-num-parents=" + strconv.Itoa(numparents),
-		"--protocol-sample-size=" + strconv.Itoa(k),
-		"--protocol-quorum-size=" + strconv.Itoa(alpha),
-		"--protocol-virtuous-commit-threshold=" + strconv.Itoa(beta1),
-		"--protocol-rogue-commit-threshold=" + strconv.Itoa(beta2),
+		"--snow-avalanche-batch-size=" + strconv.Itoa(batch),
+		"--snow-avalanche-num-parents=" + strconv.Itoa(numparents),
+		"--snow-sample-size=" + strconv.Itoa(k),
+		"--snow-quorum-size=" + strconv.Itoa(alpha),
+		"--snow-virtuous-commit-threshold=" + strconv.Itoa(beta1),
+		"--snow-rogue-commit-threshold=" + strconv.Itoa(beta2),
 		"--staking-tls-enabled=" + requirestaking,
 		"--staking-port=" + strconv.FormatUint(uint64(sp), 10),
 		"--staking-tls-cert-file=" + stakerCertFile,
@@ -271,12 +270,12 @@ func init() {
 	StartnodeCmd.Flags().String("log-level", "info", "Specify the log level. Should be one of {all, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().String("log-dir", "logs", "Name of directory for the node's logging.")
 
-	StartnodeCmd.Flags().Int("protocol-avalanche-batch-size", 30, "Number of operations to batch in each new vertex.")
-	StartnodeCmd.Flags().Int("protocol-avalanche-num-parents", 5, "Number of vertexes for reference from each new vertex.")
-	StartnodeCmd.Flags().Int("protocol-sample-size", 2, "Number of nodes to query for each network poll.")
-	StartnodeCmd.Flags().Int("protocol-quorum-size", 2, "Alpha value to use for required number positive results.")
-	StartnodeCmd.Flags().Int("protocol-virtuous-commit-threshold", 5, "Beta value to use for virtuous transactions.")
-	StartnodeCmd.Flags().Int("protocol-rogue-commit-threshold", 10, "Beta value to use for rogue transactions.")
+	StartnodeCmd.Flags().Int("snow-avalanche-batch-size", 30, "Number of operations to batch in each new vertex.")
+	StartnodeCmd.Flags().Int("snow-avalanche-num-parents", 5, "Number of vertexes for reference from each new vertex.")
+	StartnodeCmd.Flags().Int("snow-sample-size", 2, "Number of nodes to query for each network poll.")
+	StartnodeCmd.Flags().Int("snow-quorum-size", 2, "Alpha value to use for required number positive results.")
+	StartnodeCmd.Flags().Int("snow-virtuous-commit-threshold", 5, "Beta value to use for virtuous transactions.")
+	StartnodeCmd.Flags().Int("snow-rogue-commit-threshold", 10, "Beta value to use for rogue transactions.")
 
 	StartnodeCmd.Flags().Bool("staking-tls-enabled", true, "Require TLS to authenticate staking connections.")
 	StartnodeCmd.Flags().Uint("staking-port", 9651, "Port of the consensus server.")

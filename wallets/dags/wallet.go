@@ -71,7 +71,7 @@ func (w *Wallet) Balance() uint64 { return w.balance }
 
 // CreateTx sends some amount to the destination addresses
 func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dests []ids.ShortID) *spdagvm.Tx {
-	ins, outs, signers, _ := w.txPrepare(amount, locktime, threshold, dests)
+	//ins, outs, signers, _ := w.txPrepare(amount, locktime, threshold, dests)
 	builder := spdagvm.Builder{
 		NetworkID: w.networkID,
 		SubnetID:  w.subnetID,
@@ -98,14 +98,26 @@ func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dest
 // SpendTx takes a tx, removes its utxos, and adds the inputs
 func (w *Wallet) SpendTx(tx *spdagvm.Tx) {
 	for _, in := range tx.Ins() {
-		utxoID := in.InputID()
-		w.RemoveUtxo(utxoID)
-		w.balance -= in.Amount() // Deduct from [w.balance] the amount sent
+		if in, ok := in.(*spdagvm.InputPayment); ok {
+			utxoID := in.InputID()
+			w.RemoveUtxo(utxoID)
+			w.balance -= in.Amount() // Deduct from [w.balance] the amount sent
+		}
 	}
 
 	for _, out := range tx.UTXOs() {
 		w.AddUtxo(out)
 	}
+}
+
+// GetNetworkID returns the networkID for the wallet
+func (w *Wallet) GetNetworkID() uint32 {
+	return w.networkID
+}
+
+// GetSubnetID returns the blockchainID for the wallet
+func (w *Wallet) GetSubnetID() ids.ID {
+	return w.subnetID
 }
 
 /*
