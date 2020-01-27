@@ -15,8 +15,8 @@ import (
 	pmgr "github.com/ava-labs/avash/processmgr"
 	dagwallet "github.com/ava-labs/avash/wallets/dags"
 	"github.com/ava-labs/gecko/ids"
-	"github.com/ava-labs/gecko/modules/dags/ava"
 	"github.com/ava-labs/gecko/utils/formatting"
+	"github.com/ava-labs/gecko/vms/spdagvm"
 	"github.com/spf13/cobra"
 
 	"github.com/ava-labs/gecko/utils/crypto"
@@ -146,7 +146,7 @@ var AVAWalletRemoveCmd = &cobra.Command{
 				fb := formatting.FormatBytes{}
 				fb.FromString(args[1])
 				txBytes := fb.Bytes
-				codec := ava.Codec{}
+				codec := spdagvm.Codec{}
 				tx, err := codec.UnmarshalTx(txBytes)
 				if err == nil {
 					for _, in := range tx.Ins() {
@@ -177,7 +177,7 @@ var AVAWalletSpendCmd = &cobra.Command{
 				fb := formatting.FormatBytes{}
 				fb.FromString(args[1])
 				txBytes := fb.Bytes
-				codec := ava.Codec{}
+				codec := spdagvm.Codec{}
 				tx, err := codec.UnmarshalTx(txBytes)
 				if err == nil {
 					w.SpendTx(tx)
@@ -372,7 +372,7 @@ var AVAWalletRefreshCmd = &cobra.Command{
 								fmt.Printf("error on parsing response: %s\n", err.Error())
 							} else {
 								fb := formatting.FormatBytes{}
-								acodec := ava.Codec{}
+								acodec := spdagvm.Codec{}
 								for _, aUTXO := range s.UTXOs {
 									fb.FromString(aUTXO)
 									if utxo, err := acodec.UnmarshalUTXO(fb.Bytes); err == nil {

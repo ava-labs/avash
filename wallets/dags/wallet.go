@@ -1,28 +1,27 @@
 package dagwallet
 
 import (
-	"errors"
 	"fmt"
 	"math"
 
 	"github.com/ava-labs/gecko/ids"
-	"github.com/ava-labs/gecko/modules/dags/ava"
 	"github.com/ava-labs/gecko/utils/crypto"
 	"github.com/ava-labs/gecko/utils/timer"
+	"github.com/ava-labs/gecko/vms/spdagvm"
 )
 
 // Wallet is a holder for keys and UTXOs for the Ava DAG.
 type Wallet struct {
 	clock    timer.Clock
-	keyChain *ava.KeyChain // Mapping from public address to the SigningKeys
-	utxoSet  *UtxoSet      // Mapping from utxoIDs to Utxos
+	keyChain *spdagvm.KeyChain // Mapping from public address to the SigningKeys
+	utxoSet  *UtxoSet          // Mapping from utxoIDs to Utxos
 	balance  uint64
 }
 
 // NewWallet ...
 func NewWallet() *Wallet {
 	return &Wallet{
-		keyChain: &ava.KeyChain{},
+		keyChain: &spdagvm.KeyChain{},
 		utxoSet:  &UtxoSet{},
 	}
 }
@@ -47,8 +46,8 @@ func (w *Wallet) Addresses() []string {
 }
 
 // AddUtxo adds a new utxo to this wallet, if this wallet can spend it.
-func (w *Wallet) AddUtxo(utxo *ava.UTXO) {
-	outP, ok := utxo.Out().(*ava.OutputPayment)
+func (w *Wallet) AddUtxo(utxo *spdagvm.UTXO) {
+	outP, ok := utxo.Out().(*spdagvm.OutputPayment)
 	if !ok {
 		return
 	}
@@ -64,7 +63,7 @@ func (w *Wallet) RemoveUtxo(utxoID ids.ID) {
 	utxo := w.utxoSet.Get(utxoID)
 	if utxo != nil {
 		outP := utxo.Out()
-		w.balance -= outP.(*ava.OutputPayment).Amount()
+		w.balance -= outP.(*spdagvm.OutputPayment).Amount()
 		w.utxoSet.Remove(utxoID)
 	}
 }
@@ -76,16 +75,16 @@ func (w *Wallet) GetUtxos() UtxoSet { return *w.utxoSet }
 func (w *Wallet) Balance() uint64 { return w.balance }
 
 // CreateTx sends some amount to the destination addresses
-func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dests []ids.ShortID) *ava.Tx {
+func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dests []ids.ShortID) *spdagvm.Tx {
 	ins, outs, signers, _ := w.txPrepare(amount, locktime, threshold, dests)
-	builder := ava.Builder{}
+	builder := spdagvm.Builder{}
 	tx, _ := builder.NewTx(ins, outs, signers)
 
 	return tx
 }
 
 // SpendTx takes a tx, removes its utxos, and adds the inputs
-func (w *Wallet) SpendTx(tx *ava.Tx) {
+func (w *Wallet) SpendTx(tx *spdagvm.Tx) {
 	for _, in := range tx.Ins() {
 		utxoID := in.InputID()
 		w.RemoveUtxo(utxoID)
@@ -96,39 +95,9 @@ func (w *Wallet) SpendTx(tx *ava.Tx) {
 	}
 }
 
-// CreateConflictingTxs creates a numtx conflicting transactions to numdest addresses
-func (w *Wallet) CreateConflictingTxs(numtx, numdest, amount, locktime uint64, threshold uint32) ([]*ava.Tx, error) {
-	if numtx <= 0 || numdest <= 0 {
-		return nil, errors.New("Error: Must have numtx > 0 and numdest > 0")
-	}
-	builder := ava.Builder{}
-	dests := []ids.ShortID{}
-	for j := uint64(0); j < numdest; j++ {
-		dests = append(dests, w.CreateAddress())
-	}
-	ins, _, signers, _ := w.txPrepare(amount, locktime, threshold, dests)
-	txarr := []*ava.Tx{}
-	for i := uint64(0); i < numtx; i++ {
-		newdests := []ids.ShortID{}
-		for j := uint64(0); j < numdest; j++ {
-			newdests = append(newdests, w.CreateAddress())
-		}
-		outs := []ava.Output{
-			builder.NewOutputPayment(amount, locktime, threshold, newdests),
-		}
-		tx, _ := builder.NewTx(ins, outs, signers)
-		codec := ava.Codec{}
-		newtx, _ := codec.UnmarshalTx(tx.Bytes())
-		txarr = append(txarr, newtx)
-	}
-
-	//w.balance -= spent
-	return txarr, nil
-}
-
-func (w *Wallet) txPrepare(amount uint64, locktime uint64, threshold uint32, dests []ids.ShortID) ([]ava.Input, []ava.Output, []*ava.InputSigner, uint64) {
-	ins := []ava.Input{}
-	signers := []*ava.InputSigner{}
+func (w *Wallet) txPrepare(amount uint64, locktime uint64, threshold uint32, dests []ids.ShortID) ([]spdagvm.Input, []spdagvm.Output, []*spdagvm.InputSigner, uint64) {
+	ins := []spdagvm.Input{}
+	signers := []*spdagvm.InputSigner{}
 
 	utxoIDs := []ids.ID{}
 	spent := uint64(0)
@@ -140,7 +109,7 @@ func (w *Wallet) txPrepare(amount uint64, locktime uint64, threshold uint32, des
 			signers = append(signers, signer)
 			utxoIDs = append(utxoIDs, utxo.ID())
 
-			amount := in.(*ava.InputPayment).Amount()
+			amount := in.(*spdagvm.InputPayment).Amount()
 			spent += amount
 		}
 	}
@@ -149,9 +118,9 @@ func (w *Wallet) txPrepare(amount uint64, locktime uint64, threshold uint32, des
 		return nil, nil, nil, 0 // Insufficient funds
 	}
 
-	builder := ava.Builder{}
+	builder := spdagvm.Builder{}
 
-	outs := []ava.Output{
+	outs := []spdagvm.Output{
 		builder.NewOutputPayment(amount, locktime, threshold, dests),
 	}
 

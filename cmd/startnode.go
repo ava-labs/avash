@@ -22,16 +22,15 @@ import (
 
 // Metadata struct for storing metadata, available to commands
 type Metadata struct {
-	Serverhost     string `json:"serverhost"`
-	Serverport     string `json:"serverport"`
-	Jrpchost       string `json:"jrpchost"`
-	Jrpcport       string `json:"jrpcport"`
-	Dbdir          string `json:"dbdir"`
-	Genesisdir     string `json:"genesisdir"`
-	Logsdir        string `json:"logsdir"`
-	Loglevel       string `json:"loglevel"`
-	StakerCertPath string `json:"stakerCertPath"`
-	StakerKeyPath  string `json:"stakerKeyPath"`
+	Serverhost     string `json:"public-ip"`
+	Serverport     string `json:"staking-port"`
+	Jrpcport       string `json:"http-port"`
+	Dbdir          string `json:"db-dir"`
+	Datadir        string `json:"data-dir"`
+	Logsdir        string `json:"log-dir"`
+	Loglevel       string `json:"log-level"`
+	StakerCertPath string `json:"staking-tls-cert-file"`
+	StakerKeyPath  string `json:"staking-tls-key-file"`
 }
 
 // StartnodeCmd represents the startnode command
@@ -49,7 +48,7 @@ startnode 127.0.0.1 9001 localhost 9002 9008`,
 
 		name := args[0]
 
-		datadir := cfg.Viper.GetString("datadir")
+		datadir := cfg.Viper.GetString("data-dir")
 		if datadir == "" {
 			wd, _ := os.Getwd()
 			datadir = wd + "/stash"
@@ -62,10 +61,10 @@ startnode 127.0.0.1 9001 localhost 9002 9008`,
 		}
 		f := cmd.Flags()
 
-		k, _ := f.GetInt("k")
-		alpha, _ := f.GetInt("alpha")
-		beta1, _ := f.GetInt("beta1")
-		beta2, _ := f.GetInt("beta2")
+		k, _ := f.GetInt("protocol-sample-size")
+		alpha, _ := f.GetInt("protocol-quorum-size")
+		beta1, _ := f.GetInt("protocol-virtuous-commit-threshold")
+		beta2, _ := f.GetInt("protocol-rogue-commit-threshold")
 
 		err := validateConsensusArgs(k, alpha, beta1, beta2)
 		if err != nil {
@@ -80,7 +79,7 @@ startnode 127.0.0.1 9001 localhost 9002 9008`,
 		if meta != "" {
 			metadata = meta
 		}
-		avalocation, _ := f.GetString("avaloc")
+		avalocation, _ := f.GetString("client-location")
 		if avalocation == "" {
 			avalocation = cfg.Viper.GetString("avalocation")
 		}
@@ -119,116 +118,168 @@ func validateConsensusArgs(k int, alpha int, beta1 int, beta2 int) error {
 
 func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 
+	// Assertions
+	assertions, _ := f.GetBool("assertions-enabled")
+	useassertions := "false"
+	if assertions {
+		useassertions = "true"
+	}
+
+	// Transaction fees
+	txfee, _ := f.GetUint("ava-tx-fee")
+
+	// Network ID
+	networkid, _ := f.GetString("network-id")
+
 	// Host/port settings
-	sh, _ := f.GetString("serverhost")
-	sp, _ := f.GetString("serverport")
-	rh, _ := f.GetString("rpchost")
-	rp, _ := f.GetString("rpcport")
-	jh, _ := f.GetString("jrpchost")
-	jp, _ := f.GetString("jrpcport")
-	bootstrapips, _ := f.GetString("bootstrapips")
+	sh, _ := f.GetString("public-ip")
+	sp, _ := f.GetUint("staking-port")
+	rp, _ := f.GetUint("xput-port")
+	hp, _ := f.GetUint("http-port")
+	bootstrapips, _ := f.GetString("bootstrap-ips")
+	bootstrapids, _ := f.GetString("bootstrap-ids")
 
 	// Paths/directories
-	dbdir, _ := f.GetString("dbdir")
-	gendir, _ := f.GetString("genesisdir")
-	logdir, _ := f.GetString("logsdir")
+	dbdir, _ := f.GetString("db-dir")
+	datadir, _ := f.GetString("data-dir")
+	logdir, _ := f.GetString("log-dir")
 
 	// Staking settings
 	wd, _ := os.Getwd()
-	stakingenabled, _ := f.GetBool("staking_enabled")
-	stakerCertFile, _ := f.GetString("stake_cert_file")
+	stakingenabled, _ := f.GetBool("staking-tls-enabled")
+	stakerCertFile, _ := f.GetString("staking-tls-cert-file")
+
+	// Assertions
+	henabled, _ := f.GetBool("http-tls-enabled")
+	httptlsenabled := "false"
+	if henabled {
+		httptlsenabled = "true"
+	}
+
+	hcert, _ := f.GetString("http-tls-cert-file")
+	hkey, _ := f.GetString("http-tls-key-file")
+
+	// Signature verification
+	sigver, _ := f.GetBool("signature-verification-enabled")
+	sigverenabled := "false"
+	if sigver {
+		sigverenabled = "true"
+	}
+
 	// If the path given in the flag doesn't begin with "/", treat it as relative
 	// to the directory of the avash binary
 	if stakerCertFile != "" && string(stakerCertFile[0]) != "/" {
 		stakerCertFile = fmt.Sprintf("%s/%s", wd, stakerCertFile)
 	}
-	stakerKeyFile, _ := f.GetString("stake_key_file")
+	stakerKeyFile, _ := f.GetString("staking-tls-key-file")
 	if stakerKeyFile != "" && string(stakerKeyFile[0]) != "/" {
 		stakerKeyFile = fmt.Sprintf("%s/%s", wd, stakerKeyFile)
 	}
-	requirestaking := "--require_staking=true"
-	if !stakingenabled {
-		requirestaking = "--require_staking=false"
+
+	requirestaking := "false"
+	if stakingenabled {
+		requirestaking = "true"
 	}
 
 	// Log settings
-	logLevel, _ := f.GetString("loglevel")
+	logLevel, _ := f.GetString("log-level")
 
 	// Db settings
-	hasdb, _ := f.GetBool("db")
-	usedb := "--db=false"
+	hasdb, _ := f.GetBool("db-enabled")
+	usedb := "false"
 	if hasdb {
-		usedb = "--db=true"
+		usedb = "true"
 	}
 
 	// Consensus parameters
-	k, _ := f.GetInt("k")
-	alpha, _ := f.GetInt("alpha")
-	beta1, _ := f.GetInt("beta1")
-	beta2, _ := f.GetInt("beta2")
+	k, _ := f.GetInt("protocol-sample-size")
+	alpha, _ := f.GetInt("protocol-quorum-size")
+	beta1, _ := f.GetInt("protocol-virtuous-commit-threshold")
+	beta2, _ := f.GetInt("protocol-rogue-commit-threshold")
+	batch, _ := f.GetInt("protocol-avalanche-batch-size")
+	numparents, _ := f.GetInt("protocol-avalanche-num-parents")
 
 	args := []string{
-		"--server_ip=" + sh + ":" + sp,
-		"--rpc_ip=" + rh + ":" + rp,
-		"--jrpc_ip=" + jh,
-		"--jrpc_port=" + jp,
-		"--bootstrap_ips=" + bootstrapips,
-		"--db_dir=" + basedir + "/" + dbdir,
-		"--genesis_dir=" + basedir + "/" + gendir,
-		"--log_level=" + logLevel,
-		"--logs_dir=" + basedir + "/" + logdir,
-		requirestaking,
-		usedb,
-		"--k=" + strconv.Itoa(k),
-		"--alpha=" + strconv.Itoa(alpha),
-		"--beta1=" + strconv.Itoa(beta1),
-		"--beta2=" + strconv.Itoa(beta2),
-		"--stake_cert_file=" + stakerCertFile,
-		"--stake_key_file=" + stakerKeyFile,
+		"--assertions-enabled=" + useassertions,
+		"--ava-tx-fee=" + strconv.ParseUint(txfee),
+		"--public-ip=" + sh,
+		"--network-id=" + networkid,
+		"--xput-port=" + strconv.ParseUint(rp),
+		"--signature-verification-enabled=" + sigverenabled,
+		"--http-port=" + strconv.ParseUint(hp),
+		"--http-tls-enabled=" + httptlsenabled,
+		"--http-tls-cert-file=" + hcert,
+		"--http-tls-key-file=" + hkey,
+		"--bootstrap-ips=" + bootstrapips,
+		"--bootstrap-ids=" + bootstrapids,
+		"--db-enabled=" + usedb,
+		"--db-dir=" + basedir + "/" + dbdir,
+		"--data-dir=" + basedir + "/" + datadir,
+		"--log-level=" + logLevel,
+		"--log-dir=" + basedir + "/" + logdir,
+		"--protocol-avalanche-batch-size=" + strconv.Itoa(batch),
+		"--protocol-avalanche-num-parents=" + strconv.Itoa(numparents),
+		"--protocol-sample-size=" + strconv.Itoa(k),
+		"--protocol-quorum-size=" + strconv.Itoa(alpha),
+		"--protocol-virtuous-commit-threshold=" + strconv.Itoa(beta1),
+		"--protocol-rogue-commit-threshold=" + strconv.Itoa(beta2),
+		"--staking-tls-enabled=" + requirestaking,
+		"--staking-port=" + strconv.ParseUint(sp),
+		"--staking-tls-cert-file=" + stakerCertFile,
+		"--staking-tls-key-file=" + stakerKeyFile,
 	}
 
 	metadata := Metadata{
 		Serverhost:     sh,
-		Serverport:     sp,
-		Jrpchost:       jh,
-		Jrpcport:       jp,
+		Stakingport:    sp,
+		Jrpcport:       hp,
 		Dbdir:          basedir + "/" + dbdir,
-		Genesisdir:     basedir + "/" + gendir,
+		Datadir:        basedir + "/" + datadir,
 		Logsdir:        basedir + "/" + logdir,
 		Loglevel:       logLevel,
-		StakerCertPath: wd + stakerCertFile,
-		StakerKeyPath:  wd + stakerKeyFile,
+		StakerCertPath: stakerCertFile,
+		StakerKeyPath:  stakerKeyFile,
 	}
 
 	return args, metadata
 }
 
 func init() {
-	StartnodeCmd.Flags().String("avaloc", "", "Path to AVA node binary.")
+	StartnodeCmd.Flags().String("client-location", "", "Path to AVA node client, defaulting to the config file's value.")
 	StartnodeCmd.Flags().String("meta", "", "Override default metadata for the node process.")
+	StartnodeCmd.Flags().String("data-dir", "stash", "Name of directory for the data stash.")
 
-	StartnodeCmd.Flags().String("serverhost", "127.0.0.1", "Server host for the node.")
-	StartnodeCmd.Flags().String("serverport", "9651", "Server port for the node.")
-	StartnodeCmd.Flags().String("rpchost", "127.0.0.1", "RPC host for the node.")
-	StartnodeCmd.Flags().String("rpcport", "9652", "RPC port for the node.")
-	StartnodeCmd.Flags().String("jrpchost", "127.0.0.1", "JSON RPC host for the node.")
-	StartnodeCmd.Flags().String("jrpcport", "9650", "JSON RPC port for the node.")
+	StartnodeCmd.Flags().Bool("assertions-enabled", true, "Turn on assertion execution.")
+	StartnodeCmd.Flags().Uint("ava-tx-fee", 0, "Ava transaction fee, in $nAva.")
 
-	StartnodeCmd.Flags().String("bootstrapips", "", "Comma separated list of bootstrap nodes to connect to. Example: 127.0.0.1:9630,127.0.0.1:9620")
+	StartnodeCmd.Flags().String("public-ip", "127.0.0.1", "Public IP of this node.")
+	StartnodeCmd.Flags().String("network-id", "private", "Network ID this node will connect to.")
+	StartnodeCmd.Flags().Uint("xput-port", 9652, "Port of the deprecated throughput test server.")
+	StartnodeCmd.Flags().Bool("signature-verification-enabled", true, "Turn on signature verification.")
 
-	StartnodeCmd.Flags().String("dbdir", "db1", "Name of database folder for the node.")
-	StartnodeCmd.Flags().String("genesisdir", "data", "Name of directory for the genesis key.")
-	StartnodeCmd.Flags().String("loglevel", "info", "Specify the log level. Should be one of {all, debug, info, warn, error, fatal, off}")
-	StartnodeCmd.Flags().String("logsdir", "logs", "Name of directory for the node's logging.")
+	StartnodeCmd.Flags().Uint("http-port", 9650, "Port of the HTTP server.")
+	StartnodeCmd.Flags().Bool("http-tls-enabled", true, "Upgrade the HTTP server to HTTPS.")
+	StartnodeCmd.Flags().String("http-tls-cert-file", "", "TLS certificate file for the HTTPS server.")
+	StartnodeCmd.Flags().String("http-tls-key-file", "", "TLS private key file for the HTTPS server.")
 
-	StartnodeCmd.Flags().Bool("staking_enabled", false, "Turns on staking.")
-	StartnodeCmd.Flags().Bool("db", true, "Sets if data should be persistently stored.")
+	StartnodeCmd.Flags().String("bootstrap-ips", "", "Comma separated list of bootstrap nodes to connect to. Example: 127.0.0.1:9630,127.0.0.1:9620")
+	StartnodeCmd.Flags().String("bootstrap-ids", "", "Comma separated list of bootstrap peer ids to connect to. Example: JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
 
-	StartnodeCmd.Flags().Int("k", 2, "Number of nodes to query for each network poll.")
-	StartnodeCmd.Flags().Int("alpha", 2, "Alpha value to use for required number positive results.")
-	StartnodeCmd.Flags().Int("beta1", 5, "Beta value to use for virtuous transactions.")
-	StartnodeCmd.Flags().Int("beta2", 10, "Beta value to use for rogue transactions.")
+	StartnodeCmd.Flags().Bool("db-enabled", true, "Turn on persistent storage.")
+	StartnodeCmd.Flags().String("db-dir", "db1", "Database directory for Ava state.")
 
-	StartnodeCmd.Flags().String("stake_cert_file", "", "The path of the staker certificate file. Relative to the avash binary iff doesn't start with /. Ex: certs/keys1/staker.crt")
-	StartnodeCmd.Flags().String("stake_key_file", "", "The path of the staker certificate key. Relative to the avash binary iff doesn't start with /. Ex: certs/keys1/staker.key")
+	StartnodeCmd.Flags().String("log-level", "info", "Specify the log level. Should be one of {all, debug, info, warn, error, fatal, off}")
+	StartnodeCmd.Flags().String("log-dir", "logs", "Name of directory for the node's logging.")
+
+	StartnodeCmd.Flags().Int("protocol-avalanche-batch-size", 30, "Number of operations to batch in each new vertex.")
+	StartnodeCmd.Flags().Int("protocol-avalanche-num-parents", 5, "Number of vertexes for reference from each new vertex.")
+	StartnodeCmd.Flags().Int("protocol-sample-size", 2, "Number of nodes to query for each network poll.")
+	StartnodeCmd.Flags().Int("protocol-quorum-size", 2, "Alpha value to use for required number positive results.")
+	StartnodeCmd.Flags().Int("protocol-virtuous-commit-threshold", 5, "Beta value to use for virtuous transactions.")
+	StartnodeCmd.Flags().Int("protocol-rogue-commit-threshold", 10, "Beta value to use for rogue transactions.")
+
+	StartnodeCmd.Flags().Bool("staking-tls-enabled", true, "Require TLS to authenticate staking connections.")
+	StartnodeCmd.Flags().Uint("staking-port", 9651, "Port of the consensus server.")
+	StartnodeCmd.Flags().String("staking-tls-cert-file", "", "TLS certificate file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.crt")
+	StartnodeCmd.Flags().String("staking-tls-key-file", "", "TLS private key file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.key")
 }

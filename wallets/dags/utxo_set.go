@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/ava-labs/gecko/utils/formatting"
+	"github.com/ava-labs/gecko/vms/spdagvm"
 
 	"github.com/ava-labs/gecko/ids"
-	"github.com/ava-labs/gecko/modules/dags/ava"
 )
 
 // UtxoSetResult result for a UtxoSet
@@ -19,7 +19,7 @@ type UtxoSetResult struct {
 }
 
 // Put ...
-func (us *UtxoSetResult) Put(utxo *ava.UTXO) {
+func (us *UtxoSetResult) Put(utxo *spdagvm.UTXO) {
 	if us.UtxoMap == nil {
 		us.UtxoMap = make(map[string]int)
 	}
@@ -51,7 +51,7 @@ type OutputPayment struct {
 	Addresses []string `json:"addresses"`
 }
 
-func (u *UTXO) copyFromAvaUTXO(utxo *ava.UTXO) {
+func (u *UTXO) copyFromAvaUTXO(utxo *spdagvm.UTXO) {
 	sid, sidx := utxo.Source()
 	u.SourceID = sid.String()
 	u.SourceIndex = sidx
@@ -64,7 +64,7 @@ func (u *UTXO) copyFromAvaUTXO(utxo *ava.UTXO) {
 	u.Bytes = bstr
 
 	out := utxo.Out()
-	addrs := out.(*ava.OutputPayment).Addresses()
+	addrs := out.(*spdagvm.OutputPayment).Addresses()
 	newAddrs := []string{}
 
 	for _, a := range addrs {
@@ -72,9 +72,9 @@ func (u *UTXO) copyFromAvaUTXO(utxo *ava.UTXO) {
 	}
 
 	newOut := OutputPayment{
-		Amount:    out.(*ava.OutputPayment).Amount(),
-		Locktime:  out.(*ava.OutputPayment).Locktime(),
-		Threshold: out.(*ava.OutputPayment).Threshold(),
+		Amount:    out.(*spdagvm.OutputPayment).Amount(),
+		Locktime:  out.(*spdagvm.OutputPayment).Locktime(),
+		Threshold: out.(*spdagvm.OutputPayment).Threshold(),
 		Addresses: newAddrs,
 	}
 	u.Out = newOut
@@ -84,11 +84,11 @@ func (u *UTXO) copyFromAvaUTXO(utxo *ava.UTXO) {
 type UtxoSet struct {
 	// This can be used to iterate over. However, it should not be modified externally.
 	utxoMap map[[32]byte]int
-	Utxos   []*ava.UTXO
+	Utxos   []*spdagvm.UTXO
 }
 
 // Put ...
-func (us *UtxoSet) Put(utxo *ava.UTXO) {
+func (us *UtxoSet) Put(utxo *spdagvm.UTXO) {
 	if us.utxoMap == nil {
 		us.utxoMap = map[[32]byte]int{}
 	}
@@ -98,6 +98,7 @@ func (us *UtxoSet) Put(utxo *ava.UTXO) {
 	}
 }
 
+// JSON prints out json of the utxoset
 func (us *UtxoSet) JSON() ([]byte, error) {
 	result := UtxoSetResult{
 		UtxoMap: map[string]int{},
@@ -115,12 +116,12 @@ func (us *UtxoSet) SetDiff(us2 UtxoSet) UtxoSetResult {
 
 	unionSet := UtxoSet{
 		utxoMap: map[[32]byte]int{},
-		Utxos:   []*ava.UTXO{},
+		Utxos:   []*spdagvm.UTXO{},
 	}
 
 	intersectSet := UtxoSet{
 		utxoMap: map[[32]byte]int{},
-		Utxos:   []*ava.UTXO{},
+		Utxos:   []*spdagvm.UTXO{},
 	}
 
 	resultSet := UtxoSetResult{
@@ -149,7 +150,7 @@ func (us *UtxoSet) SetDiff(us2 UtxoSet) UtxoSetResult {
 }
 
 // Get ...
-func (us *UtxoSet) Get(id ids.ID) *ava.UTXO {
+func (us *UtxoSet) Get(id ids.ID) *spdagvm.UTXO {
 	if us.utxoMap == nil {
 		return nil
 	}
@@ -161,7 +162,7 @@ func (us *UtxoSet) Get(id ids.ID) *ava.UTXO {
 }
 
 // Remove ...
-func (us *UtxoSet) Remove(id ids.ID) *ava.UTXO {
+func (us *UtxoSet) Remove(id ids.ID) *spdagvm.UTXO {
 	i, ok := us.utxoMap[id.Key()]
 	if !ok {
 		return nil
@@ -184,7 +185,7 @@ func (us *UtxoSet) string(prefix string) string {
 	s := strings.Builder{}
 
 	for i, utxo := range us.Utxos {
-		out := utxo.Out().(*ava.OutputPayment)
+		out := utxo.Out().(*spdagvm.OutputPayment)
 		sourceID, sourceIndex := utxo.Source()
 
 		s.WriteString(fmt.Sprintf("%sUtxo[%d]:"+
