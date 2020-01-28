@@ -216,10 +216,6 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 	numparents, _ := f.GetInt("snow-avalanche-num-parents")
 
 	args := []string{
-		"--staking-tls-key-file=" + stakerkeyparam,
-		"--staking-tls-cert-file=" + stakercertparam,
-		"--http-tls-cert-file=" + httptlscertparam,
-		"--http-tls-key-file=" + httptlskeyparam,
 		"--assertions-enabled=" + useassertions,
 		"--ava-tx-fee=" + strconv.FormatUint(uint64(txfee), 10),
 		"--public-ip=" + sh,
@@ -228,6 +224,8 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--signature-verification-enabled=" + sigverenabled,
 		"--http-port=" + strconv.FormatUint(uint64(hp), 10),
 		"--http-tls-enabled=" + httptlsenabled,
+		"--http-tls-cert-file=" + httptlscertparam,
+		"--http-tls-key-file=" + httptlskeyparam,
 		"--bootstrap-ips=" + bootstrapips,
 		"--bootstrap-ids=" + bootstrapids,
 		"--db-enabled=" + usedb,
@@ -242,6 +240,8 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(beta2),
 		"--staking-tls-enabled=" + requirestaking,
 		"--staking-port=" + strconv.FormatUint(uint64(sp), 10),
+		"--staking-tls-key-file=" + stakerkeyparam,
+		"--staking-tls-cert-file=" + stakercertparam,
 	}
 
 	metadata := Metadata{

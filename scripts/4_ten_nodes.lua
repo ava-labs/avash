@@ -4,15 +4,16 @@ nodeprefix = "a"
 
 -- Deploys 10 nodes: a1 -> a10 
 cmds = {
-    "startnode " .. nodeprefix .. "1 --db-enabled=false --http-port=9650 --loglevel=all --bootstrapips=",
-    "startnode " .. nodeprefix .. "2 --db-enabled=false --http-port=9651 --loglevel=all --bootstrapips=127.0.0.1:9150",
-    "startnode " .. nodeprefix .. "3 --db-enabled=false --http-port=9652 --loglevel=all --bootstrapips=127.0.0.1:9150,127.0.0.1:9151",
+    "startnode " .. nodeprefix .. "1 --db-enabled=false --http-port=9650 --staking-port=9150 --loglevel=all --bootstrapips=",
+    "startnode " .. nodeprefix .. "2 --db-enabled=false --http-port=9651 --staking-port=9151 --loglevel=all --bootstrapips=127.0.0.1:9150",
+    "startnode " .. nodeprefix .. "3 --db-enabled=false --http-port=9652 --staking-port=9152 --loglevel=all --bootstrapips=127.0.0.1:9150,127.0.0.1:9151",
 }
 
 bsips = " --loglevel=all --bootstrapips=127.0.0.1:9150,127.0.0.1:9151,127.0.0.1:9152"
 
 cmds_template = {
     " --db-enabled=false --http-port=965",
+    "--staking-port=915"
 }
 
 for i=4, 10 do

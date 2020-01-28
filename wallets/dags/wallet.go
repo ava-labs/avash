@@ -87,7 +87,7 @@ func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dest
 	}
 
 	// Build the transaction
-	tx, err := builder.NewTxFromUTXOs(w.keyChain, w.utxoSet.Utxos, amount, w.txFee, locktime, dests, changeAddr, currentTime)
+	tx, err := builder.NewTxFromUTXOs(w.keyChain, w.utxoSet.Utxos, amount, w.txFee, locktime, 1, dests, changeAddr, currentTime)
 	if err != nil {
 		panic(err)
 	}
