@@ -68,7 +68,7 @@ func (p *Process) Start() {
 	for {
 		select {
 		case sp := <-p.stop:
-			fmt.Println("Start for " + p.name + " stop()")
+			fmt.Println("Calling stop() on " + p.name)
 			if sp {
 				if err := p.endProcess(false); err != nil {
 					fmt.Println("SIGINT failed on process: " + p.name)
@@ -80,7 +80,7 @@ func (p *Process) Start() {
 				return
 			}
 		case kl := <-p.kill:
-			fmt.Println("Start for " + p.name + " kill()")
+			fmt.Println("Calling kill() on " + p.name)
 			if kl {
 				if err := p.endProcess(true); err != nil {
 					fmt.Println("SIGTERM failed on process: " + p.name)
