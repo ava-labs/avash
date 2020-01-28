@@ -1,9 +1,9 @@
 second = 1000000
 cmds = {
-    "startnode a1 --db=false --jrpcport=9655 --serverport=9155 --rpcport=9355 --loglevel=all --bootstrapips=",
-    "startnode a2 --db=false --jrpcport=9656 --serverport=9156 --rpcport=9356 --loglevel=all --bootstrapips=127.0.0.1:9155",
-    "startnode a3 --db=false --jrpcport=9657 --serverport=9157 --rpcport=9357 --loglevel=all --bootstrapips=127.0.0.1:9155,127.0.0.1:9156",
-    "startnode jrpcnode --db=false --jrpcport=9650 --serverport=9150 --rpcport=9350 --loglevel=all --bootstrapips=127.0.0.1:9155,127.0.0.1:9156,127.0.0.1:9157",
+    "startnode a1 --db-enabled=false --http-port=9655 --loglevel=all --bootstrapips=",
+    "startnode a2 --db-enabled=false --http-port=9656 --loglevel=all --bootstrapips=127.0.0.1:9155",
+    "startnode a3 --db-enabled=false --http-port=9657 --loglevel=all --bootstrapips=127.0.0.1:9155,127.0.0.1:9156",
+    "startnode jrpcnode --db-enabled=false --http-port=9650 --loglevel=all --bootstrapips=127.0.0.1:9155,127.0.0.1:9156,127.0.0.1:9157",
 }
 
 for key, cmd in ipairs(cmds) do

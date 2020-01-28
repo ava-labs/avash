@@ -1,6 +1,6 @@
 second = 1000000
 
-cmd = "startnode a1 --db=false --jrpcport=9655 --serverport=9155 --rpcport=9355 --loglevel=all --bootstrapips="
+cmd = "startnode a1 --db-enabled=false --http-port=9650 --loglevel=all"
 print("calling " .. cmd)
 avash_call(cmd)
 avash_sleepmicro(1 * second)

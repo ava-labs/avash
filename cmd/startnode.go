@@ -146,8 +146,6 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 
 	// Staking settings
 	wd, _ := os.Getwd()
-	stakingenabled, _ := f.GetBool("staking-tls-enabled")
-	stakerCertFile, _ := f.GetString("staking-tls-cert-file")
 
 	// Assertions
 	henabled, _ := f.GetBool("http-tls-enabled")
@@ -159,6 +157,13 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 	hcert, _ := f.GetString("http-tls-cert-file")
 	hkey, _ := f.GetString("http-tls-key-file")
 
+	httptlscertparam := ""
+	httptlskeyparam := ""
+	if henabled {
+		httptlscertparam = "--http-tls-cert-file=" + hcert
+		httptlskeyparam = "--http-tls-key-file=" + hkey
+	}
+
 	// Signature verification
 	sigver, _ := f.GetBool("signature-verification-enabled")
 	sigverenabled := "false"
@@ -166,14 +171,25 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		sigverenabled = "true"
 	}
 
+	stakingenabled, _ := f.GetBool("staking-tls-enabled")
+
 	// If the path given in the flag doesn't begin with "/", treat it as relative
 	// to the directory of the avash binary
+	stakerCertFile, _ := f.GetString("staking-tls-cert-file")
 	if stakerCertFile != "" && string(stakerCertFile[0]) != "/" {
 		stakerCertFile = fmt.Sprintf("%s/%s", wd, stakerCertFile)
 	}
+
 	stakerKeyFile, _ := f.GetString("staking-tls-key-file")
 	if stakerKeyFile != "" && string(stakerKeyFile[0]) != "/" {
 		stakerKeyFile = fmt.Sprintf("%s/%s", wd, stakerKeyFile)
+	}
+
+	stakercertparam := ""
+	stakerkeyparam := ""
+	if stakingenabled {
+		stakercertparam = stakerCertFile
+		stakerkeyparam = stakerKeyFile
 	}
 
 	requirestaking := "false"
@@ -200,6 +216,10 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 	numparents, _ := f.GetInt("snow-avalanche-num-parents")
 
 	args := []string{
+		"--staking-tls-key-file=" + stakerkeyparam,
+		"--staking-tls-cert-file=" + stakercertparam,
+		"--http-tls-cert-file=" + httptlscertparam,
+		"--http-tls-key-file=" + httptlskeyparam,
 		"--assertions-enabled=" + useassertions,
 		"--ava-tx-fee=" + strconv.FormatUint(uint64(txfee), 10),
 		"--public-ip=" + sh,
@@ -208,8 +228,6 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--signature-verification-enabled=" + sigverenabled,
 		"--http-port=" + strconv.FormatUint(uint64(hp), 10),
 		"--http-tls-enabled=" + httptlsenabled,
-		"--http-tls-cert-file=" + hcert,
-		"--http-tls-key-file=" + hkey,
 		"--bootstrap-ips=" + bootstrapips,
 		"--bootstrap-ids=" + bootstrapids,
 		"--db-enabled=" + usedb,
@@ -224,8 +242,6 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(beta2),
 		"--staking-tls-enabled=" + requirestaking,
 		"--staking-port=" + strconv.FormatUint(uint64(sp), 10),
-		"--staking-tls-cert-file=" + stakerCertFile,
-		"--staking-tls-key-file=" + stakerKeyFile,
 	}
 
 	metadata := Metadata{
@@ -246,18 +262,18 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 func init() {
 	StartnodeCmd.Flags().String("client-location", "", "Path to AVA node client, defaulting to the config file's value.")
 	StartnodeCmd.Flags().String("meta", "", "Override default metadata for the node process.")
-	StartnodeCmd.Flags().String("data-dir", "stash", "Name of directory for the data stash.")
+	StartnodeCmd.Flags().String("data-dir", "", "Name of directory for the data stash.")
 
 	StartnodeCmd.Flags().Bool("assertions-enabled", true, "Turn on assertion execution.")
 	StartnodeCmd.Flags().Uint("ava-tx-fee", 0, "Ava transaction fee, in $nAva.")
 
 	StartnodeCmd.Flags().String("public-ip", "127.0.0.1", "Public IP of this node.")
-	StartnodeCmd.Flags().String("network-id", "private", "Network ID this node will connect to.")
+	StartnodeCmd.Flags().String("network-id", "12345", "Network ID this node will connect to.")
 	StartnodeCmd.Flags().Uint("xput-port", 9652, "Port of the deprecated throughput test server.")
 	StartnodeCmd.Flags().Bool("signature-verification-enabled", true, "Turn on signature verification.")
 
 	StartnodeCmd.Flags().Uint("http-port", 9650, "Port of the HTTP server.")
-	StartnodeCmd.Flags().Bool("http-tls-enabled", true, "Upgrade the HTTP server to HTTPS.")
+	StartnodeCmd.Flags().Bool("http-tls-enabled", false, "Upgrade the HTTP server to HTTPS.")
 	StartnodeCmd.Flags().String("http-tls-cert-file", "", "TLS certificate file for the HTTPS server.")
 	StartnodeCmd.Flags().String("http-tls-key-file", "", "TLS private key file for the HTTPS server.")
 
@@ -267,7 +283,7 @@ func init() {
 	StartnodeCmd.Flags().Bool("db-enabled", true, "Turn on persistent storage.")
 	StartnodeCmd.Flags().String("db-dir", "db1", "Database directory for Ava state.")
 
-	StartnodeCmd.Flags().String("log-level", "info", "Specify the log level. Should be one of {all, debug, info, warn, error, fatal, off}")
+	StartnodeCmd.Flags().String("log-level", "all", "Specify the log level. Should be one of {all, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().String("log-dir", "logs", "Name of directory for the node's logging.")
 
 	StartnodeCmd.Flags().Int("snow-avalanche-batch-size", 30, "Number of operations to batch in each new vertex.")
@@ -277,7 +293,7 @@ func init() {
 	StartnodeCmd.Flags().Int("snow-virtuous-commit-threshold", 5, "Beta value to use for virtuous transactions.")
 	StartnodeCmd.Flags().Int("snow-rogue-commit-threshold", 10, "Beta value to use for rogue transactions.")
 
-	StartnodeCmd.Flags().Bool("staking-tls-enabled", true, "Require TLS to authenticate staking connections.")
+	StartnodeCmd.Flags().Bool("staking-tls-enabled", false, "Require TLS to authenticate staking connections.")
 	StartnodeCmd.Flags().Uint("staking-port", 9651, "Port of the consensus server.")
 	StartnodeCmd.Flags().String("staking-tls-cert-file", "", "TLS certificate file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.crt")
 	StartnodeCmd.Flags().String("staking-tls-key-file", "", "TLS private key file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.key")
