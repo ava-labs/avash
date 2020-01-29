@@ -139,8 +139,6 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 	bootstrapips, _ := f.GetString("bootstrap-ips")
 	bootstrapids, _ := f.GetString("bootstrap-ids")
 
-	fmt.Printf("\n\n\nBOOSTRAPPPPPPPP %s\n\n\n", bootstrapips)
-
 	// Paths/directories
 	dbdir, _ := f.GetString("db-dir")
 	datadir, _ := f.GetString("data-dir")
