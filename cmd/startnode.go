@@ -134,7 +134,7 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 	// Host/port settings
 	sh, _ := f.GetString("public-ip")
 	sp, _ := f.GetUint("staking-port")
-	rp, _ := f.GetUint("xput-port")
+	rp, _ := f.GetUint("xput-server-port")
 	hp, _ := f.GetUint("http-port")
 	bootstrapips, _ := f.GetString("bootstrap-ips")
 	bootstrapids, _ := f.GetString("bootstrap-ids")
@@ -220,7 +220,7 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--ava-tx-fee=" + strconv.FormatUint(uint64(txfee), 10),
 		"--public-ip=" + sh,
 		"--network-id=" + networkid,
-		"--xput-port=" + strconv.FormatUint(uint64(rp), 10),
+		"--xput-server-port=" + strconv.FormatUint(uint64(rp), 10),
 		"--signature-verification-enabled=" + sigverenabled,
 		"--http-port=" + strconv.FormatUint(uint64(hp), 10),
 		"--http-tls-enabled=" + httptlsenabled,
@@ -269,7 +269,7 @@ func init() {
 
 	StartnodeCmd.Flags().String("public-ip", "127.0.0.1", "Public IP of this node.")
 	StartnodeCmd.Flags().String("network-id", "12345", "Network ID this node will connect to.")
-	StartnodeCmd.Flags().Uint("xput-port", 9652, "Port of the deprecated throughput test server.")
+	StartnodeCmd.Flags().Uint("xput-server-port", 9652, "Port of the deprecated throughput test server.")
 	StartnodeCmd.Flags().Bool("signature-verification-enabled", true, "Turn on signature verification.")
 
 	StartnodeCmd.Flags().Uint("http-port", 9650, "Port of the HTTP server.")

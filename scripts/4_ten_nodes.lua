@@ -14,7 +14,7 @@ bsips = " --log-level=all --bootstrap-ips=127.0.0.1:9150,127.0.0.1:9151,127.0.0.
 cmds_template = {
     " --db-enabled=false --http-port=965",
     "--staking-port=915",
-    "--xput-port=925"
+    "--xput-server-port=925"
 }
 
 for i=4, 10 do

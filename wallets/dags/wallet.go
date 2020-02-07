@@ -74,7 +74,7 @@ func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dest
 	//ins, outs, signers, _ := w.txPrepare(amount, locktime, threshold, dests)
 	builder := spdagvm.Builder{
 		NetworkID: w.networkID,
-		SubnetID:  w.subnetID,
+		ChainID:   w.subnetID,
 	}
 	currentTime := w.clock.Unix()
 

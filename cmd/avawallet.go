@@ -48,7 +48,7 @@ var AVAWalletCreateCmd = &cobra.Command{
 			networkID, _ := strconv.ParseUint(args[1], 10, 0)
 			subnetID, _ := ids.ShortFromString(args[2])
 			txfee, _ := strconv.ParseUint(args[3], 10, 0)
-			dagwallet.Wallets[args[0]] = dagwallet.NewWallet(uint32(networkID), subnetID.ID(), uint64(txfee))
+			dagwallet.Wallets[args[0]] = dagwallet.NewWallet(uint32(networkID), subnetID.LongID(), uint64(txfee))
 			fmt.Printf("wallet created: %s\n", args[0])
 		} else {
 			cmd.Help()
@@ -121,7 +121,7 @@ var AVAWalletMakeTxCmd = &cobra.Command{
 					if signedTx != nil {
 						ctx := snow.DefaultContextTest()
 						ctx.NetworkID = w.GetNetworkID()
-						ctx.SubnetID = w.GetSubnetID()
+						ctx.ChainID = w.GetSubnetID()
 						if err := signedTx.Verify(ctx, 0); err == nil {
 							fb.Bytes = signedTx.Bytes()
 							fmt.Printf("Tx:%s\n", fb.String())
