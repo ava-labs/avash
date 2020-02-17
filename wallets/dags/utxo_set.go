@@ -58,8 +58,7 @@ func (u *UTXO) copyFromAvaUTXO(utxo *spdagvm.UTXO) {
 	id := utxo.ID().String()
 	u.ID = id
 	b := utxo.Bytes()
-	fb := formatting.FormatBytes{}
-	fb.Bytes = b
+	fb := formatting.CB58{Bytes: b}
 	bstr := fb.String()
 	u.Bytes = bstr
 

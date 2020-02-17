@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/ava-labs/gecko/snow"
 
@@ -65,7 +66,7 @@ var AVAWalletNewKeyCmd = &cobra.Command{
 		factory := crypto.FactorySECP256K1R{}
 		if skGen, err := factory.NewPrivateKey(); err == nil {
 			sk := skGen.(*crypto.PrivateKeySECP256K1R)
-			fb := formatting.FormatBytes{}
+			fb := formatting.CB58{}
 			fb.Bytes = sk.Bytes()
 			fmt.Printf("Pk:%s\n", fb.String())
 		} else {
@@ -83,7 +84,7 @@ var AVAWalletAddKeyCmd = &cobra.Command{
 		if len(args) >= 2 {
 			if w, ok := dagwallet.Wallets[args[0]]; ok {
 				factory := crypto.FactorySECP256K1R{}
-				fb := formatting.FormatBytes{}
+				fb := formatting.CB58{}
 				fb.FromString(args[1])
 				if skGen, err := factory.ToPrivateKey(fb.Bytes); err == nil {
 					sk := skGen.(*crypto.PrivateKeySECP256K1R)
@@ -110,8 +111,8 @@ var AVAWalletMakeTxCmd = &cobra.Command{
 		if len(args) >= 3 {
 			if w, ok := dagwallet.Wallets[args[0]]; ok {
 				if amount, err := strconv.ParseUint(args[2], 10, 64); err == nil {
-					fb := formatting.FormatBytes{}
-					fb.FromString(args[1])
+					fb := formatting.CB58{}
+					fb.FromString(strings.Split(args[1], "-")[1])
 					toAddr, err := ids.ToShortID(fb.Bytes)
 					if err != nil {
 						fmt.Println(err.Error())
@@ -151,7 +152,7 @@ var AVAWalletRemoveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
 			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				fb := formatting.FormatBytes{}
+				fb := formatting.CB58{}
 				fb.FromString(args[1])
 				txBytes := fb.Bytes
 				codec := spdagvm.Codec{}
@@ -182,7 +183,7 @@ var AVAWalletSpendCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
 			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				fb := formatting.FormatBytes{}
+				fb := formatting.CB58{}
 				fb.FromString(args[1])
 				txBytes := fb.Bytes
 				codec := spdagvm.Codec{}
@@ -213,9 +214,9 @@ var AVAWalletSendCmd = &cobra.Command{
 				var md Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
-					jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Serverhost, md.HTTPport)
+					jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
 					rpcClient := jsonrpc.NewClient(jrpcloc)
-					response, err := rpcClient.Call("Ava.IssueTx", struct {
+					response, err := rpcClient.Call("avm.issueTx", struct {
 						Tx string
 					}{
 						Tx: args[1],
@@ -260,9 +261,9 @@ var AVAWalletStatusCmd = &cobra.Command{
 				var md Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
-					jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Serverhost, md.HTTPport)
+					jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
 					rpcClient := jsonrpc.NewClient(jrpcloc)
-					response, err := rpcClient.Call("Ava.GetTxStatus", struct {
+					response, err := rpcClient.Call("avm.getTxStatus", struct {
 						TxID string
 					}{
 						TxID: args[1],
@@ -307,16 +308,14 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 				var md Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
-					jrpcloc := fmt.Sprintf("http://%s:%s/ext/wallet", md.Serverhost, md.HTTPport)
+					jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
 					rpcClient := jsonrpc.NewClient(jrpcloc)
-					response, err := rpcClient.Call("Wallet.GetBalance", struct {
-						SubnetAlias string
-						Address     string
-						AssetID     string
+					response, err := rpcClient.Call("avm.getBalance", struct {
+						Address string
+						AssetID string
 					}{
-						SubnetAlias: "ava",
-						Address:     args[1],
-						AssetID:     "ava",
+						Address: args[1],
+						AssetID: "ava",
 					})
 					if err != nil {
 						fmt.Printf("error sent address: %s\n", args[1])
@@ -359,10 +358,10 @@ var AVAWalletRefreshCmd = &cobra.Command{
 					var md Metadata
 					metaBytes := []byte(meta)
 					if err := json.Unmarshal(metaBytes, &md); err == nil {
-						jrpcloc := fmt.Sprintf("http://%s:%s/ext/ava", md.Serverhost, md.HTTPport)
+						jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
 						rpcClient := jsonrpc.NewClient(jrpcloc)
 
-						response, err := rpcClient.Call("Ava.GetUTXOs", struct {
+						response, err := rpcClient.Call("ava.getUTXOs", struct {
 							Addresses []string
 						}{
 							Addresses: w.Addresses(),
@@ -379,7 +378,7 @@ var AVAWalletRefreshCmd = &cobra.Command{
 							if err != nil {
 								fmt.Printf("error on parsing response: %s\n", err.Error())
 							} else {
-								fb := formatting.FormatBytes{}
+								fb := formatting.CB58{}
 								acodec := spdagvm.Codec{}
 								for _, aUTXO := range s.UTXOs {
 									fb.FromString(aUTXO)
