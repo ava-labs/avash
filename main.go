@@ -13,6 +13,7 @@ func main() {
 	cmd.RootCmd.AddCommand(cmd.ExitCmd)
 	cmd.RootCmd.AddCommand(cmd.ProcmanagerCmd)
 	cmd.RootCmd.AddCommand(cmd.RunScriptCmd)
+	cmd.RootCmd.AddCommand(cmd.SetOutputCmd)
 	cmd.RootCmd.AddCommand(cmd.StartnodeCmd)
 	cmd.RootCmd.AddCommand(cmd.VarStoreCmd)
 	cmd.Execute()
