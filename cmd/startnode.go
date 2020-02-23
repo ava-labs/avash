@@ -48,7 +48,7 @@ var StartnodeCmd = &cobra.Command{
 
 		name := args[0]
 
-		datadir := cfg.Viper.GetString("data-dir")
+		datadir := cfg.Config.DataDir
 		if datadir == "" {
 			wd, _ := os.Getwd()
 			datadir = wd + "/stash"
@@ -81,7 +81,7 @@ var StartnodeCmd = &cobra.Command{
 		}
 		avalocation, _ := f.GetString("client-location")
 		if avalocation == "" {
-			avalocation = cfg.Viper.GetString("avalocation")
+			avalocation = cfg.Config.AvaLocation
 		}
 		err = pmgr.ProcManager.AddProcess(avalocation, "ava node", args, name, metadata, nil, nil, nil)
 		if err != nil {
