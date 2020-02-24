@@ -7,10 +7,9 @@ import (
 
 // PrintOutput outputs a message from an Output based on the config
 func PrintOutput(s Output) {
-	output := cfg.Viper.GetString("output")
-	verbosity := cfg.Viper.GetString("verbosity")
-	msg := formatVerbosity(s, verbosity)
-	switch output {
+	output := cfg.Config.Output
+	msg := formatVerbosity(s, output.Verbosity)
+	switch output.Type {
 	case Terminal.String():
 		fmt.Println(msg)
 	default:

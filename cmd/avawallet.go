@@ -29,13 +29,12 @@ import (
 
 // AVAWalletCmd represents the avawallet command
 var AVAWalletCmd = &cobra.Command{
-	Use:   "avawallet [operation]",
+	Use:   "avawallet [command]",
 	Short: "Tools for interacting with AVA Payments over the network.",
 	Long: `Tools for interacting with AVA Payments over the network. Using this 
 	command you can create, send, and get the status of a transaction.`,
-	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("avawallet requires an operation. Available: create, addkey, maketx, refresh, remove, send, createkey")
+		cmd.Help()
 	},
 }
 
