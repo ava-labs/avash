@@ -171,6 +171,13 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		sigverenabled = "true"
 	}
 
+	// IPC
+	ipc, _ := f.GetBool("ipc-enabled")
+	ipcEnabled := "true"
+	if ipc == false {
+		ipcEnabled = "false"
+	}
+
 	stakingenabled, _ := f.GetBool("staking-tls-enabled")
 
 	// If the path given in the flag doesn't begin with "/", treat it as relative
@@ -222,6 +229,7 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--network-id=" + networkid,
 		"--xput-server-port=" + strconv.FormatUint(uint64(rp), 10),
 		"--signature-verification-enabled=" + sigverenabled,
+		"--ipc-enabled=" + ipcEnabled,
 		"--http-port=" + strconv.FormatUint(uint64(hp), 10),
 		"--http-tls-enabled=" + httptlsenabled,
 		"--http-tls-cert-file=" + httptlscertparam,
@@ -271,6 +279,7 @@ func init() {
 	StartnodeCmd.Flags().String("network-id", "12345", "Network ID this node will connect to.")
 	StartnodeCmd.Flags().Uint("xput-server-port", 9652, "Port of the deprecated throughput test server.")
 	StartnodeCmd.Flags().Bool("signature-verification-enabled", true, "Turn on signature verification.")
+	StartnodeCmd.Flags().Bool("ipc-enabled", true, "Turn on IPC.")
 
 	StartnodeCmd.Flags().Uint("http-port", 9650, "Port of the HTTP server.")
 	StartnodeCmd.Flags().Bool("http-tls-enabled", false, "Upgrade the HTTP server to HTTPS.")
