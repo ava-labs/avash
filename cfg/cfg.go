@@ -9,23 +9,21 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ava-labs/avash/utils/logging"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
+// Configuration is a shell-usable wrapper of the config file
 type Configuration struct {
-	AvaLocation	string
-	DataDir		string
-	Output		OutputConfig
+	AvaLocation, DataDir	string
+	Log						logging.Log
 }
 
-type OutputConfig struct {
-	Type		string
-	Verbosity	string
+type configFile struct {
+	AvaLocation, DataDir	string
+	Log						logging.Config
 }
-
-// Viper is a global instance of viper
-// var Viper *viper.Viper
 
 // Config is a global instance of the shell configuration
 var Config Configuration
@@ -52,8 +50,21 @@ func InitConfig() {
 		os.Exit(1)
 	}
 
-	if err := viper.Unmarshal(&Config); err != nil {
+	var config configFile
+	if err := viper.Unmarshal(&config); err != nil {
 		fmt.Printf("Unable to decode config into struct, %v\n", err)
 		os.Exit(1)
+	}
+
+	log, err := logging.New(config.Log)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	Config = Configuration{
+		AvaLocation:	config.AvaLocation,
+		DataDir:		config.DataDir,
+		Log:			*log,
 	}
 }
