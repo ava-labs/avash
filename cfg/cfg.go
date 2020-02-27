@@ -8,6 +8,7 @@ package cfg
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ava-labs/avash/utils/logging"
 	"github.com/mitchellh/go-homedir"
@@ -22,7 +23,11 @@ type Configuration struct {
 
 type configFile struct {
 	AvaLocation, DataDir	string
-	Log						logging.Config
+	Log						configFileLog
+}
+
+type configFileLog struct {
+	Terminal, LogFile, Dir	string
 }
 
 // Config is a global instance of the shell configuration
@@ -56,7 +61,8 @@ func InitConfig() {
 		os.Exit(1)
 	}
 
-	log, err := logging.New(config.Log)
+	logCfg := toLogConfig(config.Log)
+	log, err := logging.New(logCfg)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -66,5 +72,31 @@ func InitConfig() {
 		AvaLocation:	config.AvaLocation,
 		DataDir:		config.DataDir,
 		Log:			*log,
+	}
+}
+
+func toLogConfig(config configFileLog) logging.Config {
+	terminalLvl, err := logging.ToLevel(config.Terminal)
+	if err != nil && config.Terminal != "" {
+		fmt.Printf("invalid terminal log level '%s', defaulting to %s\n", config.Terminal, terminalLvl.String())
+	}
+	logFileLvl, err := logging.ToLevel(config.LogFile)
+	if err != nil && config.LogFile != "" {
+		fmt.Printf("invalid logfile log level '%s', defaulting to %s\n", config.LogFile, logFileLvl.String())
+	}
+	if config.Dir == "" {
+		pwd, _ := os.Getwd()
+		defaultLogDir := pwd + "/stash/logs"
+		config.Dir = defaultLogDir
+	}
+	return logging.Config{
+		RotationInterval:  24 * time.Hour,
+		FileSize:          1 << 23, // 8 MB
+		RotationSize:      7,
+		FlushSize:         1,
+		DisableDisplaying: true,
+		DisplayLevel:      terminalLvl,
+		LogLevel:          logFileLvl,
+		Directory:         config.Dir,
 	}
 }
