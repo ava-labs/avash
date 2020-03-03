@@ -49,10 +49,6 @@ var StartnodeCmd = &cobra.Command{
 		name := args[0]
 
 		datadir := cfg.Config.DataDir
-		if datadir == "" {
-			wd, _ := os.Getwd()
-			datadir = wd + "/stash"
-		}
 		basename := sanitize.BaseName(name)
 		datapath := datadir + "/" + basename
 		if basename == "" {

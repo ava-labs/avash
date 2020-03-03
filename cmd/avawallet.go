@@ -15,6 +15,7 @@ import (
 
 	"github.com/ava-labs/gecko/snow"
 
+	"github.com/ava-labs/avash/cfg"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	dagwallet "github.com/ava-labs/avash/wallets/dags"
 	"github.com/ava-labs/gecko/ids"
@@ -414,8 +415,7 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
 			if wallet, ok := dagwallet.Wallets[args[0]]; ok {
-				pwd, _ := os.Getwd()
-				stashdir := pwd + "/stash"
+				stashdir := cfg.Config.DataDir
 				basename := filepath.Base(args[1])
 				basedir := filepath.Dir(stashdir + "/" + args[1])
 

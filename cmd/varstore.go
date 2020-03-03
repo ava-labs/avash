@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/ava-labs/avash/cfg"
 	"github.com/spf13/cobra"
 	"github.com/yourbasic/radix"
 )
@@ -189,8 +190,7 @@ var VarStoreStoreDumpCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
 			if store, err := AvashVars.Get(args[0]); err == nil {
-				pwd, _ := os.Getwd()
-				stashdir := pwd + "/stash"
+				stashdir := cfg.Config.DataDir
 				basename := filepath.Base(args[1])
 				basedir := filepath.Dir(stashdir + "/" + args[1])
 
@@ -224,8 +224,7 @@ var VarStoreVarDumpCmd = &cobra.Command{
 		if len(args) >= 3 {
 			if store, err := AvashVars.Get(args[0]); err == nil {
 				if variable, e := store.Get(args[1]); e == nil {
-					pwd, _ := os.Getwd()
-					stashdir := pwd + "/stash"
+					stashdir := cfg.Config.DataDir
 					basename := filepath.Base(args[2])
 					basedir := filepath.Dir(stashdir + "/" + args[2])
 

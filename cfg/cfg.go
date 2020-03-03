@@ -61,7 +61,19 @@ func InitConfig() {
 		os.Exit(1)
 	}
 
-	logCfg := toLogConfig(config.Log)
+	// Set default `datadir` if missing
+	if config.DataDir == "" {
+		wd, _ := os.Getwd()
+		defaultDataDir := wd + "/stash"
+		config.DataDir = defaultDataDir
+	}
+	if err := os.MkdirAll(config.DataDir, os.ModePerm); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	// Configure and create log
+	logCfg := makeLogConfig(config.Log, config.DataDir)
 	log, err := logging.New(logCfg)
 	if err != nil {
 		fmt.Println(err)
@@ -75,7 +87,7 @@ func InitConfig() {
 	}
 }
 
-func toLogConfig(config configFileLog) logging.Config {
+func makeLogConfig(config configFileLog, dataDir string) logging.Config {
 	terminalLvl, err := logging.ToLevel(config.Terminal)
 	if err != nil && config.Terminal != "" {
 		fmt.Printf("invalid terminal log level '%s', defaulting to %s\n", config.Terminal, terminalLvl.String())
@@ -85,8 +97,7 @@ func toLogConfig(config configFileLog) logging.Config {
 		fmt.Printf("invalid logfile log level '%s', defaulting to %s\n", config.LogFile, logFileLvl.String())
 	}
 	if config.Dir == "" {
-		pwd, _ := os.Getwd()
-		defaultLogDir := pwd + "/stash/logs"
+		defaultLogDir := dataDir + "/logs"
 		config.Dir = defaultLogDir
 	}
 	return logging.Config{
