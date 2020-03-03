@@ -315,7 +315,7 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 						AssetID string
 					}{
 						Address: args[1],
-						AssetID: "ava",
+						AssetID: "AVA",
 					})
 					if err != nil {
 						fmt.Printf("error sent address: %s\n", args[1])
@@ -325,13 +325,13 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 						fmt.Printf("rpcClient returned error: %d, %s\n", response.Error.Code, response.Error.Message)
 					} else {
 						var s struct {
-							Balance uint64
+							Balance string
 						}
 						err = response.GetObject(&s)
 						if err != nil {
 							fmt.Printf("error on parsing response: %s\n", err.Error())
 						} else {
-							fmt.Printf("Balance:%d\n", s.Balance)
+							fmt.Printf("Balance: %s\n", s.Balance)
 						}
 					}
 				} else {
