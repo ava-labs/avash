@@ -32,6 +32,6 @@ var SetOutputCmd = &cobra.Command{
 			return
 		}
 		cfg.Config.Log.SetLevel(output, level)
-		fmt.Println("set shell output")
+		fmt.Printf("%s log level set: %s", output.String(), level.String())
 	},
 }
