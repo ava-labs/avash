@@ -105,7 +105,6 @@ func makeLogConfig(config configFileLog, dataDir string) logging.Config {
 		FileSize:          1 << 23, // 8 MB
 		RotationSize:      7,
 		FlushSize:         1,
-		DisableDisplaying: true,
 		DisplayLevel:      terminalLvl,
 		LogLevel:          logFileLvl,
 		Directory:         config.Dir,
