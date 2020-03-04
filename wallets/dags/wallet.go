@@ -70,7 +70,7 @@ func (w *Wallet) AddUtxo(utxo *spdagvm.UTXO) {
 func (w *Wallet) Balance() uint64 { return w.balance }
 
 // CreateTx sends some amount to the destination addresses
-func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dests []ids.ShortID) *spdagvm.Tx {
+func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dests []ids.ShortID) (*spdagvm.Tx, error) {
 	//ins, outs, signers, _ := w.txPrepare(amount, locktime, threshold, dests)
 	builder := spdagvm.Builder{
 		NetworkID: w.networkID,
@@ -89,10 +89,10 @@ func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dest
 	// Build the transaction
 	tx, err := builder.NewTxFromUTXOs(w.keyChain, w.utxoSet.Utxos, amount, w.txFee, locktime, 1, dests, changeAddr, currentTime)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
-	return tx
+	return tx, err
 }
 
 // SpendTx takes a tx, removes its utxos, and adds the inputs

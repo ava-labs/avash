@@ -109,35 +109,42 @@ var AVAWalletMakeTxCmd = &cobra.Command{
 	Long:  `Creates a signed transaction for an amount to an address. Returns the a string of the transaction.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 3 {
-			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				if amount, err := strconv.ParseUint(args[2], 10, 64); err == nil {
-					fb := formatting.CB58{}
-					fb.FromString(strings.Split(args[1], "-")[1])
-					toAddr, err := ids.ToShortID(fb.Bytes)
-					if err != nil {
-						fmt.Println(err.Error())
-						return
-					}
-					signedTx := w.CreateTx(amount, 0, 1, []ids.ShortID{toAddr})
-					if signedTx != nil {
-						ctx := snow.DefaultContextTest()
-						ctx.NetworkID = w.GetNetworkID()
-						ctx.ChainID = w.GetSubnetID()
-						if err := signedTx.Verify(ctx, 0); err == nil {
-							fb.Bytes = signedTx.Bytes()
-							fmt.Printf("Tx:%s\n", fb.String())
-						} else {
-							fmt.Println("signedTx cannot verify")
-						}
-					} else {
-						fmt.Println("unable to create tx, check UTXO set")
-					}
-				} else {
-					fmt.Printf("amount %s cannot convert to uint64\n", args[2])
-				}
-			} else {
+			w, ok := dagwallet.Wallets[args[0]]
+			if !ok {
 				fmt.Printf("wallet not found: %s\n", args[0])
+				return
 			}
+			amount, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				fmt.Printf("amount %s cannot convert to uint64\n", args[2])
+				return
+			}
+			fb := formatting.CB58{}
+			addr := strings.Split(args[1], "-")
+			if len(addr) < 2 {
+				fmt.Printf("invalid prefixed address: %s\n", args[1])
+				return
+			}
+			fb.FromString(strings.Split(args[1], "-")[1])
+			toAddr, err := ids.ToShortID(fb.Bytes)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			signedTx, err := w.CreateTx(amount, 0, 1, []ids.ShortID{toAddr})
+			if err != nil {
+				fmt.Println("unable to create tx, check UTXO set")
+				return
+			}
+			ctx := snow.DefaultContextTest()
+			ctx.NetworkID = w.GetNetworkID()
+			ctx.ChainID = w.GetSubnetID()
+			if err := signedTx.Verify(ctx, 0); err != nil {
+				fmt.Println("signedTx cannot verify")
+				return
+			}
+			fb.Bytes = signedTx.Bytes()
+			fmt.Printf("Tx:%s\n", fb.String())
 		} else {
 			cmd.Help()
 		}
