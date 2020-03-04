@@ -16,14 +16,13 @@ import (
 
 // ProcmanagerCmd represents the procmanager command
 var ProcmanagerCmd = &cobra.Command{
-	Use:   "procmanager [operation]",
+	Use:   "procmanager [command]",
 	Short: "Access the process manager for the avash client.",
 	Long: `Access the process manager for the avash client. Using this 
 	command you can list, stop, and start processes registered with the 
 	process manager.`,
-	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("procmanager requires an operation. Available: list, start, stop, stopall, startall, kill, killall, remove, metadata")
+		cmd.Help()
 	},
 }
 

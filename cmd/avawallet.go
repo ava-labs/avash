@@ -41,16 +41,22 @@ var AVAWalletCmd = &cobra.Command{
 
 // AVAWalletCreateCmd creates a new named wallet
 var AVAWalletCreateCmd = &cobra.Command{
-	Use:   "create [wallet name] [networkID] [subnetID] [txFee]",
+	Use:   "create [wallet name] [networkID] [blockchainID] [txFee]",
 	Short: "Creates a wallet.",
 	Long:  `Creates a wallet persistent for this session.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 4 {
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Printf("invalid blockchainID: %s\n", args[2])
+				} else {
+					fmt.Printf("wallet created: %s\n", args[0])
+				}
+			}()
 			networkID, _ := strconv.ParseUint(args[1], 10, 0)
-			subnetID, _ := ids.ShortFromString(args[2])
+			blockchainID, _ := ids.ShortFromString(args[2])
 			txfee, _ := strconv.ParseUint(args[3], 10, 0)
-			dagwallet.Wallets[args[0]] = dagwallet.NewWallet(uint32(networkID), subnetID.LongID(), uint64(txfee))
-			fmt.Printf("wallet created: %s\n", args[0])
+			dagwallet.Wallets[args[0]] = dagwallet.NewWallet(uint32(networkID), blockchainID.LongID(), uint64(txfee))
 		} else {
 			cmd.Help()
 		}
