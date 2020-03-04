@@ -100,10 +100,10 @@ func (p *ProcessManager) StopAllProcesses() (string, error) {
 func (p *ProcessManager) KillProcess(name string) error {
 	if _, ok := p.processes[name]; ok {
 		if !p.processes[name].running {
-			return errors.New("proccess cannot kill: '" + name + "' isn't running.")
+			return errors.New("process cannot kill: '" + name + "' isn't running.")
 		}
 	} else {
-		return errors.New("proccess cannot kill: '" + name + "' doesn't exist.")
+		return errors.New("process cannot kill: '" + name + "' doesn't exist.")
 	}
 	return p.processes[name].Kill()
 }
@@ -136,10 +136,10 @@ func (p *ProcessManager) StartAllProcesses() (string, error) {
 
 // RemoveProcess removes a process from the list of available named processes
 func (p *ProcessManager) RemoveProcess(name string) error {
-	err := p.StopProcess(name)
-	if err != nil {
-		return err
+	if _, ok := p.processes[name]; !ok {
+		return fmt.Errorf("Cannot remove process '%s' because it doesn't exist", name)
 	}
+	p.StopProcess(name)
 	delete(p.processes, name)
 	fmt.Printf("Process %s removed", name)
 	return nil

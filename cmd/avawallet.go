@@ -15,6 +15,7 @@ import (
 
 	"github.com/ava-labs/gecko/snow"
 
+	"github.com/ava-labs/avash/cfg"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	dagwallet "github.com/ava-labs/avash/wallets/dags"
 	"github.com/ava-labs/gecko/ids"
@@ -29,28 +30,33 @@ import (
 
 // AVAWalletCmd represents the avawallet command
 var AVAWalletCmd = &cobra.Command{
-	Use:   "avawallet [operation]",
+	Use:   "avawallet [command]",
 	Short: "Tools for interacting with AVA Payments over the network.",
 	Long: `Tools for interacting with AVA Payments over the network. Using this 
 	command you can create, send, and get the status of a transaction.`,
-	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("avawallet requires an operation. Available: create, addkey, maketx, refresh, remove, send, createkey")
+		cmd.Help()
 	},
 }
 
 // AVAWalletCreateCmd creates a new named wallet
 var AVAWalletCreateCmd = &cobra.Command{
-	Use:   "create [wallet name] [networkID] [subnetID] [txFee]",
+	Use:   "create [wallet name] [networkID] [blockchainID] [txFee]",
 	Short: "Creates a wallet.",
 	Long:  `Creates a wallet persistent for this session.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 4 {
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Printf("invalid blockchainID: %s\n", args[2])
+				} else {
+					fmt.Printf("wallet created: %s\n", args[0])
+				}
+			}()
 			networkID, _ := strconv.ParseUint(args[1], 10, 0)
-			subnetID, _ := ids.ShortFromString(args[2])
+			blockchainID, _ := ids.ShortFromString(args[2])
 			txfee, _ := strconv.ParseUint(args[3], 10, 0)
-			dagwallet.Wallets[args[0]] = dagwallet.NewWallet(uint32(networkID), subnetID.LongID(), uint64(txfee))
-			fmt.Printf("wallet created: %s\n", args[0])
+			dagwallet.Wallets[args[0]] = dagwallet.NewWallet(uint32(networkID), blockchainID.LongID(), uint64(txfee))
 		} else {
 			cmd.Help()
 		}
@@ -109,35 +115,42 @@ var AVAWalletMakeTxCmd = &cobra.Command{
 	Long:  `Creates a signed transaction for an amount to an address. Returns the a string of the transaction.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 3 {
-			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				if amount, err := strconv.ParseUint(args[2], 10, 64); err == nil {
-					fb := formatting.CB58{}
-					fb.FromString(strings.Split(args[1], "-")[1])
-					toAddr, err := ids.ToShortID(fb.Bytes)
-					if err != nil {
-						fmt.Println(err.Error())
-						return
-					}
-					signedTx := w.CreateTx(amount, 0, 1, []ids.ShortID{toAddr})
-					if signedTx != nil {
-						ctx := snow.DefaultContextTest()
-						ctx.NetworkID = w.GetNetworkID()
-						ctx.ChainID = w.GetSubnetID()
-						if err := signedTx.Verify(ctx, 0); err == nil {
-							fb.Bytes = signedTx.Bytes()
-							fmt.Printf("Tx:%s\n", fb.String())
-						} else {
-							fmt.Println("signedTx cannot verify")
-						}
-					} else {
-						fmt.Println("unable to create tx, check UTXO set")
-					}
-				} else {
-					fmt.Printf("amount %s cannot convert to uint64\n", args[2])
-				}
-			} else {
+			w, ok := dagwallet.Wallets[args[0]]
+			if !ok {
 				fmt.Printf("wallet not found: %s\n", args[0])
+				return
 			}
+			amount, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				fmt.Printf("amount %s cannot convert to uint64\n", args[2])
+				return
+			}
+			fb := formatting.CB58{}
+			addr := strings.Split(args[1], "-")
+			if len(addr) < 2 {
+				fmt.Printf("invalid prefixed address: %s\n", args[1])
+				return
+			}
+			fb.FromString(strings.Split(args[1], "-")[1])
+			toAddr, err := ids.ToShortID(fb.Bytes)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			signedTx, err := w.CreateTx(amount, 0, 1, []ids.ShortID{toAddr})
+			if err != nil {
+				fmt.Println("unable to create tx, check UTXO set")
+				return
+			}
+			ctx := snow.DefaultContextTest()
+			ctx.NetworkID = w.GetNetworkID()
+			ctx.ChainID = w.GetSubnetID()
+			if err := signedTx.Verify(ctx, 0); err != nil {
+				fmt.Println("signedTx cannot verify")
+				return
+			}
+			fb.Bytes = signedTx.Bytes()
+			fmt.Printf("Tx:%s\n", fb.String())
 		} else {
 			cmd.Help()
 		}
@@ -315,7 +328,7 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 						AssetID string
 					}{
 						Address: args[1],
-						AssetID: "ava",
+						AssetID: "AVA",
 					})
 					if err != nil {
 						fmt.Printf("error sent address: %s\n", args[1])
@@ -325,13 +338,13 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 						fmt.Printf("rpcClient returned error: %d, %s\n", response.Error.Code, response.Error.Message)
 					} else {
 						var s struct {
-							Balance uint64
+							Balance string
 						}
 						err = response.GetObject(&s)
 						if err != nil {
 							fmt.Printf("error on parsing response: %s\n", err.Error())
 						} else {
-							fmt.Printf("Balance:%d\n", s.Balance)
+							fmt.Printf("Balance: %s\n", s.Balance)
 						}
 					}
 				} else {
@@ -415,8 +428,7 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
 			if wallet, ok := dagwallet.Wallets[args[0]]; ok {
-				pwd, _ := os.Getwd()
-				stashdir := pwd + "/stash"
+				stashdir := cfg.Config.DataDir
 				basename := filepath.Base(args[1])
 				basedir := filepath.Dir(stashdir + "/" + args[1])
 
