@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/gecko/ids"
 	"github.com/ava-labs/gecko/utils/crypto"
 	"github.com/ava-labs/gecko/utils/timer"
@@ -89,7 +90,7 @@ func (w *Wallet) CreateTx(amount uint64, locktime uint64, threshold uint32, dest
 	// Build the transaction
 	tx, err := builder.NewTxFromUTXOs(w.keyChain, w.utxoSet.Utxos, amount, w.txFee, locktime, 1, dests, changeAddr, currentTime)
 	if err != nil {
-		fmt.Println(err)
+		cfg.Config.Log.Error(err.Error())
 	}
 
 	return tx, err

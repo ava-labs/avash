@@ -10,8 +10,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ava-labs/avash/cfg"
 	"github.com/chzyer/readline"
-
 	"github.com/spf13/cobra"
 )
 
@@ -99,7 +99,7 @@ var RootCmd = &cobra.Command{
 // Execute runs the root command for avash
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		cfg.Config.Log.Error(err.Error())
 		os.Exit(1)
 	}
 }

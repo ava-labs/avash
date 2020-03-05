@@ -46,11 +46,12 @@ var AVAWalletCreateCmd = &cobra.Command{
 	Long:  `Creates a wallet persistent for this session.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 4 {
+			log := cfg.Config.Log
 			defer func() {
 				if r := recover(); r != nil {
-					fmt.Printf("invalid blockchainID: %s\n", args[2])
+					log.Error("invalid blockchainID: %s", args[2])
 				} else {
-					fmt.Printf("wallet created: %s\n", args[0])
+					log.Info("wallet created: %s", args[0])
 				}
 			}()
 			networkID, _ := strconv.ParseUint(args[1], 10, 0)
@@ -69,14 +70,15 @@ var AVAWalletNewKeyCmd = &cobra.Command{
 	Short: "Creates a random private key.",
 	Long:  `Creates a random private key.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
 		factory := crypto.FactorySECP256K1R{}
 		if skGen, err := factory.NewPrivateKey(); err == nil {
 			sk := skGen.(*crypto.PrivateKeySECP256K1R)
 			fb := formatting.CB58{}
 			fb.Bytes = sk.Bytes()
-			fmt.Printf("Pk:%s\n", fb.String())
+			log.Info("Pk:%s", fb.String())
 		} else {
-			fmt.Printf("could not create private key\n")
+			log.Error("could not create private key")
 		}
 	},
 }
@@ -88,6 +90,7 @@ var AVAWalletAddKeyCmd = &cobra.Command{
 	Long:  `Adds a private key to a wallet from a b58 string and returns its address. Reminder: refresh the UTXOs after keys are imported.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if w, ok := dagwallet.Wallets[args[0]]; ok {
 				factory := crypto.FactorySECP256K1R{}
 				fb := formatting.CB58{}
@@ -95,12 +98,12 @@ var AVAWalletAddKeyCmd = &cobra.Command{
 				if skGen, err := factory.ToPrivateKey(fb.Bytes); err == nil {
 					sk := skGen.(*crypto.PrivateKeySECP256K1R)
 					w.ImportKey(sk)
-					fmt.Printf("Addr:%s\n", skGen.PublicKey().Address().String())
+					log.Info("Addr:%s", skGen.PublicKey().Address().String())
 				} else {
-					fmt.Printf("unable to add key %s: %s\n", args[1], err.Error())
+					log.Error("unable to add key %s: %s", args[1], err.Error())
 				}
 			} else {
-				fmt.Printf("wallet not found: %s\n", args[0])
+				log.Error("wallet not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -115,42 +118,43 @@ var AVAWalletMakeTxCmd = &cobra.Command{
 	Long:  `Creates a signed transaction for an amount to an address. Returns the a string of the transaction.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 3 {
+			log := cfg.Config.Log
 			w, ok := dagwallet.Wallets[args[0]]
 			if !ok {
-				fmt.Printf("wallet not found: %s\n", args[0])
+				log.Error("wallet not found: %s", args[0])
 				return
 			}
 			amount, err := strconv.ParseUint(args[2], 10, 64)
 			if err != nil {
-				fmt.Printf("amount %s cannot convert to uint64\n", args[2])
+				log.Error("amount %s cannot convert to uint64", args[2])
 				return
 			}
 			fb := formatting.CB58{}
 			addr := strings.Split(args[1], "-")
 			if len(addr) < 2 {
-				fmt.Printf("invalid prefixed address: %s\n", args[1])
+				log.Error("invalid prefixed address: %s", args[1])
 				return
 			}
 			fb.FromString(strings.Split(args[1], "-")[1])
 			toAddr, err := ids.ToShortID(fb.Bytes)
 			if err != nil {
-				fmt.Println(err.Error())
+				log.Error(err.Error())
 				return
 			}
 			signedTx, err := w.CreateTx(amount, 0, 1, []ids.ShortID{toAddr})
 			if err != nil {
-				fmt.Println("unable to create tx, check UTXO set")
+				log.Error("unable to create tx, check UTXO set")
 				return
 			}
 			ctx := snow.DefaultContextTest()
 			ctx.NetworkID = w.GetNetworkID()
 			ctx.ChainID = w.GetSubnetID()
 			if err := signedTx.Verify(ctx, 0); err != nil {
-				fmt.Println("signedTx cannot verify")
+				log.Error("signedTx cannot verify")
 				return
 			}
 			fb.Bytes = signedTx.Bytes()
-			fmt.Printf("Tx:%s\n", fb.String())
+			log.Info("Tx:%s", fb.String())
 		} else {
 			cmd.Help()
 		}
@@ -164,6 +168,7 @@ var AVAWalletRemoveCmd = &cobra.Command{
 	Long:  `Removes a transaction from a wallet's UTXO set.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if w, ok := dagwallet.Wallets[args[0]]; ok {
 				fb := formatting.CB58{}
 				fb.FromString(args[1])
@@ -175,12 +180,12 @@ var AVAWalletRemoveCmd = &cobra.Command{
 						utxoID := in.InputID()
 						w.RemoveUtxo(utxoID)
 					}
-					fmt.Printf("transaction removed: %s\n", args[1])
+					log.Info("transaction removed: %s", args[1])
 				} else {
-					fmt.Printf("cannot unmarshal tx: %s\n", args[1])
+					log.Error("cannot unmarshal tx: %s", args[1])
 				}
 			} else {
-				fmt.Printf("wallet not found: %s\n", args[0])
+				log.Error("wallet not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -195,6 +200,7 @@ var AVAWalletSpendCmd = &cobra.Command{
 	Long:  `Spends a transaction from a wallet's UTXO set.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if w, ok := dagwallet.Wallets[args[0]]; ok {
 				fb := formatting.CB58{}
 				fb.FromString(args[1])
@@ -203,12 +209,12 @@ var AVAWalletSpendCmd = &cobra.Command{
 				tx, err := codec.UnmarshalTx(txBytes)
 				if err == nil {
 					w.SpendTx(tx)
-					fmt.Printf("transaction spent: %s\n", args[1])
+					log.Info("transaction spent: %s", args[1])
 				} else {
-					fmt.Printf("cannot unmarshal tx: %s\n", args[1])
+					log.Error("cannot unmarshal tx: %s", args[1])
 				}
 			} else {
-				fmt.Printf("wallet not found: %s\n", args[0])
+				log.Error("wallet not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -223,6 +229,7 @@ var AVAWalletSendCmd = &cobra.Command{
 	Long:  `Sends a transaction to a node.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
 				var md Metadata
 				metaBytes := []byte(meta)
@@ -235,27 +242,27 @@ var AVAWalletSendCmd = &cobra.Command{
 						Tx: args[1],
 					})
 					if err != nil {
-						fmt.Printf("error sent tx: %s\n", args[1])
-						fmt.Printf("rpcClient returned error: %s\n", err.Error())
+						log.Error("error sent tx: %s", args[1])
+						log.Error("rpcClient returned error: %s", err.Error())
 					} else if response.Error != nil {
-						fmt.Printf("error sent tx: %s\n", args[1])
-						fmt.Printf("rpcClient returned error: %d, %s\n", response.Error.Code, response.Error.Message)
+						log.Error("error sent tx: %s", args[1])
+						log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
 					} else {
 						var s struct {
 							TxID string
 						}
 						err = response.GetObject(&s)
 						if err != nil {
-							fmt.Printf("error on parsing response: %s\n", err.Error())
+							log.Error("error on parsing response: %s", err.Error())
 						} else {
-							fmt.Printf("TxID:%s\n", s.TxID)
+							log.Info("TxID:%s", s.TxID)
 						}
 					}
 				} else {
-					fmt.Printf("unable to unmarshal metadata for node %s: %s\n", args[0], err.Error())
+					log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
 				}
 			} else {
-				fmt.Printf("node not found: %s\n", args[0])
+				log.Error("node not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -270,6 +277,7 @@ var AVAWalletStatusCmd = &cobra.Command{
 	Long:  `Checks the status of a transaction on a node.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
 				var md Metadata
 				metaBytes := []byte(meta)
@@ -282,27 +290,27 @@ var AVAWalletStatusCmd = &cobra.Command{
 						TxID: args[1],
 					})
 					if err != nil {
-						fmt.Printf("error sent txid: %s\n", args[1])
-						fmt.Printf("rpcClient returned error: %s\n", err.Error())
+						log.Error("error sent txid: %s", args[1])
+						log.Error("rpcClient returned error: %s", err.Error())
 					} else if response.Error != nil {
-						fmt.Printf("error sent txid: %s\n", args[1])
-						fmt.Printf("rpcClient returned error: %d, %s\n", response.Error.Code, response.Error.Message)
+						log.Error("error sent txid: %s", args[1])
+						log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
 					} else {
 						var s struct {
 							Status string
 						}
 						err = response.GetObject(&s)
 						if err != nil {
-							fmt.Printf("error on parsing response: %s\n", err.Error())
+							log.Error("error on parsing response: %s", err.Error())
 						} else {
-							fmt.Printf("Status:%s\n", s.Status)
+							log.Info("Status:%s", s.Status)
 						}
 					}
 				} else {
-					fmt.Printf("unable to unmarshal metadata for node %s: %s\n", args[0], err.Error())
+					log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
 				}
 			} else {
-				fmt.Printf("node not found: %s\n", args[0])
+				log.Error("node not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -317,6 +325,7 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 	Long:  `Checks the balance of an address from a node.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
 				var md Metadata
 				metaBytes := []byte(meta)
@@ -331,27 +340,27 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 						AssetID: "AVA",
 					})
 					if err != nil {
-						fmt.Printf("error sent address: %s\n", args[1])
-						fmt.Printf("rpcClient returned error: %s\n", err.Error())
+						log.Error("error sent address: %s", args[1])
+						log.Error("rpcClient returned error: %s", err.Error())
 					} else if response.Error != nil {
-						fmt.Printf("error sent address: %s\n", args[1])
-						fmt.Printf("rpcClient returned error: %d, %s\n", response.Error.Code, response.Error.Message)
+						log.Error("error sent address: %s", args[1])
+						log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
 					} else {
 						var s struct {
 							Balance string
 						}
 						err = response.GetObject(&s)
 						if err != nil {
-							fmt.Printf("error on parsing response: %s\n", err.Error())
+							log.Error("error on parsing response: %s", err.Error())
 						} else {
-							fmt.Printf("Balance: %s\n", s.Balance)
+							log.Info("Balance: %s", s.Balance)
 						}
 					}
 				} else {
-					fmt.Printf("unable to unmarshal metadata for node %s: %s\n", args[0], err.Error())
+					log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
 				}
 			} else {
-				fmt.Printf("node not found: %s\n", args[0])
+				log.Error("node not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -366,6 +375,7 @@ var AVAWalletRefreshCmd = &cobra.Command{
 	Long:  `Refreshes UTXO set from node.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if w, ok := dagwallet.Wallets[args[1]]; ok {
 				if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
 					var md Metadata
@@ -380,16 +390,16 @@ var AVAWalletRefreshCmd = &cobra.Command{
 							Addresses: w.Addresses(),
 						})
 						if err != nil {
-							fmt.Printf("rpcClient returned error: %s\n", err.Error())
+							log.Error("rpcClient returned error: %s", err.Error())
 						} else if response.Error != nil {
-							fmt.Printf("rpcClient returned error: %d, %s\n", response.Error.Code, response.Error.Message)
+							log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
 						} else {
 							var s struct {
 								UTXOs []string
 							}
 							err = response.GetObject(&s)
 							if err != nil {
-								fmt.Printf("error on parsing response: %s\n", err.Error())
+								log.Error("error on parsing response: %s", err.Error())
 							} else {
 								fb := formatting.CB58{}
 								acodec := spdagvm.Codec{}
@@ -398,21 +408,21 @@ var AVAWalletRefreshCmd = &cobra.Command{
 									if utxo, err := acodec.UnmarshalUTXO(fb.Bytes); err == nil {
 										w.AddUtxo(utxo)
 									} else {
-										fmt.Printf("unable to add UTXO: %s\n", aUTXO)
+										log.Error("unable to add UTXO: %s", aUTXO)
 									}
 								}
-								//fmt.Printf("[%s]\n", strings.Join(s.UTXOs, ","))
-								fmt.Printf("utxo set refreshed on wallet %s from node %s\n", args[1], args[0])
+								//fmt.Printf("[%s]", strings.Join(s.UTXOs, ","))
+								log.Info("utxo set refreshed on wallet %s from node %s", args[1], args[0])
 							}
 						}
 					} else {
-						fmt.Printf("unable to unmarshal metadata for node %s: %s\n", args[0], err.Error())
+						log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
 					}
 				} else {
-					fmt.Printf("node not found: %s\n", args[0])
+					log.Error("node not found: %s", args[0])
 				}
 			} else {
-				fmt.Printf("wallet not found: %s\n", args[1])
+				log.Error("wallet not found: %s", args[1])
 			}
 		} else {
 			cmd.Help()
@@ -427,6 +437,7 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 	Long:  `Writes the UTXO set to a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if wallet, ok := dagwallet.Wallets[args[0]]; ok {
 				stashdir := cfg.Config.DataDir
 				basename := filepath.Base(args[1])
@@ -438,15 +449,15 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 
 				if marshalled, err := utxoset.JSON(); err == nil {
 					if err := ioutil.WriteFile(outputfile, marshalled, 0755); err != nil {
-						fmt.Printf("unable to write file: %s - %s\n", string(outputfile), err.Error())
+						log.Error("unable to write file: %s - %s", string(outputfile), err.Error())
 					} else {
-						fmt.Printf("UTXO Set written to: %s\n", outputfile)
+						log.Info("UTXO Set written to: %s", outputfile)
 					}
 				} else {
-					fmt.Printf("unable to marshal: %s\n", err.Error())
+					log.Error("unable to marshal: %s", err.Error())
 				}
 			} else {
-				fmt.Printf("wallet not found: %s\n", args[0])
+				log.Error("wallet not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -461,6 +472,7 @@ var AVAWalletCompareCmd = &cobra.Command{
 	Long:  `Compares the UTXO set between two wallets.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 4 {
+			log := cfg.Config.Log
 			if w1, ok := dagwallet.Wallets[args[0]]; ok {
 				if w2, ok := dagwallet.Wallets[args[1]]; ok {
 					if store, err := AvashVars.Get(args[2]); err == nil {
@@ -469,18 +481,18 @@ var AVAWalletCompareCmd = &cobra.Command{
 						diff := us1.SetDiff(us2)
 						diffByte, err := json.MarshalIndent(diff, "", "    ")
 						if err != nil {
-							fmt.Println("unable to marshal: ", err.Error())
+							log.Error("unable to marshal: %s", err.Error())
 						} else {
 							store.Set(args[3], string(diffByte))
 						}
 					} else {
-						fmt.Println("store not found: " + args[2])
+						log.Error("store not found: " + args[2])
 					}
 				} else {
-					fmt.Printf("wallet not found: %s\n", args[1])
+					log.Error("wallet not found: %s", args[1])
 				}
 			} else {
-				fmt.Printf("wallet not found: %s\n", args[0])
+				log.Error("wallet not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()

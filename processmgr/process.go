@@ -11,6 +11,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
+
+	"github.com/ava-labs/avash/cfg"
 )
 
 // InputHandler is a generic function for handling input from cin
@@ -43,14 +45,16 @@ type Process struct {
 
 // Start begins a new process
 func (p *Process) Start() {
-	fmt.Printf("Starting process %s.\nCommand: %s\n\n", p.name, p.cmd.Args)
+	log := cfg.Config.Log
+	log.Info("Starting process %s.", p.name)
+	log.Info("Command: %s\n", p.cmd.Args)
 	if p.running {
-		fmt.Printf("Process %s is already running\n", p.name)
+		log.Error("Process %s is already running", p.name)
 		return
 	}
 
 	if err := p.cmd.Start(); err != nil {
-		fmt.Println(fmt.Sprintf("Could not start process %s: %s", p.name, err.Error()))
+		log.Error(fmt.Sprintf("Could not start process %s: %s", p.name, err.Error()))
 	}
 
 	p.running = true
@@ -68,26 +72,26 @@ func (p *Process) Start() {
 	for {
 		select {
 		case sp := <-p.stop:
-			fmt.Println("Calling stop() on " + p.name)
+			log.Info("Calling stop() on " + p.name)
 			if sp {
 				if err := p.endProcess(false); err != nil {
-					fmt.Println("SIGINT failed on process: " + p.name)
+					log.Error("SIGINT failed on process: " + p.name)
 					p.stop <- false
 					return
 				}
-				fmt.Println("SIGINT called on process: " + p.name)
+				log.Info("SIGINT called on process: " + p.name)
 				p.stop <- true
 				return
 			}
 		case kl := <-p.kill:
-			fmt.Println("Calling kill() on " + p.name)
+			log.Info("Calling kill() on " + p.name)
 			if kl {
 				if err := p.endProcess(true); err != nil {
-					fmt.Println("SIGTERM failed on process: " + p.name)
+					log.Error("SIGTERM failed on process: " + p.name)
 					p.kill <- false
 					return
 				}
-				fmt.Println("SIGTERM called on process: " + p.name)
+				log.Info("SIGTERM called on process: " + p.name)
 				p.kill <- true
 				return
 			}

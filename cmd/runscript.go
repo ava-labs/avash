@@ -6,7 +6,6 @@ package cmd
 
 import (
 	//"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -16,6 +15,7 @@ import (
 
 	"go.uber.org/multierr"
 
+	"github.com/ava-labs/avash/cfg"
 	"github.com/spf13/cobra"
 	lua "github.com/yuin/gopher-lua"
 )
@@ -27,6 +27,7 @@ var RunScriptCmd = &cobra.Command{
 	Long:  `Runs the script provided in the argument, relative to the present working directory.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 1 {
+			log := cfg.Config.Log
 			L := lua.NewState( /*lua.Options{
 				RegistrySize:        1024 * 20,   // this is the initial size of the registry
 				RegistryMaxSize:     1024 * 8000, // this is the maximum size that the registry can grow to. If set to `0` (the default) then the registry will not auto grow
@@ -48,12 +49,12 @@ var RunScriptCmd = &cobra.Command{
 			//L.SetGlobal("avash_coroutine", L.NewFunction(AvashCoroutine))
 
 			filename := args[0]
-			fmt.Println("RunScript: Running " + filename)
+			log.Info("RunScript: Running " + filename)
 
 			if err := L.DoFile(filename); err != nil {
-				fmt.Println("RunScript: Failed to run " + filename + "\n" + err.Error())
+				log.Error("RunScript: Failed to run " + filename + "\n" + err.Error())
 			} else {
-				fmt.Println("RunScript: Successfully ran " + filename)
+				log.Info("RunScript: Successfully ran " + filename)
 			}
 		} else {
 			cmd.Help()
@@ -114,17 +115,18 @@ func AvashSleepMicro(L *lua.LState) int { /* returns number of results */
 
 // AvashSetVar sets a variable to a string, necessary because `varstore set` can't deal with spaces yet
 func AvashSetVar(L *lua.LState) int {
+	log := cfg.Config.Log
 	varscope := L.ToString(1)
 	varname := L.ToString(2)
 	varvalue := L.ToString(3)
 	if varscope == "" || varname == "" || varvalue == "" {
-		fmt.Println("Error: AvashSetVar provided insufficient number of arguments, expected 3")
+		log.Error("Error: AvashSetVar provided insufficient number of arguments, expected 3")
 		return 0
 	}
 	if store, err := AvashVars.Get(varscope); err == nil {
 		store.Set(varname, varvalue)
 	} else {
-		fmt.Println("Error: AvashSetVar scope not found: " + varscope)
+		log.Error("Error: AvashSetVar scope not found: " + varscope)
 	}
 	return 0
 }
@@ -141,10 +143,11 @@ func AvashCall(L *lua.LState) int { /* returns number of results */
 	captureDone := capture()
 	cmd.Run(cmd, flags)
 	capturedOutout, err := captureDone()
+	log := cfg.Config.Log
 	if err != nil {
 		L.Push(lua.LString("Error: Unable to execute in capture: " + err.Error()))
-		fmt.Println("Error: Unable to execute in capture: " + err.Error())
-		fmt.Println("Captured Output: " + capturedOutout)
+		log.Error("Error: Unable to execute in capture: " + err.Error())
+		log.Error("Captured Output: " + capturedOutout)
 		return 1
 	}
 	L.Push(lua.LString(strings.TrimSpace(capturedOutout))) /* push result */
