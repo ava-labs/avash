@@ -5,10 +5,10 @@ Copyright © 2019 AVA Labs <collin@avalabs.org>
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
+	"github.com/ava-labs/avash/cfg"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -45,12 +45,13 @@ var PMMetadataCmd = &cobra.Command{
 	Long:  `Prints the metadata associated with the node name.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 1 && args[0] != "" {
+			log := cfg.Config.Log
 			name := args[0]
 			metadata, err := pmgr.ProcManager.Metadata(name)
 			if err != nil {
-				fmt.Println(err)
+				log.Error(err.Error())
 			}
-			fmt.Println(metadata)
+			log.Info(metadata)
 		} else {
 			cmd.Help()
 		}
@@ -65,6 +66,7 @@ var PMStartCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 1 && args[0] != "" {
+			log := cfg.Config.Log
 			name := args[0]
 			delay := time.Duration(0)
 			if len(args) >= 2 {
@@ -74,11 +76,11 @@ var PMStartCmd = &cobra.Command{
 			}
 			timerv := time.NewTimer(delay * time.Second)
 			go func() {
-				fmt.Printf("process will start in %ds: %s\n", int(delay), name)
+				log.Info("process will start in %ds: %s", int(delay), name)
 				<-timerv.C
 				err := pmgr.ProcManager.StartProcess(name)
 				if err != nil {
-					fmt.Println(err)
+					log.Error(err.Error())
 				}
 			}()
 		} else {
@@ -94,6 +96,7 @@ var PMStopCmd = &cobra.Command{
 	Long:  `Stops the process named if currently running.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 1 && args[0] != "" {
+			log := cfg.Config.Log
 			name := args[0]
 			delay := time.Duration(0)
 			if len(args) >= 2 {
@@ -103,11 +106,11 @@ var PMStopCmd = &cobra.Command{
 			}
 			timerv := time.NewTimer(delay * time.Second)
 			go func() {
-				fmt.Printf("process will stop in %ds: %s\n", int(delay), name)
+				log.Info("process will stop in %ds: %s", int(delay), name)
 				<-timerv.C
 				err := pmgr.ProcManager.StopProcess(name)
 				if err != nil {
-					fmt.Println(err)
+					log.Error(err.Error())
 				}
 			}()
 		} else {
@@ -123,6 +126,7 @@ var PMKillCmd = &cobra.Command{
 	Long:  `Kills the process named if currently running.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 1 && args[0] != "" {
+			log := cfg.Config.Log
 			name := args[0]
 			delay := time.Duration(0)
 			if len(args) >= 2 {
@@ -132,11 +136,11 @@ var PMKillCmd = &cobra.Command{
 			}
 			timerv := time.NewTimer(delay * time.Second)
 			go func() {
-				fmt.Printf("process will stop in %ds: %s\n", int(delay), name)
+				log.Info("process will stop in %ds: %s", int(delay), name)
 				<-timerv.C
 				err := pmgr.ProcManager.KillProcess(name)
 				if err != nil {
-					fmt.Println(err)
+					log.Error(err.Error())
 				}
 			}()
 		} else {
@@ -151,6 +155,7 @@ var PMKillAllCmd = &cobra.Command{
 	Short: "Kills all processes if currently running.",
 	Long:  `Kills all processes if currently running.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
 		delay := time.Duration(0)
 		if len(args) >= 1 {
 			if v, e := strconv.ParseInt(args[0], 10, 64); e == nil && v > 0 {
@@ -159,11 +164,11 @@ var PMKillAllCmd = &cobra.Command{
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			fmt.Printf("all process will stop in %ds\n", int(delay))
+			log.Info("all process will stop in %ds", int(delay))
 			<-timerv.C
 			errname, err := pmgr.ProcManager.KillAllProcesses()
 			if err != nil {
-				fmt.Println("Error on process '" + errname + "': " + err.Error())
+				log.Error("Error on process '" + errname + "': " + err.Error())
 			}
 		}()
 	},
@@ -175,6 +180,7 @@ var PMStopAllCmd = &cobra.Command{
 	Short: "Stops all processes if currently running.",
 	Long:  `Stops all processes if currently running.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
 		delay := time.Duration(0)
 		if len(args) >= 1 {
 			if v, e := strconv.ParseInt(args[0], 10, 64); e == nil && v > 0 {
@@ -183,11 +189,11 @@ var PMStopAllCmd = &cobra.Command{
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			fmt.Printf("all process will stop in %ds\n", int(delay))
+			log.Info("all process will stop in %ds", int(delay))
 			<-timerv.C
 			errname, err := pmgr.ProcManager.StopAllProcesses()
 			if err != nil {
-				fmt.Println("Error on process '" + errname + "': " + err.Error())
+				log.Error("Error on process '" + errname + "': " + err.Error())
 			}
 		}()
 	},
@@ -199,6 +205,7 @@ var PMStartAllCmd = &cobra.Command{
 	Short: "Starts all processes if currently stopped.",
 	Long:  `Starts all processes if currently stopped.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
 		delay := time.Duration(0)
 		if len(args) >= 1 {
 			if v, e := strconv.ParseInt(args[0], 10, 64); e == nil && v > 0 {
@@ -207,11 +214,11 @@ var PMStartAllCmd = &cobra.Command{
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			fmt.Printf("All processes will start in %ds\n", int(delay))
+			log.Info("All processes will start in %ds", int(delay))
 			<-timerv.C
 			errname, err := pmgr.ProcManager.StartAllProcesses()
 			if err != nil {
-				fmt.Println("Error on process '" + errname + "': " + err.Error())
+				log.Error("Error on process '" + errname + "': " + err.Error())
 			}
 		}()
 	},
@@ -226,6 +233,7 @@ var PMRemoveCmd = &cobra.Command{
 		if !(len(args) >= 1 && args[0] != "") {
 			cmd.Help()
 		}
+		log := cfg.Config.Log
 		name := args[0]
 		delay := time.Duration(0)
 		if len(args) >= 2 {
@@ -235,11 +243,11 @@ var PMRemoveCmd = &cobra.Command{
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			fmt.Printf("process removed in %ds: %s\n", int(delay), name)
+			log.Info("process removed in %ds: %s", int(delay), name)
 			<-timerv.C
 			err := pmgr.ProcManager.RemoveProcess(name)
 			if err != nil {
-				fmt.Println(err)
+				log.Error(err.Error())
 			}
 		}()
 	},

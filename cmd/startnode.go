@@ -45,14 +45,14 @@ var StartnodeCmd = &cobra.Command{
 			cmd.Help()
 			return
 		}
-
+		log := cfg.Config.Log
 		name := args[0]
 
 		datadir := cfg.Config.DataDir
 		basename := sanitize.BaseName(name)
 		datapath := datadir + "/" + basename
 		if basename == "" {
-			fmt.Println("Process name can't be empty")
+			log.Error("Process name can't be empty")
 			return
 		}
 		f := cmd.Flags()
@@ -64,7 +64,7 @@ var StartnodeCmd = &cobra.Command{
 
 		err := validateConsensusArgs(k, alpha, beta1, beta2)
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err.Error())
 			return
 		}
 
@@ -81,11 +81,11 @@ var StartnodeCmd = &cobra.Command{
 		}
 		err = pmgr.ProcManager.AddProcess(avalocation, "ava node", args, name, metadata, nil, nil, nil)
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err.Error())
 			return
 		}
 		pmgr.ProcManager.StartProcess(name)
-		fmt.Printf("Created process %s\n", name)
+		log.Info("Created process %s", name)
 	},
 }
 
@@ -288,7 +288,7 @@ func init() {
 	StartnodeCmd.Flags().Bool("db-enabled", true, "Turn on persistent storage.")
 	StartnodeCmd.Flags().String("db-dir", "db1", "Database directory for Ava state.")
 
-	StartnodeCmd.Flags().String("log-level", "all", "Specify the log level. Should be one of {all, debug, info, warn, error, fatal, off}")
+	StartnodeCmd.Flags().String("log-level", "verbo", "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().String("log-dir", "logs", "Name of directory for the node's logging.")
 
 	StartnodeCmd.Flags().Int("snow-avalanche-batch-size", 30, "Number of operations to batch in each new vertex.")

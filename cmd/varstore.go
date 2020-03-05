@@ -92,7 +92,7 @@ var VarStoreCmd = &cobra.Command{
 	placed into these stores. Variable assigment and update is often managed by avash commands.`,
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("varstore requires an operation. Available: create, list, print, set")
+		cmd.Help()
 	},
 }
 
@@ -104,11 +104,12 @@ var VarStoreCreateCmd = &cobra.Command{
 	it prints "store created".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 1 {
+			log := cfg.Config.Log
 			store := args[0]
 			if err := AvashVars.Create(store); err == nil {
-				fmt.Println("store created: " + store)
+				log.Info("store created: " + store)
 			} else {
-				fmt.Println("name conflict: " + store)
+				log.Error("name conflict: " + store)
 			}
 		} else {
 			cmd.Help()
@@ -124,19 +125,20 @@ var VarStoreListCmd = &cobra.Command{
 	If the store exists, it will print a new-line separated string of variables in 
 	this store. If the store does not exist, it will print "store not found".`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
 		results := []string{}
 		if len(args) >= 1 {
 			if store, err := AvashVars.Get(args[0]); err == nil {
 				results = store.List()
 			} else {
-				fmt.Println("store not found:" + args[0])
+				log.Error("store not found:" + args[0])
 			}
 		} else {
 			results = AvashVars.List()
 		}
 		radix.Sort(results)
 		for _, v := range results {
-			fmt.Println(v)
+			log.Info(v)
 		}
 	},
 }
@@ -148,14 +150,15 @@ var VarStorePrintCmd = &cobra.Command{
 	Long:  `Prints a variable that is within the store. If it doesn't exist, it prints the default JSON string "{}".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if store, err := AvashVars.Get(args[0]); err == nil {
 				if v, e := store.Get(args[1]); e == nil {
-					fmt.Println(v)
+					log.Info(v)
 				} else {
-					fmt.Println("{}")
+					log.Info("{}")
 				}
 			} else {
-				fmt.Println("{}")
+				log.Info("{}")
 			}
 		} else {
 			cmd.Help()
@@ -170,11 +173,12 @@ var VarStoreSetCmd = &cobra.Command{
 	Long:  `Sets a simple variable that within the store. Store must exist. May not have spaces, even quoted. Existing values are overwritten.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 3 {
+			log := cfg.Config.Log
 			if store, err := AvashVars.Get(args[0]); err == nil {
 				store.Set(args[1], args[2])
-				fmt.Printf("variable set: %q.%q=%q\n", args[0], args[1], args[2])
+				log.Info("variable set: %q.%q=%q", args[0], args[1], args[2])
 			} else {
-				fmt.Println("store not found: " + args[0])
+				log.Error("store not found: " + args[0])
 			}
 		} else {
 			cmd.Help()
@@ -189,6 +193,7 @@ var VarStoreStoreDumpCmd = &cobra.Command{
 	Long:  `Writes the store to a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 2 {
+			log := cfg.Config.Log
 			if store, err := AvashVars.Get(args[0]); err == nil {
 				stashdir := cfg.Config.DataDir
 				basename := filepath.Base(args[1])
@@ -199,15 +204,15 @@ var VarStoreStoreDumpCmd = &cobra.Command{
 
 				if marshalled, err := store.JSON(); err == nil {
 					if err := ioutil.WriteFile(outputfile, marshalled, 0755); err != nil {
-						fmt.Printf("unable to write file: %s - %s\n", string(outputfile), err.Error())
+						log.Error("unable to write file: %s - %s", string(outputfile), err.Error())
 					} else {
-						fmt.Printf("VarStore written to: %s\n", outputfile)
+						log.Info("VarStore written to: %s", outputfile)
 					}
 				} else {
-					fmt.Printf("unable to marshal: %s\n", err.Error())
+					log.Error("unable to marshal: %s", err.Error())
 				}
 			} else {
-				fmt.Printf("store not found: %s\n", args[0])
+				log.Error("store not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()
@@ -222,6 +227,7 @@ var VarStoreVarDumpCmd = &cobra.Command{
 	Long:  `Writes the variable set to a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) >= 3 {
+			log := cfg.Config.Log
 			if store, err := AvashVars.Get(args[0]); err == nil {
 				if variable, e := store.Get(args[1]); e == nil {
 					stashdir := cfg.Config.DataDir
@@ -231,15 +237,15 @@ var VarStoreVarDumpCmd = &cobra.Command{
 					os.MkdirAll(basedir, os.ModePerm)
 					outputfile := basedir + "/" + basename
 					if err := ioutil.WriteFile(outputfile, []byte(variable), 0755); err != nil {
-						fmt.Printf("unable to write file: %s - %s\n", string(outputfile), err.Error())
+						log.Error("unable to write file: %s - %s", string(outputfile), err.Error())
 					} else {
-						fmt.Printf("VarStore written to: %s\n", outputfile)
+						log.Info("VarStore written to: %s", outputfile)
 					}
 				} else {
-					fmt.Printf("variable not found: %s -> %s\n", args[0], args[1])
+					log.Error("variable not found: %s -> %s", args[0], args[1])
 				}
 			} else {
-				fmt.Printf("store not found: %s\n", args[0])
+				log.Error("store not found: %s", args[0])
 			}
 		} else {
 			cmd.Help()

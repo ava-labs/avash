@@ -5,8 +5,6 @@ Copyright © 2019 AVA Labs <collin@avalabs.org>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/utils/logging"
 	"github.com/spf13/cobra"
@@ -20,18 +18,20 @@ var SetOutputCmd = &cobra.Command{
 	Run:	func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {
 			cmd.Help()
+			return
 		}
+		log := cfg.Config.Log
 		output, outErr := logging.ToOutput(args[0])
 		level, lvlErr := logging.ToLevel(args[1])
 		if outErr != nil {
-			fmt.Println(outErr)
+			log.Error(outErr.Error())
 			return
 		}
 		if lvlErr != nil {
-			fmt.Println(lvlErr)
+			log.Error(lvlErr.Error())
 			return
 		}
-		cfg.Config.Log.SetLevel(output, level)
-		fmt.Printf("%s log level set: %s", output.String(), level.String())
+		log.SetLevel(output, level)
+		log.Info("%s log level set: %s", output.String(), level.String())
 	},
 }

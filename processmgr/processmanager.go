@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/ava-labs/avash/cfg"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -88,7 +89,7 @@ func (p *ProcessManager) StopAllProcesses() (string, error) {
 		if p.processes[name].running {
 			err := p.StopProcess(name)
 			if err != nil {
-				fmt.Printf("Error while stopping process '%s': %s", name, err)
+				cfg.Config.Log.Error("Error while stopping process '%s': %s", name, err)
 				return name, err
 			}
 		}
@@ -141,7 +142,7 @@ func (p *ProcessManager) RemoveProcess(name string) error {
 	}
 	p.StopProcess(name)
 	delete(p.processes, name)
-	fmt.Printf("Process %s removed", name)
+	cfg.Config.Log.Info("Process %s removed", name)
 	return nil
 }
 

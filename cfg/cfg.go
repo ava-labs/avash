@@ -101,12 +101,13 @@ func makeLogConfig(config configFileLog, dataDir string) logging.Config {
 		config.Dir = defaultLogDir
 	}
 	return logging.Config{
-		RotationInterval:  24 * time.Hour,
-		FileSize:          1 << 23, // 8 MB
-		RotationSize:      7,
-		FlushSize:         1,
-		DisplayLevel:      terminalLvl,
-		LogLevel:          logFileLvl,
-		Directory:         config.Dir,
+		RotationInterval:            24 * time.Hour,
+		FileSize:                    1 << 23, // 8 MB
+		RotationSize:                7,
+		FlushSize:                   1,
+		DisableContextualDisplaying: true,
+		DisplayLevel:                terminalLvl,
+		LogLevel:                    logFileLvl,
+		Directory:                   config.Dir,
 	}
 }
