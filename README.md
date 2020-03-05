@@ -6,7 +6,7 @@ Avash opens a shell environment of its own. This environment is completely wiped
 
 Avash provides the ability to run Lua scripts which can execute a sequence of shell commands in Avash. This allows for automation of regular tasks. For instance, different network configurations can be programmed into a lua script and deployed as-needed, allowing for rapid tests against various network types.
 
-## Intallation
+## Installation
 
 ### Requirements
 
@@ -23,6 +23,8 @@ Avash provides the ability to run Lua scripts which can execute a sequence of sh
  6. `cp example.avash.yaml ~/.avash.yaml`
  7. `vi ~/.avash.yaml`
  8. Edit to reference the location of AVA noted in #2
+
+For full documentation of Avash configuration and commands, please see the official [AVA Documentation](https://docs.ava.network/v1.0/en/tools/avash/).
 
 ## Using Avash
 
@@ -48,6 +50,7 @@ help procmanager start
  * help - Help about any command.
  * procmanager - Access the process manager for the avash client.
  * runscript - Runs the provided script.
+ * setoutput - Sets shell log output.
  * startnode - Starts a node process and gives it a name.
  * varstore - Tools for creating variable stores and printing variables within them.
 
