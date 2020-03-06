@@ -168,7 +168,7 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 	}
 
 	// IPC
-	ipc, _ := f.GetBool("ipc-enabled")
+	ipc, _ := f.GetBool("api-ipcs-enabled")
 	ipcEnabled := "true"
 	if ipc == false {
 		ipcEnabled = "false"
@@ -225,7 +225,7 @@ func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
 		"--network-id=" + networkid,
 		"--xput-server-port=" + strconv.FormatUint(uint64(rp), 10),
 		"--signature-verification-enabled=" + sigverenabled,
-		"--ipc-enabled=" + ipcEnabled,
+		"--api-ipcs-enabled=" + ipcEnabled,
 		"--http-port=" + strconv.FormatUint(uint64(hp), 10),
 		"--http-tls-enabled=" + httptlsenabled,
 		"--http-tls-cert-file=" + httptlscertparam,
@@ -271,11 +271,11 @@ func init() {
 	StartnodeCmd.Flags().Bool("assertions-enabled", true, "Turn on assertion execution.")
 	StartnodeCmd.Flags().Uint("ava-tx-fee", 0, "Ava transaction fee, in $nAva.")
 
+	StartnodeCmd.Flags().Bool("api-ipcs-enabled", true, "Turn on IPC.")
 	StartnodeCmd.Flags().String("public-ip", "127.0.0.1", "Public IP of this node.")
 	StartnodeCmd.Flags().String("network-id", "12345", "Network ID this node will connect to.")
 	StartnodeCmd.Flags().Uint("xput-server-port", 9652, "Port of the deprecated throughput test server.")
 	StartnodeCmd.Flags().Bool("signature-verification-enabled", true, "Turn on signature verification.")
-	StartnodeCmd.Flags().Bool("ipc-enabled", true, "Turn on IPC.")
 
 	StartnodeCmd.Flags().Uint("http-port", 9650, "Port of the HTTP server.")
 	StartnodeCmd.Flags().Bool("http-tls-enabled", false, "Upgrade the HTTP server to HTTPS.")
