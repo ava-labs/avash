@@ -51,7 +51,6 @@ func (sh *Shell) ShellLoop() {
 	}
 	rln, err := readline.NewEx(&readline.Config{
 		Prompt:         "avash> ",
-		UniqueEditLine: false,
 	})
 	sh.rl = rln
 	if err != nil {
@@ -89,7 +88,8 @@ var RootCmd = &cobra.Command{
 	Long:  "A shell environment for launching and interacting with multiple AVA nodes.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
-			fmt.Println()
+			fmt.Println() // prints error response
+			return
 		}
 		AvaShell.root = cmd
 		AvaShell.ShellLoop()

@@ -67,7 +67,9 @@ func (p *ProcessManager) StartProcess(name string) error {
 		return fmt.Errorf("Proccess %s is already running", name)
 	}
 	p.processes[name].cmd = exec.Command(p.processes[name].cmdstr, p.processes[name].args...)
-	go p.processes[name].Start()
+	done := make(chan bool)
+	go p.processes[name].Start(done)
+	<-done
 	return nil
 }
 

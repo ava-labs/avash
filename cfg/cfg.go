@@ -61,6 +61,11 @@ func InitConfig() {
 		os.Exit(1)
 	}
 
+	if _, err := os.Stat(config.AvaLocation); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	// Set default `datadir` if missing
 	if config.DataDir == "" {
 		wd, _ := os.Getwd()
@@ -85,6 +90,7 @@ func InitConfig() {
 		DataDir:		config.DataDir,
 		Log:			*log,
 	}
+	Config.Log.Info("Avash successfully configured.")
 }
 
 func makeLogConfig(config configFileLog, dataDir string) logging.Config {

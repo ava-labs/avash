@@ -72,11 +72,11 @@ var PMStartCmd = &cobra.Command{
 			if len(args) >= 2 {
 				if v, e := strconv.ParseInt(args[1], 10, 64); e == nil && v > 0 {
 					delay = time.Duration(v)
+					log.Info("process will start in %ds: %s", int(delay), name)
 				}
 			}
 			timerv := time.NewTimer(delay * time.Second)
 			go func() {
-				log.Info("process will start in %ds: %s", int(delay), name)
 				<-timerv.C
 				err := pmgr.ProcManager.StartProcess(name)
 				if err != nil {
@@ -102,11 +102,11 @@ var PMStopCmd = &cobra.Command{
 			if len(args) >= 2 {
 				if v, e := strconv.ParseInt(args[1], 10, 64); e == nil && v > 0 {
 					delay = time.Duration(v)
+					log.Info("process will stop in %ds: %s", int(delay), name)
 				}
 			}
 			timerv := time.NewTimer(delay * time.Second)
 			go func() {
-				log.Info("process will stop in %ds: %s", int(delay), name)
 				<-timerv.C
 				err := pmgr.ProcManager.StopProcess(name)
 				if err != nil {
@@ -132,11 +132,11 @@ var PMKillCmd = &cobra.Command{
 			if len(args) >= 2 {
 				if v, e := strconv.ParseInt(args[1], 10, 64); e == nil && v > 0 {
 					delay = time.Duration(v)
+					log.Info("process will stop in %ds: %s", int(delay), name)
 				}
 			}
 			timerv := time.NewTimer(delay * time.Second)
 			go func() {
-				log.Info("process will stop in %ds: %s", int(delay), name)
 				<-timerv.C
 				err := pmgr.ProcManager.KillProcess(name)
 				if err != nil {
@@ -160,11 +160,11 @@ var PMKillAllCmd = &cobra.Command{
 		if len(args) >= 1 {
 			if v, e := strconv.ParseInt(args[0], 10, 64); e == nil && v > 0 {
 				delay = time.Duration(v)
+				log.Info("all processes will be killed in %ds", int(delay))
 			}
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			log.Info("all process will stop in %ds", int(delay))
 			<-timerv.C
 			errname, err := pmgr.ProcManager.KillAllProcesses()
 			if err != nil {
@@ -185,11 +185,11 @@ var PMStopAllCmd = &cobra.Command{
 		if len(args) >= 1 {
 			if v, e := strconv.ParseInt(args[0], 10, 64); e == nil && v > 0 {
 				delay = time.Duration(v)
+				log.Info("all processes will stop in %ds", int(delay))
 			}
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			log.Info("all process will stop in %ds", int(delay))
 			<-timerv.C
 			errname, err := pmgr.ProcManager.StopAllProcesses()
 			if err != nil {
@@ -210,11 +210,11 @@ var PMStartAllCmd = &cobra.Command{
 		if len(args) >= 1 {
 			if v, e := strconv.ParseInt(args[0], 10, 64); e == nil && v > 0 {
 				delay = time.Duration(v)
+				log.Info("all processes will start in %ds", int(delay))
 			}
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			log.Info("All processes will start in %ds", int(delay))
 			<-timerv.C
 			errname, err := pmgr.ProcManager.StartAllProcesses()
 			if err != nil {
@@ -239,11 +239,11 @@ var PMRemoveCmd = &cobra.Command{
 		if len(args) >= 2 {
 			if v, e := strconv.ParseInt(args[1], 10, 64); e == nil && v > 0 {
 				delay = time.Duration(v)
+				log.Info("process will be removed in %ds: %s", int(delay), name)
 			}
 		}
 		timerv := time.NewTimer(delay * time.Second)
 		go func() {
-			log.Info("process removed in %ds: %s", int(delay), name)
 			<-timerv.C
 			err := pmgr.ProcManager.RemoveProcess(name)
 			if err != nil {
