@@ -44,9 +44,9 @@ type Process struct {
 }
 
 // Start begins a new process
-func (p *Process) Start() {
+func (p *Process) Start(done chan bool) {
 	log := cfg.Config.Log
-	log.Info("Starting process %s.", p.name)
+	log.Info("\rStarting process %s.", p.name)
 	log.Info("Command: %s\n", p.cmd.Args)
 	if p.running {
 		log.Error("Process %s is already running", p.name)
@@ -57,6 +57,7 @@ func (p *Process) Start() {
 		log.Error(fmt.Sprintf("Could not start process %s: %s", p.name, err.Error()))
 	}
 
+	done <- true
 	p.running = true
 
 	closegen := func() {
@@ -72,26 +73,26 @@ func (p *Process) Start() {
 	for {
 		select {
 		case sp := <-p.stop:
-			log.Info("Calling stop() on " + p.name)
+			log.Info("\rCalling stop() on %s", p.name)
 			if sp {
 				if err := p.endProcess(false); err != nil {
-					log.Error("SIGINT failed on process: " + p.name)
+					log.Error("SIGINT failed on process: %s", p.name)
 					p.stop <- false
 					return
 				}
-				log.Info("SIGINT called on process: " + p.name)
+				log.Info("SIGINT called on process: %s", p.name)
 				p.stop <- true
 				return
 			}
 		case kl := <-p.kill:
-			log.Info("Calling kill() on " + p.name)
+			log.Info("\rCalling kill() on %s.", p.name)
 			if kl {
 				if err := p.endProcess(true); err != nil {
-					log.Error("SIGTERM failed on process: " + p.name)
+					log.Error("SIGTERM failed on process: %s", p.name)
 					p.kill <- false
 					return
 				}
-				log.Info("SIGTERM called on process: " + p.name)
+				log.Info("SIGTERM called on process: %s", p.name)
 				p.kill <- true
 				return
 			}
