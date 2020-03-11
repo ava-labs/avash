@@ -381,58 +381,63 @@ var AVAWalletRefreshCmd = &cobra.Command{
 	Short: "Refreshes UTXO set from node.",
 	Long:  `Refreshes UTXO set from node.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if w, ok := dagwallet.Wallets[args[1]]; ok {
-				if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
-					var md Metadata
-					metaBytes := []byte(meta)
-					if err := json.Unmarshal(metaBytes, &md); err == nil {
-						jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
-						rpcClient := jsonrpc.NewClient(jrpcloc)
-
-						response, err := rpcClient.Call("ava.getUTXOs", struct {
-							Addresses []string
-						}{
-							Addresses: w.Addresses(),
-						})
-						if err != nil {
-							log.Error("rpcClient returned error: %s", err.Error())
-						} else if response.Error != nil {
-							log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
-						} else {
-							var s struct {
-								UTXOs []string
-							}
-							err = response.GetObject(&s)
-							if err != nil {
-								log.Error("error on parsing response: %s", err.Error())
-							} else {
-								fb := formatting.CB58{}
-								acodec := spdagvm.Codec{}
-								for _, aUTXO := range s.UTXOs {
-									fb.FromString(aUTXO)
-									if utxo, err := acodec.UnmarshalUTXO(fb.Bytes); err == nil {
-										w.AddUtxo(utxo)
-									} else {
-										log.Error("unable to add UTXO: %s", aUTXO)
-									}
-								}
-								//fmt.Printf("[%s]", strings.Join(s.UTXOs, ","))
-								log.Info("utxo set refreshed on wallet %s from node %s", args[1], args[0])
-							}
-						}
-					} else {
-						log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
-					}
-				} else {
-					log.Error("node not found: %s", args[0])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[1])
-			}
-		} else {
+		if len(args) < 2 {
 			cmd.Help()
+			return
+		}
+
+		log := cfg.Config.Log
+		w, ok := dagwallet.Wallets[args[1]]; if !ok {
+			log.Error("wallet not found: %s", args[1])
+			return
+		}
+
+		meta, err := pmgr.ProcManager.Metadata(args[0]); if err != nil {
+			log.Error("node not found: %s", args[0])
+			return
+		}
+
+		var md Metadata
+		metaBytes := []byte(meta)
+		err = json.Unmarshal(metaBytes, &md); if err != nil {
+			log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
+			return
+		}
+
+		jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
+		rpcClient := jsonrpc.NewClient(jrpcloc)
+
+		response, err := rpcClient.Call("ava.getUTXOs", struct {
+			Addresses []string
+		}{
+			Addresses: w.Addresses(),
+		})
+
+		if err != nil {
+			log.Error("rpcClient returned error: %s", err.Error())
+		} else if response.Error != nil {
+			log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
+		} else {
+			var s struct {
+				UTXOs []string
+			}
+			err = response.GetObject(&s)
+			if err != nil {
+				log.Error("error on parsing response: %s", err.Error())
+			} else {
+				fb := formatting.CB58{}
+				acodec := spdagvm.Codec{}
+				for _, aUTXO := range s.UTXOs {
+					fb.FromString(aUTXO)
+					if utxo, err := acodec.UnmarshalUTXO(fb.Bytes); err == nil {
+						w.AddUtxo(utxo)
+					} else {
+						log.Error("unable to add UTXO: %s", aUTXO)
+					}
+				}
+				//fmt.Printf("[%s]", strings.Join(s.UTXOs, ","))
+				log.Info("utxo set refreshed on wallet %s from node %s", args[1], args[0])
+			}
 		}
 	},
 }
