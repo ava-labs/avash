@@ -485,31 +485,35 @@ var AVAWalletCompareCmd = &cobra.Command{
 	Short: "Compares the UTXO set between two wallets.",
 	Long:  `Compares the UTXO set between two wallets.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 4 {
-			log := cfg.Config.Log
-			if w1, ok := dagwallet.Wallets[args[0]]; ok {
-				if w2, ok := dagwallet.Wallets[args[1]]; ok {
-					if store, err := AvashVars.Get(args[2]); err == nil {
-						us1 := w1.GetUtxos()
-						us2 := w2.GetUtxos()
-						diff := us1.SetDiff(us2)
-						diffByte, err := json.MarshalIndent(diff, "", "    ")
-						if err != nil {
-							log.Error("unable to marshal: %s", err.Error())
-						} else {
-							store.Set(args[3], string(diffByte))
-						}
-					} else {
-						log.Error("store not found: " + args[2])
-					}
-				} else {
-					log.Error("wallet not found: %s", args[1])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[0])
-			}
-		} else {
+		if len(args) < 4 {
 			cmd.Help()
+			return
+		}
+
+		log := cfg.Config.Log
+		w1, ok := dagwallet.Wallets[args[0]]; if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
+
+		w2, ok := dagwallet.Wallets[args[1]]; if !ok {
+			log.Error("wallet not found: %s", args[1])
+			return
+		}
+
+		store, err := AvashVars.Get(args[2]); if err != nil {
+			log.Error("store not found: " + args[2])
+			return
+		}
+
+		us1 := w1.GetUtxos()
+		us2 := w2.GetUtxos()
+		diff := us1.SetDiff(us2)
+		diffByte, err := json.MarshalIndent(diff, "", "    ")
+		if err != nil {
+			log.Error("unable to marshal: %s", err.Error())
+		} else {
+			store.Set(args[3], string(diffByte))
 		}
 	},
 }
