@@ -167,29 +167,33 @@ var AVAWalletRemoveCmd = &cobra.Command{
 	Short: "Removes a transaction from a wallet's UTXO set.",
 	Long:  `Removes a transaction from a wallet's UTXO set.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				fb := formatting.CB58{}
-				fb.FromString(args[1])
-				txBytes := fb.Bytes
-				codec := spdagvm.Codec{}
-				tx, err := codec.UnmarshalTx(txBytes)
-				if err == nil {
-					for _, in := range tx.Ins() {
-						utxoID := in.InputID()
-						w.RemoveUtxo(utxoID)
-					}
-					log.Info("transaction removed: %s", args[1])
-				} else {
-					log.Error("cannot unmarshal tx: %s", args[1])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[0])
-			}
-		} else {
+		if len(args) < 2 {
 			cmd.Help()
+			return
 		}
+
+		log := cfg.Config.Log
+		w, ok := dagwallet.Wallets[args[0]]; if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
+
+		fb := formatting.CB58{}
+		fb.FromString(args[1])
+		txBytes := fb.Bytes
+		codec := spdagvm.Codec{}
+		tx, err := codec.UnmarshalTx(txBytes)
+		if err != nil {
+			log.Error("cannot unmarshal tx: %s", args[1])
+			return
+		}
+
+		for _, in := range tx.Ins() {
+			utxoID := in.InputID()
+			w.RemoveUtxo(utxoID)
+		}
+
+		log.Info("transaction removed: %s", args[1])
 	},
 }
 
@@ -199,26 +203,29 @@ var AVAWalletSpendCmd = &cobra.Command{
 	Short: "Spends a transaction from a wallet's UTXO set.",
 	Long:  `Spends a transaction from a wallet's UTXO set.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				fb := formatting.CB58{}
-				fb.FromString(args[1])
-				txBytes := fb.Bytes
-				codec := spdagvm.Codec{}
-				tx, err := codec.UnmarshalTx(txBytes)
-				if err == nil {
-					w.SpendTx(tx)
-					log.Info("transaction spent: %s", args[1])
-				} else {
-					log.Error("cannot unmarshal tx: %s", args[1])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[0])
-			}
-		} else {
+		if len(args) < 2 {
 			cmd.Help()
+			return
 		}
+
+		log := cfg.Config.Log
+		w, ok := dagwallet.Wallets[args[0]]; if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
+
+		fb := formatting.CB58{}
+		fb.FromString(args[1])
+		txBytes := fb.Bytes
+		codec := spdagvm.Codec{}
+		tx, err := codec.UnmarshalTx(txBytes)
+		if err != nil {
+			log.Error("cannot unmarshal tx: %s", args[1])
+			return
+		}
+
+		w.SpendTx(tx)
+		log.Info("transaction spent: %s", args[1])
 	},
 }
 
