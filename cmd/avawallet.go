@@ -173,7 +173,8 @@ var AVAWalletRemoveCmd = &cobra.Command{
 		}
 
 		log := cfg.Config.Log
-		w, ok := dagwallet.Wallets[args[0]]; if !ok {
+		w, ok := dagwallet.Wallets[args[0]]
+		if !ok {
 			log.Error("wallet not found: %s", args[0])
 			return
 		}
@@ -209,7 +210,8 @@ var AVAWalletSpendCmd = &cobra.Command{
 		}
 
 		log := cfg.Config.Log
-		w, ok := dagwallet.Wallets[args[0]]; if !ok {
+		w, ok := dagwallet.Wallets[args[0]]
+		if !ok {
 			log.Error("wallet not found: %s", args[0])
 			return
 		}
@@ -387,19 +389,22 @@ var AVAWalletRefreshCmd = &cobra.Command{
 		}
 
 		log := cfg.Config.Log
-		w, ok := dagwallet.Wallets[args[1]]; if !ok {
+		w, ok := dagwallet.Wallets[args[1]]
+		if !ok {
 			log.Error("wallet not found: %s", args[1])
 			return
 		}
 
-		meta, err := pmgr.ProcManager.Metadata(args[0]); if err != nil {
+		meta, err := pmgr.ProcManager.Metadata(args[0])
+		if err != nil {
 			log.Error("node not found: %s", args[0])
 			return
 		}
 
 		var md Metadata
 		metaBytes := []byte(meta)
-		err = json.Unmarshal(metaBytes, &md); if err != nil {
+		err = json.Unmarshal(metaBytes, &md)
+		if err != nil {
 			log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
 			return
 		}
@@ -454,7 +459,8 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 		}
 
 		log := cfg.Config.Log
-		wallet, ok := dagwallet.Wallets[args[0]]; if !ok {
+		wallet, ok := dagwallet.Wallets[args[0]]
+		if !ok {
 			log.Error("wallet not found: %s", args[0])
 			return
 		}
@@ -491,17 +497,20 @@ var AVAWalletCompareCmd = &cobra.Command{
 		}
 
 		log := cfg.Config.Log
-		w1, ok := dagwallet.Wallets[args[0]]; if !ok {
+		w1, ok := dagwallet.Wallets[args[0]]
+		if !ok {
 			log.Error("wallet not found: %s", args[0])
 			return
 		}
 
-		w2, ok := dagwallet.Wallets[args[1]]; if !ok {
+		w2, ok := dagwallet.Wallets[args[1]]
+		if !ok {
 			log.Error("wallet not found: %s", args[1])
 			return
 		}
 
-		store, err := AvashVars.Get(args[2]); if err != nil {
+		store, err := AvashVars.Get(args[2])
+		if err != nil {
 			log.Error("store not found: " + args[2])
 			return
 		}
