@@ -448,31 +448,33 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 	Short: "Writes the UTXO set to a file.",
 	Long:  `Writes the UTXO set to a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if wallet, ok := dagwallet.Wallets[args[0]]; ok {
-				stashdir := cfg.Config.DataDir
-				basename := filepath.Base(args[1])
-				basedir := filepath.Dir(stashdir + "/" + args[1])
+		if len(args) < 2 {
+			cmd.Help()
+			return
+		}
 
-				os.MkdirAll(basedir, os.ModePerm)
-				outputfile := basedir + "/" + basename
-				utxoset := wallet.GetUtxos()
+		log := cfg.Config.Log
+		wallet, ok := dagwallet.Wallets[args[0]]; if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
 
-				if marshalled, err := utxoset.JSON(); err == nil {
-					if err := ioutil.WriteFile(outputfile, marshalled, 0755); err != nil {
-						log.Error("unable to write file: %s - %s", string(outputfile), err.Error())
-					} else {
-						log.Info("UTXO Set written to: %s", outputfile)
-					}
-				} else {
-					log.Error("unable to marshal: %s", err.Error())
-				}
+		stashdir := cfg.Config.DataDir
+		basename := filepath.Base(args[1])
+		basedir := filepath.Dir(stashdir + "/" + args[1])
+
+		os.MkdirAll(basedir, os.ModePerm)
+		outputfile := basedir + "/" + basename
+		utxoset := wallet.GetUtxos()
+
+		if marshalled, err := utxoset.JSON(); err == nil {
+			if err := ioutil.WriteFile(outputfile, marshalled, 0755); err != nil {
+				log.Error("unable to write file: %s - %s", string(outputfile), err.Error())
 			} else {
-				log.Error("wallet not found: %s", args[0])
+				log.Info("UTXO Set written to: %s", outputfile)
 			}
 		} else {
-			cmd.Help()
+			log.Error("unable to marshal: %s", err.Error())
 		}
 	},
 }
