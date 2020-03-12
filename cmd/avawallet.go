@@ -167,29 +167,34 @@ var AVAWalletRemoveCmd = &cobra.Command{
 	Short: "Removes a transaction from a wallet's UTXO set.",
 	Long:  `Removes a transaction from a wallet's UTXO set.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				fb := formatting.CB58{}
-				fb.FromString(args[1])
-				txBytes := fb.Bytes
-				codec := spdagvm.Codec{}
-				tx, err := codec.UnmarshalTx(txBytes)
-				if err == nil {
-					for _, in := range tx.Ins() {
-						utxoID := in.InputID()
-						w.RemoveUtxo(utxoID)
-					}
-					log.Info("transaction removed: %s", args[1])
-				} else {
-					log.Error("cannot unmarshal tx: %s", args[1])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[0])
-			}
-		} else {
+		if len(args) < 2 {
 			cmd.Help()
+			return
 		}
+
+		log := cfg.Config.Log
+		w, ok := dagwallet.Wallets[args[0]]
+		if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
+
+		fb := formatting.CB58{}
+		fb.FromString(args[1])
+		txBytes := fb.Bytes
+		codec := spdagvm.Codec{}
+		tx, err := codec.UnmarshalTx(txBytes)
+		if err != nil {
+			log.Error("cannot unmarshal tx: %s", args[1])
+			return
+		}
+
+		for _, in := range tx.Ins() {
+			utxoID := in.InputID()
+			w.RemoveUtxo(utxoID)
+		}
+
+		log.Info("transaction removed: %s", args[1])
 	},
 }
 
@@ -199,26 +204,30 @@ var AVAWalletSpendCmd = &cobra.Command{
 	Short: "Spends a transaction from a wallet's UTXO set.",
 	Long:  `Spends a transaction from a wallet's UTXO set.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if w, ok := dagwallet.Wallets[args[0]]; ok {
-				fb := formatting.CB58{}
-				fb.FromString(args[1])
-				txBytes := fb.Bytes
-				codec := spdagvm.Codec{}
-				tx, err := codec.UnmarshalTx(txBytes)
-				if err == nil {
-					w.SpendTx(tx)
-					log.Info("transaction spent: %s", args[1])
-				} else {
-					log.Error("cannot unmarshal tx: %s", args[1])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[0])
-			}
-		} else {
+		if len(args) < 2 {
 			cmd.Help()
+			return
 		}
+
+		log := cfg.Config.Log
+		w, ok := dagwallet.Wallets[args[0]]
+		if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
+
+		fb := formatting.CB58{}
+		fb.FromString(args[1])
+		txBytes := fb.Bytes
+		codec := spdagvm.Codec{}
+		tx, err := codec.UnmarshalTx(txBytes)
+		if err != nil {
+			log.Error("cannot unmarshal tx: %s", args[1])
+			return
+		}
+
+		w.SpendTx(tx)
+		log.Info("transaction spent: %s", args[1])
 	},
 }
 
@@ -374,58 +383,66 @@ var AVAWalletRefreshCmd = &cobra.Command{
 	Short: "Refreshes UTXO set from node.",
 	Long:  `Refreshes UTXO set from node.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if w, ok := dagwallet.Wallets[args[1]]; ok {
-				if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
-					var md Metadata
-					metaBytes := []byte(meta)
-					if err := json.Unmarshal(metaBytes, &md); err == nil {
-						jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
-						rpcClient := jsonrpc.NewClient(jrpcloc)
-
-						response, err := rpcClient.Call("ava.getUTXOs", struct {
-							Addresses []string
-						}{
-							Addresses: w.Addresses(),
-						})
-						if err != nil {
-							log.Error("rpcClient returned error: %s", err.Error())
-						} else if response.Error != nil {
-							log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
-						} else {
-							var s struct {
-								UTXOs []string
-							}
-							err = response.GetObject(&s)
-							if err != nil {
-								log.Error("error on parsing response: %s", err.Error())
-							} else {
-								fb := formatting.CB58{}
-								acodec := spdagvm.Codec{}
-								for _, aUTXO := range s.UTXOs {
-									fb.FromString(aUTXO)
-									if utxo, err := acodec.UnmarshalUTXO(fb.Bytes); err == nil {
-										w.AddUtxo(utxo)
-									} else {
-										log.Error("unable to add UTXO: %s", aUTXO)
-									}
-								}
-								//fmt.Printf("[%s]", strings.Join(s.UTXOs, ","))
-								log.Info("utxo set refreshed on wallet %s from node %s", args[1], args[0])
-							}
-						}
-					} else {
-						log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
-					}
-				} else {
-					log.Error("node not found: %s", args[0])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[1])
-			}
-		} else {
+		if len(args) < 2 {
 			cmd.Help()
+			return
+		}
+
+		log := cfg.Config.Log
+		w, ok := dagwallet.Wallets[args[1]]
+		if !ok {
+			log.Error("wallet not found: %s", args[1])
+			return
+		}
+
+		meta, err := pmgr.ProcManager.Metadata(args[0])
+		if err != nil {
+			log.Error("node not found: %s", args[0])
+			return
+		}
+
+		var md Metadata
+		metaBytes := []byte(meta)
+		err = json.Unmarshal(metaBytes, &md)
+		if err != nil {
+			log.Error("unable to unmarshal metadata for node %s: %s", args[0], err.Error())
+			return
+		}
+
+		jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
+		rpcClient := jsonrpc.NewClient(jrpcloc)
+
+		response, err := rpcClient.Call("ava.getUTXOs", struct {
+			Addresses []string
+		}{
+			Addresses: w.Addresses(),
+		})
+
+		if err != nil {
+			log.Error("rpcClient returned error: %s", err.Error())
+		} else if response.Error != nil {
+			log.Error("rpcClient returned error: %d, %s", response.Error.Code, response.Error.Message)
+		} else {
+			var s struct {
+				UTXOs []string
+			}
+			err = response.GetObject(&s)
+			if err != nil {
+				log.Error("error on parsing response: %s", err.Error())
+			} else {
+				fb := formatting.CB58{}
+				acodec := spdagvm.Codec{}
+				for _, aUTXO := range s.UTXOs {
+					fb.FromString(aUTXO)
+					if utxo, err := acodec.UnmarshalUTXO(fb.Bytes); err == nil {
+						w.AddUtxo(utxo)
+					} else {
+						log.Error("unable to add UTXO: %s", aUTXO)
+					}
+				}
+				//fmt.Printf("[%s]", strings.Join(s.UTXOs, ","))
+				log.Info("utxo set refreshed on wallet %s from node %s", args[1], args[0])
+			}
 		}
 	},
 }
@@ -436,31 +453,34 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 	Short: "Writes the UTXO set to a file.",
 	Long:  `Writes the UTXO set to a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 2 {
-			log := cfg.Config.Log
-			if wallet, ok := dagwallet.Wallets[args[0]]; ok {
-				stashdir := cfg.Config.DataDir
-				basename := filepath.Base(args[1])
-				basedir := filepath.Dir(stashdir + "/" + args[1])
+		if len(args) < 2 {
+			cmd.Help()
+			return
+		}
 
-				os.MkdirAll(basedir, os.ModePerm)
-				outputfile := basedir + "/" + basename
-				utxoset := wallet.GetUtxos()
+		log := cfg.Config.Log
+		wallet, ok := dagwallet.Wallets[args[0]]
+		if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
 
-				if marshalled, err := utxoset.JSON(); err == nil {
-					if err := ioutil.WriteFile(outputfile, marshalled, 0755); err != nil {
-						log.Error("unable to write file: %s - %s", string(outputfile), err.Error())
-					} else {
-						log.Info("UTXO Set written to: %s", outputfile)
-					}
-				} else {
-					log.Error("unable to marshal: %s", err.Error())
-				}
+		stashdir := cfg.Config.DataDir
+		basename := filepath.Base(args[1])
+		basedir := filepath.Dir(stashdir + "/" + args[1])
+
+		os.MkdirAll(basedir, os.ModePerm)
+		outputfile := basedir + "/" + basename
+		utxoset := wallet.GetUtxos()
+
+		if marshalled, err := utxoset.JSON(); err == nil {
+			if err := ioutil.WriteFile(outputfile, marshalled, 0755); err != nil {
+				log.Error("unable to write file: %s - %s", string(outputfile), err.Error())
 			} else {
-				log.Error("wallet not found: %s", args[0])
+				log.Info("UTXO Set written to: %s", outputfile)
 			}
 		} else {
-			cmd.Help()
+			log.Error("unable to marshal: %s", err.Error())
 		}
 	},
 }
@@ -471,31 +491,38 @@ var AVAWalletCompareCmd = &cobra.Command{
 	Short: "Compares the UTXO set between two wallets.",
 	Long:  `Compares the UTXO set between two wallets.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) >= 4 {
-			log := cfg.Config.Log
-			if w1, ok := dagwallet.Wallets[args[0]]; ok {
-				if w2, ok := dagwallet.Wallets[args[1]]; ok {
-					if store, err := AvashVars.Get(args[2]); err == nil {
-						us1 := w1.GetUtxos()
-						us2 := w2.GetUtxos()
-						diff := us1.SetDiff(us2)
-						diffByte, err := json.MarshalIndent(diff, "", "    ")
-						if err != nil {
-							log.Error("unable to marshal: %s", err.Error())
-						} else {
-							store.Set(args[3], string(diffByte))
-						}
-					} else {
-						log.Error("store not found: " + args[2])
-					}
-				} else {
-					log.Error("wallet not found: %s", args[1])
-				}
-			} else {
-				log.Error("wallet not found: %s", args[0])
-			}
-		} else {
+		if len(args) < 4 {
 			cmd.Help()
+			return
+		}
+
+		log := cfg.Config.Log
+		w1, ok := dagwallet.Wallets[args[0]]
+		if !ok {
+			log.Error("wallet not found: %s", args[0])
+			return
+		}
+
+		w2, ok := dagwallet.Wallets[args[1]]
+		if !ok {
+			log.Error("wallet not found: %s", args[1])
+			return
+		}
+
+		store, err := AvashVars.Get(args[2])
+		if err != nil {
+			log.Error("store not found: " + args[2])
+			return
+		}
+
+		us1 := w1.GetUtxos()
+		us2 := w2.GetUtxos()
+		diff := us1.SetDiff(us2)
+		diffByte, err := json.MarshalIndent(diff, "", "    ")
+		if err != nil {
+			log.Error("unable to marshal: %s", err.Error())
+		} else {
+			store.Set(args[3], string(diffByte))
 		}
 	},
 }
