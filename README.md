@@ -54,7 +54,7 @@ help procmanager start
  * startnode - Starts a node process and gives it a name.
  * varstore - Tools for creating variable stores and printing variables within them.
 
-### Writng Scripts
+### Writing Scripts
 
 Avash imports the gopher-lua library (https://github.com/yuin/gopher-lua) to run lua scripts.
 
