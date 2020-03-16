@@ -8,6 +8,7 @@ package cfg
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/ava-labs/avash/utils/logging"
@@ -17,25 +18,34 @@ import (
 
 // Configuration is a shell-usable wrapper of the config file
 type Configuration struct {
-	AvaLocation, DataDir	string
-	Log						logging.Log
+	AvaLocation, DataDir string
+	Log                  logging.Log
 }
 
 type configFile struct {
-	AvaLocation, DataDir	string
-	Log						configFileLog
+	AvaLocation, DataDir string
+	Log                  configFileLog
 }
 
 type configFileLog struct {
-	Terminal, LogFile, Dir	string
+	Terminal, LogFile, Dir string
 }
 
 // Config is a global instance of the shell configuration
 var Config Configuration
 
+// defaultCfgName is the default config name
+const defaultCfgName = ".avash.yaml"
+
 // InitConfig initializes the config for commands to reference
 func InitConfig() {
-	cfgname := ".avash.yaml"
+	cfgname := defaultCfgName
+	// allow the user to set the path to the config file
+	cfgpath := viper.GetString("conf")
+	if cfgpath != "" {
+		cfgpath, cfgname = filepath.Split(cfgpath)
+		viper.AddConfigPath(cfgpath)
+	}
 	viper.SetConfigName(cfgname)
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("$HOME/")
@@ -45,8 +55,8 @@ func InitConfig() {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			home, _ := homedir.Dir()
 			os.OpenFile(home+"/"+cfgname, os.O_RDONLY|os.O_CREATE, 0644)
-			viper.SetConfigFile(home + "/" + cfgname)
-			fmt.Println("SetConfig to: " + home + "/" + cfgname)
+			viper.SetConfigFile(home + "/" + defaultCfgName)
+			fmt.Println("SetConfig to: " + home + "/" + defaultCfgName)
 		}
 	}
 
@@ -86,9 +96,9 @@ func InitConfig() {
 	}
 
 	Config = Configuration{
-		AvaLocation:	config.AvaLocation,
-		DataDir:		config.DataDir,
-		Log:			*log,
+		AvaLocation: config.AvaLocation,
+		DataDir:     config.DataDir,
+		Log:         *log,
 	}
 	Config.Log.Info("Avash successfully configured.")
 }
