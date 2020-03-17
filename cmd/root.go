@@ -87,7 +87,7 @@ var AvaShell *Shell
 func init() {
 	AvaShell = new(Shell)
 	// allow config file path to be set by user
-	pflag.String("conf", ".avash.yaml", "Config file path")
+	pflag.String("config", ".avash.yaml", "Config file path")
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
 

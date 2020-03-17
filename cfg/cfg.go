@@ -41,7 +41,7 @@ const defaultCfgName = ".avash.yaml"
 func InitConfig() {
 	cfgname := defaultCfgName
 	// allow the user to set the path to the config file
-	cfgpath := viper.GetString("conf")
+	cfgpath := viper.GetString("config")
 	if cfgpath != "" {
 		cfgpath, cfgname = filepath.Split(cfgpath)
 		viper.AddConfigPath(cfgpath)
@@ -100,6 +100,7 @@ func InitConfig() {
 		DataDir:     config.DataDir,
 		Log:         *log,
 	}
+	Config.Log.Info("Config file set: %s", viper.ConfigFileUsed())
 	Config.Log.Info("Avash successfully configured.")
 }
 
