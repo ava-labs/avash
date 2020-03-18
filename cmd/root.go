@@ -13,7 +13,6 @@ import (
 	"github.com/chzyer/readline"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 )
 
 type historyrecord struct {
@@ -87,11 +86,11 @@ var AvaShell *Shell
 func init() {
 	AvaShell = new(Shell)
 	// allow config file path to be set by user
-	pflag.String("config", ".avash.yaml", "Config file path")
+	var cfgpath string
+	pflag.StringVar(&cfgpath, "config", cfg.DefaultCfgName, "Config file path")
 	pflag.Parse()
-	viper.BindPFlags(pflag.CommandLine)
 
-	cfg.InitConfig()
+	cfg.InitConfig(cfgpath)
 	RootCmd.AddCommand(AVAWalletCmd)
 	RootCmd.AddCommand(ExitCmd)
 	RootCmd.AddCommand(ProcmanagerCmd)

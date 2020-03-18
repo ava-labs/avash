@@ -7,8 +7,10 @@ package cfg
 
 import (
 	"fmt"
+	"go/build"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/ava-labs/avash/utils/logging"
@@ -34,17 +36,19 @@ type configFileLog struct {
 // Config is a global instance of the shell configuration
 var Config Configuration
 
-// defaultCfgName is the default config name
-const defaultCfgName = ".avash.yaml"
+// DefaultCfgName is the default config filename
+const DefaultCfgName = ".avash.yaml"
 
 // InitConfig initializes the config for commands to reference
-func InitConfig() {
-	cfgname := defaultCfgName
-	// allow the user to set the path to the config file
-	cfgpath := viper.GetString("config")
+func InitConfig(cfgpath string) {
+	cfgname := DefaultCfgName
 	if cfgpath != "" {
 		cfgpath, cfgname = filepath.Split(cfgpath)
 		viper.AddConfigPath(cfgpath)
+	}
+	if !strings.HasSuffix(cfgname, ".yaml") {
+		fmt.Println("Config filename must end with extension '.yaml'")
+		os.Exit(1)
 	}
 	viper.SetConfigName(cfgname)
 	viper.SetConfigType("yaml")
@@ -52,12 +56,15 @@ func InitConfig() {
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/etc/avash/")
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			home, _ := homedir.Dir()
-			os.OpenFile(home+"/"+cfgname, os.O_RDONLY|os.O_CREATE, 0644)
-			viper.SetConfigFile(home + "/" + defaultCfgName)
-			fmt.Println("SetConfig to: " + home + "/" + defaultCfgName)
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			fmt.Printf("Invalid config path: %s%s\n", cfgpath, cfgname)
+			os.Exit(1)
 		}
+		fmt.Printf("Config file not found: %s%s\n", cfgpath, cfgname)
+		home, _ := homedir.Dir()
+		os.OpenFile(home + "/" + cfgname, os.O_RDONLY|os.O_CREATE, 0644)
+		fmt.Printf("Created empty config file: %s/%s\n", home, cfgname)
+		viper.SetConfigFile(home + "/" + cfgname)
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -71,8 +78,16 @@ func InitConfig() {
 		os.Exit(1)
 	}
 
+	// Set default `avalocation` if missing
+	if config.AvaLocation == "" {
+		gopath := os.Getenv("GOPATH")
+		if gopath == "" {
+			gopath = build.Default.GOPATH
+		}
+		config.AvaLocation = gopath + "/src/github.com/ava-labs/gecko/build/ava"
+	}
 	if _, err := os.Stat(config.AvaLocation); err != nil {
-		fmt.Println(err)
+		fmt.Printf("Invalid ava binary location: %s\n", config.AvaLocation)
 		os.Exit(1)
 	}
 
@@ -107,11 +122,11 @@ func InitConfig() {
 func makeLogConfig(config configFileLog, dataDir string) logging.Config {
 	terminalLvl, err := logging.ToLevel(config.Terminal)
 	if err != nil && config.Terminal != "" {
-		fmt.Printf("invalid terminal log level '%s', defaulting to %s\n", config.Terminal, terminalLvl.String())
+		fmt.Printf("Invalid terminal log level '%s', defaulting to %s\n", config.Terminal, terminalLvl.String())
 	}
 	logFileLvl, err := logging.ToLevel(config.LogFile)
 	if err != nil && config.LogFile != "" {
-		fmt.Printf("invalid logfile log level '%s', defaulting to %s\n", config.LogFile, logFileLvl.String())
+		fmt.Printf("Invalid logfile log level '%s', defaulting to %s\n", config.LogFile, logFileLvl.String())
 	}
 	if config.Dir == "" {
 		defaultLogDir := dataDir + "/logs"
