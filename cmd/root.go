@@ -103,15 +103,15 @@ func init() {
 
 // RootCmd represents the root command
 var RootCmd = &cobra.Command{
-	Use:			"avash",
-	Short:			"A shell environment for one more more AVA nodes",
-	Long:			"A shell environment for launching and interacting with multiple AVA nodes.",
-	SilenceUsage:	true,
-	Args:			cobra.NoArgs,
-	Run: 			func(cmd *cobra.Command, args []string) {
+	Use:   "avash",
+	Short: "A shell environment for one more more AVA nodes",
+	Long:  "A shell environment for launching and interacting with multiple AVA nodes.",
+	Args:  cobra.NoArgs,
+	Run: func(cmd *cobra.Command, args []string) {
 		AvaShell.root = cmd
 		AvaShell.ShellLoop()
 	},
+	SilenceUsage: true,
 }
 
 // Execute runs the root command for avash
