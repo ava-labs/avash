@@ -33,70 +33,70 @@ type Metadata struct {
 }
 
 type nodeFlags struct {
-    clientLocation                  string
-    meta                            string
-    dataDir                         string
-	assertionsEnabled				bool
-	avaTxFee						uint
-	publicIP						string
-	networkID						string
-	xputServerPort					uint
-	signatureVerificationEnabled	bool
-	apiIpcsEnabled					bool
-	httpPort						uint
-	httpTLSEnabled					bool
-	httpTLSCertFile					string
-	httpTLSKeyFile					string
-	bootstrapIps					string
-	bootstrapIds					string
-	dbEnabled						bool
-	dbDir							string
-	logLevel						string
-	logDir							string
-	snowAvalancheBatchSize			int
-	snowAvalancheNumParents			int
-	snowSampleSize					int
-	snowQuorumSize					int
-	snowVirtuousCommitThreshold		int
-	snowRogueCommitThreshold		int
-	stakingTLSEnabled				bool
-	stakingPort						uint
-	stakingTLSKeyFile				string
-	stakingTLSCertFile				string
+    clientLocation               string
+    meta                         string
+    dataDir                      string
+	assertionsEnabled            bool
+	avaTxFee                     uint
+	publicIP                     string
+	networkID                    string
+	xputServerPort               uint
+	signatureVerificationEnabled bool
+	apiIpcsEnabled               bool
+	httpPort                     uint
+	httpTLSEnabled               bool
+	httpTLSCertFile              string
+	httpTLSKeyFile               string
+	bootstrapIps                 string
+	bootstrapIds                 string
+	dbEnabled                    bool
+	dbDir                        string
+	logLevel                     string
+	logDir                       string
+	snowAvalancheBatchSize       int
+	snowAvalancheNumParents      int
+	snowSampleSize               int
+	snowQuorumSize               int
+	snowVirtuousCommitThreshold  int
+	snowRogueCommitThreshold     int
+	stakingTLSEnabled            bool
+	stakingPort                  uint
+	stakingTLSKeyFile            string
+	stakingTLSCertFile           string
 }
 
 func defaultNodeFlags() nodeFlags {
 	return nodeFlags{
-        clientLocation:                 "",
-        meta:                           "",
-        dataDir:                        "",
-		assertionsEnabled:				true,
-		avaTxFee:						0,
-		publicIP:						"127.0.0.1",
-		networkID:						"local",
-		xputServerPort:					9652,
-		signatureVerificationEnabled:	true,
-		apiIpcsEnabled:			        true,
-		httpPort:                       9650,
-		httpTLSEnabled:                 false,
-		httpTLSCertFile:                "",
-		httpTLSKeyFile:                 "",
-		bootstrapIps:                   "",
-		bootstrapIds:                   "",
-		dbEnabled:                      true,
-		dbDir:                          "db1",
-		logLevel:                       "info",
-		logDir:                         "logs",
-		snowAvalancheBatchSize:         30,
-		snowAvalancheNumParents:        5,
-		snowSampleSize:                 2,
-		snowQuorumSize:                 2,
-		snowVirtuousCommitThreshold:    5,
-		snowRogueCommitThreshold:       10,
-		stakingTLSEnabled:              false,
-		stakingPort:                    9651,
-        stakingTLSKeyFile:              "",
-		stakingTLSCertFile:             "",
+        clientLocation:               "",
+        meta:                         "",
+        dataDir:                      "",
+		assertionsEnabled:            true,
+		avaTxFee:                     0,
+		publicIP:                     "127.0.0.1",
+		networkID:                    "local",
+		xputServerPort:               9652,
+		signatureVerificationEnabled: true,
+		apiIpcsEnabled:			      true,
+		httpPort:                     9650,
+		httpTLSEnabled:               false,
+		httpTLSCertFile:              "",
+		httpTLSKeyFile:               "",
+		bootstrapIps:                 "",
+		bootstrapIds:                 "",
+		dbEnabled:                    true,
+		dbDir:                        "db1",
+		logLevel:                     "info",
+		logDir:                       "logs",
+		snowAvalancheBatchSize:       30,
+		snowAvalancheNumParents:      5,
+		snowSampleSize:               2,
+		snowQuorumSize:               2,
+		snowVirtuousCommitThreshold:  5,
+		snowRogueCommitThreshold:     10,
+		stakingTLSEnabled:            false,
+		stakingPort:                  9651,
+        stakingTLSKeyFile:            "",
+		stakingTLSCertFile:           "",
 	}
 }
 
@@ -106,8 +106,7 @@ var flags nodeFlags
 var StartnodeCmd = &cobra.Command{
 	Use:   "startnode [node name] args...",
 	Short: "Starts a node process and gives it a name.",
-	Long: `Starts an ava client node using pmgo and gives it a name. Example:
-	
+	Long:  `Starts an ava client node using pmgo and gives it a name. Example:
 	startnode MyNode1 --public-ip=127.0.0.1 --staking-port=9651 --http-port=9650 ... `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
