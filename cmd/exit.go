@@ -21,7 +21,7 @@ var ExitCmd = &cobra.Command{
 		if err == nil {
 			os.Exit(0)
 		} else {
-			panic("Unable to stop process " + name + ". Exitted anyway. Error: " + err.Error())
+			panic("Unable to stop process " + name + ". Exited anyway. Error: " + err.Error())
 		}
 
 	},
