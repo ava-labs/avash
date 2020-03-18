@@ -37,6 +37,7 @@ func (p *ProcessManager) AddProcess(cmdstr string, proctype string, args []strin
 	cin := make(chan []byte)
 	stop := make(chan bool)
 	kill := make(chan bool)
+	fail := make(chan error)
 	proc := &Process{
 		cmdstr:    cmdstr,
 		args:      args,
@@ -48,6 +49,7 @@ func (p *ProcessManager) AddProcess(cmdstr string, proctype string, args []strin
 		cin:       cin,
 		stop:      stop,
 		kill:      kill,
+		fail:      fail,
 		inhandle:  ih,
 		outhandle: oh,
 		errhandle: eh,
@@ -175,6 +177,8 @@ func (p *ProcessManager) ProcessSummary() *[][]string {
 		var running string
 		if val.running {
 			running = "running"
+		} else if val.failed {
+			running = "defunct"
 		} else {
 			running = "stopped"
 		}
