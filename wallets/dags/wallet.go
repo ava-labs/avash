@@ -16,7 +16,7 @@ type Wallet struct {
 	networkID uint32
 	subnetID  ids.ID
 	clock     timer.Clock
-	keyChain  *spdagvm.KeyChain // Mapping from public address to the SigningKeys
+	keyChain  *spdagvm.Keychain // Mapping from public address to the SigningKeys
 	utxoSet   *UtxoSet          // Mapping from utxoIDs to Utxos
 	balance   uint64
 	txFee     uint64
@@ -27,7 +27,7 @@ func NewWallet(networkID uint32, subnetID ids.ID, txFee uint64) *Wallet {
 	return &Wallet{
 		networkID: networkID,
 		subnetID:  subnetID,
-		keyChain:  &spdagvm.KeyChain{},
+		keyChain:  &spdagvm.Keychain{},
 		utxoSet:   &UtxoSet{},
 		txFee:     txFee,
 	}
