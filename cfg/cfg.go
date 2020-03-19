@@ -88,6 +88,7 @@ func InitConfig(cfgpath string) {
 	}
 	if _, err := os.Stat(config.AvaLocation); err != nil {
 		fmt.Printf("Invalid ava binary location: %s\n", config.AvaLocation)
+		fmt.Println("Make sure your $GOPATH is set or provide a configuration file with a valid `avalocation` value. See README.md for more details.")
 		os.Exit(1)
 	}
 
