@@ -13,16 +13,12 @@ Avash provides the ability to run Lua scripts which can execute a sequence of sh
  * Golang 1.13+
  * An AVA Client Implementing AVA Standard CLI Flags
 
-### Steps
+### Quick Setup
 
  1. Install and build an AVA client
- 2. Make note of the location of the AVA binary
- 3. `go get github.com/ava-labs/avash`
- 4. `cd $GOPATH/src/github.com/ava-labs/avash`
- 5. `go build`
- 6. `cp example.avash.yaml ~/.avash.yaml`
- 7. `vi ~/.avash.yaml`
- 8. Edit to reference the location of AVA noted in #2
+ 2. `go get github.com/ava-labs/avash`
+ 3. `cd $GOPATH/src/github.com/ava-labs/avash`
+ 4. `go build`
 
 For full documentation of Avash configuration and commands, please see the official [AVA Documentation](https://docs.ava.network/v1.0/en/tools/avash/).
 
@@ -54,7 +50,7 @@ help procmanager start
  * startnode - Starts a node process and gives it a name.
  * varstore - Tools for creating variable stores and printing variables within them.
 
-### Writng Scripts
+### Writing Scripts
 
 Avash imports the gopher-lua library (https://github.com/yuin/gopher-lua) to run lua scripts.
 

@@ -30,6 +30,7 @@ type Process struct {
 	proctype  string
 	metadata  string
 	running   bool
+	failed    bool
 	output    io.ReadCloser
 	errput    io.ReadCloser
 	input     io.WriteCloser
@@ -38,6 +39,7 @@ type Process struct {
 	cin       chan []byte
 	stop      chan bool
 	kill      chan bool
+	fail      chan error
 	inhandle  InputHandler
 	outhandle OutputHandler
 	errhandle OutputHandler
@@ -52,13 +54,16 @@ func (p *Process) Start(done chan bool) {
 		log.Error("Process %s is already running", p.name)
 		return
 	}
-
-	if err := p.cmd.Start(); err != nil {
-		log.Error(fmt.Sprintf("Could not start process %s: %s", p.name, err.Error()))
-	}
-
-	done <- true
 	p.running = true
+	done <- true
+
+	go func() {
+		err := p.cmd.Run()
+		// Procmanager not expecting termination
+		if p.running {
+			p.fail <- err
+		}
+	}()
 
 	closegen := func() {
 		p.cmd.Stdin = nil
@@ -96,6 +101,15 @@ func (p *Process) Start(done chan bool) {
 				p.kill <- true
 				return
 			}
+		case fl := <-p.fail:
+			errMsg := "inspect related logs for FATAL output"
+			if fl != nil {
+				errMsg = fl.Error()
+			}
+			log.Error("\rProcess %s failure: %s", p.name, errMsg)
+			p.running = false
+			p.failed = true
+			return
 		}
 	}
 }

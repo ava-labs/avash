@@ -12,10 +12,10 @@ import (
 
 // SetOutputCmd sets the shell output type and verbosity
 var SetOutputCmd = &cobra.Command{
-	Use:		"setoutput [log output] [log level]",
-	Short:		"Sets log output.",
-	Long:		`Sets the log level of a specific log output type.`,
-	Run:	func(cmd *cobra.Command, args []string) {
+	Use:   "setoutput [log output] [log level]",
+	Short: "Sets log output.",
+	Long:  `Sets the log level of a specific log output type.`,
+	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {
 			cmd.Help()
 			return

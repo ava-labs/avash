@@ -1,6 +1,6 @@
-avalocation: /home/ubuntu/.gvm/pkgsets/go1.13/global/src/github.com/ava-labs/gecko/bin/ava
-datadir: $GOPATH/src/github.com/ava-labs/avash/stash
+avalocation: <$GOPATH>/src/github.com/ava-labs/gecko/bin/ava
+datadir: <$GOPATH>/src/github.com/ava-labs/avash/stash
 log:
   terminal: info
   logfile: info
-  dir: $GOPATH/src/github.com/ava-labs/avash/stash/logs
+  dir: <$GOPATH>/src/github.com/ava-labs/avash/stash/logs

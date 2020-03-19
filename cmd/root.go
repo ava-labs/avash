@@ -6,13 +6,13 @@ Copyright © 2019 AVA Labs <collin@avalabs.org>
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
 	"github.com/ava-labs/avash/cfg"
 	"github.com/chzyer/readline"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 type historyrecord struct {
@@ -68,9 +68,15 @@ func (sh *Shell) ShellLoop() {
 			sh.rl.Terminal.Write([]byte(err.Error()))
 		}
 		sh.addHistory(cmd, flags)
-		cmd.ParseFlags(flags)
+		if err := cmd.ParseFlags(flags); err != nil {
+			cfg.Config.Log.Error(err.Error())
+			continue
+		}
+		if err := cmd.ValidateArgs(flags); err != nil {
+			cfg.Config.Log.Error(err.Error())
+			continue
+		}
 		cmd.Run(cmd, flags)
-
 	}
 }
 
@@ -79,6 +85,19 @@ var AvaShell *Shell
 
 func init() {
 	AvaShell = new(Shell)
+	// allow config file path to be set by user
+	var cfgpath string
+	pflag.StringVar(&cfgpath, "config", cfg.DefaultCfgName, "Config file path")
+	pflag.Parse()
+
+	cfg.InitConfig(cfgpath)
+	RootCmd.AddCommand(AVAWalletCmd)
+	RootCmd.AddCommand(ExitCmd)
+	RootCmd.AddCommand(ProcmanagerCmd)
+	RootCmd.AddCommand(RunScriptCmd)
+	RootCmd.AddCommand(SetOutputCmd)
+	RootCmd.AddCommand(StartnodeCmd)
+	RootCmd.AddCommand(VarStoreCmd)
 }
 
 // RootCmd represents the root command
@@ -86,20 +105,17 @@ var RootCmd = &cobra.Command{
 	Use:   "avash",
 	Short: "A shell environment for one more more AVA nodes",
 	Long:  "A shell environment for launching and interacting with multiple AVA nodes.",
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) > 0 {
-			fmt.Println() // prints error response
-			return
-		}
 		AvaShell.root = cmd
 		AvaShell.ShellLoop()
 	},
+	SilenceUsage: true,
 }
 
 // Execute runs the root command for avash
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		cfg.Config.Log.Error(err.Error())
 		os.Exit(1)
 	}
 }

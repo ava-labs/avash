@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/kennygrant/sanitize"
-	flag "github.com/spf13/pflag"
 
 	"github.com/ava-labs/avash/cfg"
 	pmgr "github.com/ava-labs/avash/processmgr"
@@ -33,12 +32,81 @@ type Metadata struct {
 	StakerKeyPath  string `json:"staking-tls-key-file"`
 }
 
+type nodeFlags struct {
+    clientLocation               string
+    meta                         string
+    dataDir                      string
+	assertionsEnabled            bool
+	avaTxFee                     uint
+	publicIP                     string
+	networkID                    string
+	xputServerPort               uint
+	signatureVerificationEnabled bool
+	apiIpcsEnabled               bool
+	httpPort                     uint
+	httpTLSEnabled               bool
+	httpTLSCertFile              string
+	httpTLSKeyFile               string
+	bootstrapIps                 string
+	bootstrapIds                 string
+	dbEnabled                    bool
+	dbDir                        string
+	logLevel                     string
+	logDir                       string
+	snowAvalancheBatchSize       int
+	snowAvalancheNumParents      int
+	snowSampleSize               int
+	snowQuorumSize               int
+	snowVirtuousCommitThreshold  int
+	snowRogueCommitThreshold     int
+	stakingTLSEnabled            bool
+	stakingPort                  uint
+	stakingTLSKeyFile            string
+	stakingTLSCertFile           string
+}
+
+func defaultNodeFlags() nodeFlags {
+	return nodeFlags{
+        clientLocation:               "",
+        meta:                         "",
+        dataDir:                      "",
+		assertionsEnabled:            true,
+		avaTxFee:                     0,
+		publicIP:                     "127.0.0.1",
+		networkID:                    "local",
+		xputServerPort:               9652,
+		signatureVerificationEnabled: true,
+		apiIpcsEnabled:			      true,
+		httpPort:                     9650,
+		httpTLSEnabled:               false,
+		httpTLSCertFile:              "",
+		httpTLSKeyFile:               "",
+		bootstrapIps:                 "",
+		bootstrapIds:                 "",
+		dbEnabled:                    true,
+		dbDir:                        "db1",
+		logLevel:                     "info",
+		logDir:                       "logs",
+		snowAvalancheBatchSize:       30,
+		snowAvalancheNumParents:      5,
+		snowSampleSize:               2,
+		snowQuorumSize:               2,
+		snowVirtuousCommitThreshold:  5,
+		snowRogueCommitThreshold:     10,
+		stakingTLSEnabled:            false,
+		stakingPort:                  9651,
+        stakingTLSKeyFile:            "",
+		stakingTLSCertFile:           "",
+	}
+}
+
+var flags nodeFlags
+
 // StartnodeCmd represents the startnode command
 var StartnodeCmd = &cobra.Command{
 	Use:   "startnode [node name] args...",
 	Short: "Starts a node process and gives it a name.",
-	Long: `Starts an ava client node using pmgo and gives it a name. Example:
-	
+	Long:  `Starts an ava client node using pmgo and gives it a name. Example:
 	startnode MyNode1 --public-ip=127.0.0.1 --staking-port=9651 --http-port=9650 ... `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
@@ -55,27 +123,26 @@ var StartnodeCmd = &cobra.Command{
 			log.Error("Process name can't be empty")
 			return
 		}
-		f := cmd.Flags()
 
-		k, _ := f.GetInt("snow-sample-size")
-		alpha, _ := f.GetInt("snow-quorum-size")
-		beta1, _ := f.GetInt("snow-virtuous-commit-threshold")
-		beta2, _ := f.GetInt("snow-rogue-commit-threshold")
-
-		err := validateConsensusArgs(k, alpha, beta1, beta2)
+		err := validateConsensusArgs(
+            flags.snowSampleSize,
+            flags.snowQuorumSize,
+            flags.snowVirtuousCommitThreshold,
+            flags.snowRogueCommitThreshold,
+        )
 		if err != nil {
 			log.Error(err.Error())
 			return
 		}
 
-		args, md := flagsToArgs(f, sanitize.Path(datapath))
+		args, md := flagsToArgs(sanitize.Path(datapath))
 		mdbytes, _ := json.MarshalIndent(md, " ", "    ")
 		metadata := string(mdbytes)
-		meta, _ := cmd.Flags().GetString("meta")
+		meta := flags.meta
 		if meta != "" {
 			metadata = meta
 		}
-		avalocation, _ := f.GetString("client-location")
+		avalocation := flags.clientLocation
 		if avalocation == "" {
 			avalocation = cfg.Config.AvaLocation
 		}
@@ -112,194 +179,127 @@ func validateConsensusArgs(k int, alpha int, beta1 int, beta2 int) error {
 	return errors.New("Invalid consensus params: \n" + strings.Join(rulesfailed, "\n"))
 }
 
-func flagsToArgs(f *flag.FlagSet, basedir string) ([]string, Metadata) {
+func flagsToArgs(basedir string) ([]string, Metadata) {
 
-	// Assertions
-	assertions, _ := f.GetBool("assertions-enabled")
-	useassertions := "false"
-	if assertions {
-		useassertions = "true"
-	}
-
-	// Transaction fees
-	txfee, _ := f.GetUint("ava-tx-fee")
-
-	// Network ID
-	networkid, _ := f.GetString("network-id")
-
-	// Host/port settings
-	sh, _ := f.GetString("public-ip")
-	sp, _ := f.GetUint("staking-port")
-	rp, _ := f.GetUint("xput-server-port")
-	hp, _ := f.GetUint("http-port")
-	bootstrapips, _ := f.GetString("bootstrap-ips")
-	bootstrapids, _ := f.GetString("bootstrap-ids")
+    // Port targets
+    httpPortString := strconv.FormatUint(uint64(flags.httpPort), 10)
+    stakingPortString := strconv.FormatUint(uint64(flags.stakingPort), 10)
 
 	// Paths/directories
-	dbdir, _ := f.GetString("db-dir")
-	datadir, _ := f.GetString("data-dir")
-	logdir, _ := f.GetString("log-dir")
+	dbPath := basedir + "/" + flags.dbDir
+	dataPath := basedir + "/" + flags.dataDir
+	logPath := basedir + "/" + flags.logDir
 
 	// Staking settings
 	wd, _ := os.Getwd()
 
-	// Assertions
-	henabled, _ := f.GetBool("http-tls-enabled")
-	httptlsenabled := "false"
-	if henabled {
-		httptlsenabled = "true"
-	}
-
-	hcert, _ := f.GetString("http-tls-cert-file")
-	hkey, _ := f.GetString("http-tls-key-file")
-
-	httptlscertparam := ""
-	httptlskeyparam := ""
-	if henabled {
-		httptlscertparam = "--http-tls-cert-file=" + hcert
-		httptlskeyparam = "--http-tls-key-file=" + hkey
-	}
-
-	// Signature verification
-	sigver, _ := f.GetBool("signature-verification-enabled")
-	sigverenabled := "false"
-	if sigver {
-		sigverenabled = "true"
-	}
-
-	// IPC
-	ipc, _ := f.GetBool("api-ipcs-enabled")
-	ipcEnabled := "true"
-	if ipc == false {
-		ipcEnabled = "false"
-	}
-
-	stakingenabled, _ := f.GetBool("staking-tls-enabled")
-
 	// If the path given in the flag doesn't begin with "/", treat it as relative
-	// to the directory of the avash binary
-	stakerCertFile, _ := f.GetString("staking-tls-cert-file")
+    // to the directory of the avash binary
+    httpCertFile := flags.httpTLSCertFile
+	if httpCertFile != "" && string(httpCertFile[0]) != "/" {
+		httpCertFile = fmt.Sprintf("%s/%s", wd, httpCertFile)
+	}
+
+    httpKeyFile := flags.httpTLSKeyFile
+	if httpKeyFile != "" && string(httpKeyFile[0]) != "/" {
+		httpKeyFile = fmt.Sprintf("%s/%s", wd, httpKeyFile)
+	}
+
+	stakerCertFile := flags.stakingTLSCertFile
 	if stakerCertFile != "" && string(stakerCertFile[0]) != "/" {
 		stakerCertFile = fmt.Sprintf("%s/%s", wd, stakerCertFile)
 	}
 
-	stakerKeyFile, _ := f.GetString("staking-tls-key-file")
+	stakerKeyFile := flags.stakingTLSKeyFile
 	if stakerKeyFile != "" && string(stakerKeyFile[0]) != "/" {
 		stakerKeyFile = fmt.Sprintf("%s/%s", wd, stakerKeyFile)
 	}
 
-	stakercertparam := ""
-	stakerkeyparam := ""
-	if stakingenabled {
-		stakercertparam = stakerCertFile
-		stakerkeyparam = stakerKeyFile
-	}
-
-	requirestaking := "false"
-	if stakingenabled {
-		requirestaking = "true"
-	}
-
-	// Log settings
-	logLevel, _ := f.GetString("log-level")
-
-	// Db settings
-	hasdb, _ := f.GetBool("db-enabled")
-	usedb := "false"
-	if hasdb {
-		usedb = "true"
-	}
-
-	// Consensus parameters
-	k, _ := f.GetInt("snow-sample-size")
-	alpha, _ := f.GetInt("snow-quorum-size")
-	beta1, _ := f.GetInt("snow-virtuous-commit-threshold")
-	beta2, _ := f.GetInt("snow-rogue-commit-threshold")
-	batch, _ := f.GetInt("snow-avalanche-batch-size")
-	numparents, _ := f.GetInt("snow-avalanche-num-parents")
-
 	args := []string{
-		"--assertions-enabled=" + useassertions,
-		"--ava-tx-fee=" + strconv.FormatUint(uint64(txfee), 10),
-		"--public-ip=" + sh,
-		"--network-id=" + networkid,
-		"--xput-server-port=" + strconv.FormatUint(uint64(rp), 10),
-		"--signature-verification-enabled=" + sigverenabled,
-		"--api-ipcs-enabled=" + ipcEnabled,
-		"--http-port=" + strconv.FormatUint(uint64(hp), 10),
-		"--http-tls-enabled=" + httptlsenabled,
-		"--http-tls-cert-file=" + httptlscertparam,
-		"--http-tls-key-file=" + httptlskeyparam,
-		"--bootstrap-ips=" + bootstrapips,
-		"--bootstrap-ids=" + bootstrapids,
-		"--db-enabled=" + usedb,
-		"--db-dir=" + basedir + "/" + dbdir,
-		"--log-level=" + logLevel,
-		"--log-dir=" + basedir + "/" + logdir,
-		"--snow-avalanche-batch-size=" + strconv.Itoa(batch),
-		"--snow-avalanche-num-parents=" + strconv.Itoa(numparents),
-		"--snow-sample-size=" + strconv.Itoa(k),
-		"--snow-quorum-size=" + strconv.Itoa(alpha),
-		"--snow-virtuous-commit-threshold=" + strconv.Itoa(beta1),
-		"--snow-rogue-commit-threshold=" + strconv.Itoa(beta2),
-		"--staking-tls-enabled=" + requirestaking,
-		"--staking-port=" + strconv.FormatUint(uint64(sp), 10),
-		"--staking-tls-key-file=" + stakerkeyparam,
-		"--staking-tls-cert-file=" + stakercertparam,
+		"--assertions-enabled=" + strconv.FormatBool(flags.assertionsEnabled),
+		"--ava-tx-fee=" + strconv.FormatUint(uint64(flags.avaTxFee), 10),
+		"--public-ip=" + flags.publicIP,
+		"--network-id=" + flags.networkID,
+		"--xput-server-port=" + strconv.FormatUint(uint64(flags.xputServerPort), 10),
+		"--signature-verification-enabled=" + strconv.FormatBool(flags.signatureVerificationEnabled),
+		"--api-ipcs-enabled=" + strconv.FormatBool(flags.apiIpcsEnabled),
+		"--http-port=" + httpPortString,
+		"--http-tls-enabled=" + strconv.FormatBool(flags.httpTLSEnabled),
+		"--http-tls-cert-file=" + httpCertFile,
+		"--http-tls-key-file=" + httpKeyFile,
+		"--bootstrap-ips=" + flags.bootstrapIps,
+		"--bootstrap-ids=" + flags.bootstrapIds,
+		"--db-enabled=" + strconv.FormatBool(flags.dbEnabled),
+		"--db-dir=" + dbPath,
+		"--log-level=" + flags.logLevel,
+		"--log-dir=" + logPath,
+		"--snow-avalanche-batch-size=" + strconv.Itoa(flags.snowAvalancheBatchSize),
+		"--snow-avalanche-num-parents=" + strconv.Itoa(flags.snowAvalancheNumParents),
+		"--snow-sample-size=" + strconv.Itoa(flags.snowSampleSize),
+		"--snow-quorum-size=" + strconv.Itoa(flags.snowQuorumSize),
+		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.snowVirtuousCommitThreshold),
+		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.snowRogueCommitThreshold),
+		"--staking-tls-enabled=" + strconv.FormatBool(flags.stakingTLSEnabled),
+		"--staking-port=" + stakingPortString,
+		"--staking-tls-key-file=" + stakerKeyFile,
+		"--staking-tls-cert-file=" + stakerCertFile,
 	}
 
 	metadata := Metadata{
-		Serverhost:     sh,
-		Stakingport:    strconv.FormatUint(uint64(sp), 10),
-		HTTPport:       strconv.FormatUint(uint64(hp), 10),
-		Dbdir:          basedir + "/" + dbdir,
-		Datadir:        basedir + "/" + datadir,
-		Logsdir:        basedir + "/" + logdir,
-		Loglevel:       logLevel,
+		Serverhost:     flags.publicIP,
+		Stakingport:    stakingPortString,
+		HTTPport:       httpPortString,
+		Dbdir:          dbPath,
+		Datadir:        dataPath,
+		Logsdir:        logPath,
+		Loglevel:       flags.logLevel,
 		StakerCertPath: stakerCertFile,
 		StakerKeyPath:  stakerKeyFile,
 	}
 
+    // Reset flags for next `startnode` call
+    flags = defaultNodeFlags()
 	return args, metadata
 }
 
 func init() {
-	StartnodeCmd.Flags().String("client-location", "", "Path to AVA node client, defaulting to the config file's value.")
-	StartnodeCmd.Flags().String("meta", "", "Override default metadata for the node process.")
-	StartnodeCmd.Flags().String("data-dir", "", "Name of directory for the data stash.")
+    flags = defaultNodeFlags()
+	StartnodeCmd.Flags().StringVar(&flags.clientLocation, "client-location", flags.clientLocation, "Path to AVA node client, defaulting to the config file's value.")
+	StartnodeCmd.Flags().StringVar(&flags.meta, "meta", flags.meta, "Override default metadata for the node process.")
+    StartnodeCmd.Flags().StringVar(&flags.dataDir, "data-dir", flags.dataDir, "Name of directory for the data stash.")
 
-	StartnodeCmd.Flags().Bool("assertions-enabled", true, "Turn on assertion execution.")
-	StartnodeCmd.Flags().Uint("ava-tx-fee", 0, "Ava transaction fee, in $nAva.")
+	StartnodeCmd.Flags().BoolVar(&flags.assertionsEnabled, "assertions-enabled", flags.assertionsEnabled, "Turn on assertion execution.")
+	StartnodeCmd.Flags().UintVar(&flags.avaTxFee, "ava-tx-fee", flags.avaTxFee, "Ava transaction fee, in $nAva.")
 
-	StartnodeCmd.Flags().Bool("api-ipcs-enabled", true, "Turn on IPC.")
-	StartnodeCmd.Flags().String("public-ip", "127.0.0.1", "Public IP of this node.")
-	StartnodeCmd.Flags().String("network-id", "12345", "Network ID this node will connect to.")
-	StartnodeCmd.Flags().Uint("xput-server-port", 9652, "Port of the deprecated throughput test server.")
-	StartnodeCmd.Flags().Bool("signature-verification-enabled", true, "Turn on signature verification.")
+	StartnodeCmd.Flags().BoolVar(&flags.apiIpcsEnabled, "api-ipcs-enabled", flags.apiIpcsEnabled, "Turn on IPC.")
+	StartnodeCmd.Flags().StringVar(&flags.publicIP, "public-ip", flags.publicIP, "Public IP of this node.")
+	StartnodeCmd.Flags().StringVar(&flags.networkID, "network-id", flags.networkID, "Network ID this node will connect to.")
+	StartnodeCmd.Flags().UintVar(&flags.xputServerPort, "xput-server-port", flags.xputServerPort, "Port of the deprecated throughput test server.")
+	StartnodeCmd.Flags().BoolVar(&flags.signatureVerificationEnabled, "signature-verification-enabled", flags.signatureVerificationEnabled, "Turn on signature verification.")
 
-	StartnodeCmd.Flags().Uint("http-port", 9650, "Port of the HTTP server.")
-	StartnodeCmd.Flags().Bool("http-tls-enabled", false, "Upgrade the HTTP server to HTTPS.")
-	StartnodeCmd.Flags().String("http-tls-cert-file", "", "TLS certificate file for the HTTPS server.")
-	StartnodeCmd.Flags().String("http-tls-key-file", "", "TLS private key file for the HTTPS server.")
+	StartnodeCmd.Flags().UintVar(&flags.httpPort, "http-port", flags.httpPort, "Port of the HTTP server.")
+	StartnodeCmd.Flags().BoolVar(&flags.httpTLSEnabled, "http-tls-enabled", flags.httpTLSEnabled, "Upgrade the HTTP server to HTTPS.")
+	StartnodeCmd.Flags().StringVar(&flags.httpTLSCertFile, "http-tls-cert-file", flags.httpTLSCertFile, "TLS certificate file for the HTTPS server.")
+	StartnodeCmd.Flags().StringVar(&flags.httpTLSKeyFile, "http-tls-key-file", flags.httpTLSKeyFile, "TLS private key file for the HTTPS server.")
 
-	StartnodeCmd.Flags().String("bootstrap-ips", "", "Comma separated list of bootstrap nodes to connect to. Example: 127.0.0.1:9630,127.0.0.1:9620")
-	StartnodeCmd.Flags().String("bootstrap-ids", "", "Comma separated list of bootstrap peer ids to connect to. Example: JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
+	StartnodeCmd.Flags().StringVar(&flags.bootstrapIps, "bootstrap-ips", flags.bootstrapIps, "Comma separated list of bootstrap nodes to connect to. Example: 127.0.0.1:9630,127.0.0.1:9620")
+	StartnodeCmd.Flags().StringVar(&flags.bootstrapIds, "bootstrap-ids", flags.bootstrapIds, "Comma separated list of bootstrap peer ids to connect to. Example: JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
 
-	StartnodeCmd.Flags().Bool("db-enabled", true, "Turn on persistent storage.")
-	StartnodeCmd.Flags().String("db-dir", "db1", "Database directory for Ava state.")
+	StartnodeCmd.Flags().BoolVar(&flags.dbEnabled, "db-enabled", flags.dbEnabled, "Turn on persistent storage.")
+	StartnodeCmd.Flags().StringVar(&flags.dbDir, "db-dir", flags.dbDir, "Database directory for Ava state.")
 
-	StartnodeCmd.Flags().String("log-level", "info", "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
-	StartnodeCmd.Flags().String("log-dir", "logs", "Name of directory for the node's logging.")
+	StartnodeCmd.Flags().StringVar(&flags.logLevel, "log-level", flags.logLevel, "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
+	StartnodeCmd.Flags().StringVar(&flags.logDir, "log-dir", flags.logDir, "Name of directory for the node's logging.")
 
-	StartnodeCmd.Flags().Int("snow-avalanche-batch-size", 30, "Number of operations to batch in each new vertex.")
-	StartnodeCmd.Flags().Int("snow-avalanche-num-parents", 5, "Number of vertexes for reference from each new vertex.")
-	StartnodeCmd.Flags().Int("snow-sample-size", 2, "Number of nodes to query for each network poll.")
-	StartnodeCmd.Flags().Int("snow-quorum-size", 2, "Alpha value to use for required number positive results.")
-	StartnodeCmd.Flags().Int("snow-virtuous-commit-threshold", 5, "Beta value to use for virtuous transactions.")
-	StartnodeCmd.Flags().Int("snow-rogue-commit-threshold", 10, "Beta value to use for rogue transactions.")
+	StartnodeCmd.Flags().IntVar(&flags.snowAvalancheBatchSize, "snow-avalanche-batch-size", flags.snowAvalancheBatchSize, "Number of operations to batch in each new vertex.")
+	StartnodeCmd.Flags().IntVar(&flags.snowAvalancheNumParents, "snow-avalanche-num-parents", flags.snowAvalancheNumParents, "Number of vertexes for reference from each new vertex.")
+	StartnodeCmd.Flags().IntVar(&flags.snowSampleSize, "snow-sample-size", flags.snowSampleSize, "Number of nodes to query for each network poll.")
+	StartnodeCmd.Flags().IntVar(&flags.snowQuorumSize, "snow-quorum-size", flags.snowQuorumSize, "Alpha value to use for required number positive results.")
+	StartnodeCmd.Flags().IntVar(&flags.snowVirtuousCommitThreshold, "snow-virtuous-commit-threshold", flags.snowVirtuousCommitThreshold, "Beta value to use for virtuous transactions.")
+	StartnodeCmd.Flags().IntVar(&flags.snowRogueCommitThreshold, "snow-rogue-commit-threshold", flags.snowRogueCommitThreshold, "Beta value to use for rogue transactions.")
 
-	StartnodeCmd.Flags().Bool("staking-tls-enabled", false, "Require TLS to authenticate staking connections.")
-	StartnodeCmd.Flags().Uint("staking-port", 9651, "Port of the consensus server.")
-	StartnodeCmd.Flags().String("staking-tls-cert-file", "", "TLS certificate file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.crt")
-	StartnodeCmd.Flags().String("staking-tls-key-file", "", "TLS private key file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.key")
+	StartnodeCmd.Flags().BoolVar(&flags.stakingTLSEnabled, "staking-tls-enabled", flags.stakingTLSEnabled, "Require TLS to authenticate staking connections.")
+	StartnodeCmd.Flags().UintVar(&flags.stakingPort, "staking-port", flags.stakingPort, "Port of the consensus server.")
+	StartnodeCmd.Flags().StringVar(&flags.stakingTLSCertFile, "staking-tls-cert-file", flags.stakingTLSCertFile, "TLS certificate file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.crt")
+	StartnodeCmd.Flags().StringVar(&flags.stakingTLSKeyFile, "staking-tls-key-file", flags.stakingTLSKeyFile, "TLS private key file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.key")
 }
