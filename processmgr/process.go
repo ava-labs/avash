@@ -47,13 +47,14 @@ type Process struct {
 // Start begins a new process
 func (p *Process) Start(done chan bool) {
 	log := cfg.Config.Log
-	log.Info("\rStarting process %s.", p.name)
-	log.Info("Command: %s\n", p.cmd.Args)
 	if p.running {
-		log.Error("Process %s is already running", p.name)
+		log.Error("Process is already running, cannot start: %s", p.name)
 		done <- true
 		return
 	}
+	log.Info("Starting process %s.", p.name)
+	p.cmd = exec.Command(p.cmdstr, p.args...)
+	log.Info("Command: %s\n", p.cmd.Args)
 
 	selfStopped := false
 	go func() {
@@ -84,7 +85,7 @@ func (p *Process) Start(done chan bool) {
 	for {
 		select {
 		case sp := <-p.stop:
-			log.Info("\rCalling stop() on %s", p.name)
+			log.Info("Calling stop() on %s", p.name)
 			if sp {
 				selfStopped = true
 				if err := p.endProcess(false); err != nil {
@@ -97,7 +98,7 @@ func (p *Process) Start(done chan bool) {
 				return
 			}
 		case kl := <-p.kill:
-			log.Info("\rCalling kill() on %s.", p.name)
+			log.Info("Calling kill() on %s.", p.name)
 			if kl {
 				selfStopped = true
 				if err := p.endProcess(true); err != nil {
@@ -111,11 +112,11 @@ func (p *Process) Start(done chan bool) {
 			}
 		case fl := <-p.fail:
 			p.failed = true
-			errMsg := "inspect related logs for FATAL output"
+			errMsg := "inspect for process validity (command, args, flags) or FATAL output in related logs"
 			if fl != nil {
 				errMsg = fl.Error()
 			}
-			log.Error("\rProcess failure: %s: %s", p.name, errMsg)
+			log.Error("Process failure: %s: %s", p.name, errMsg)
 			// Specific case for a bad `p.cmd.Start()` call
 			if !p.running {
 				done <- false
