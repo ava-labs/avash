@@ -159,13 +159,7 @@ var PMKillAllCmd = &cobra.Command{
 				log.Info("all processes will be killed in %ds", int(delay))
 			}
 		}
-		killAll := func() {
-			errname, err := pmgr.ProcManager.KillAllProcesses()
-			if err != nil {
-				log.Error("Error on process '" + errname + "': " + err.Error())
-			}
-		}
-		delayRun(killAll, delay)
+		delayRun(pmgr.ProcManager.KillAllProcesses, delay)
 	},
 }
 
@@ -183,13 +177,7 @@ var PMStopAllCmd = &cobra.Command{
 				log.Info("all processes will stop in %ds", int(delay))
 			}
 		}
-		stopAll := func() {
-			errname, err := pmgr.ProcManager.StopAllProcesses()
-			if err != nil {
-				log.Error("Error on process '" + errname + "': " + err.Error())
-			}
-		}
-		delayRun(stopAll, delay)
+		delayRun(pmgr.ProcManager.StopAllProcesses, delay)
 	},
 }
 
@@ -207,13 +195,7 @@ var PMStartAllCmd = &cobra.Command{
 				log.Info("all processes will start in %ds", int(delay))
 			}
 		}
-		startAll := func() {
-			errname, err := pmgr.ProcManager.StartAllProcesses()
-			if err != nil {
-				log.Error("Error on process '" + errname + "': " + err.Error())
-			}
-		}
-		delayRun(startAll, delay)
+		delayRun(pmgr.ProcManager.StartAllProcesses, delay)
 	},
 }
 
