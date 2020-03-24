@@ -1,24 +1,27 @@
 package processmgr
 
 import (
-	"os/exec"
 	"sync"
 	"testing"
 )
 
 func newTestProcess(code uint) (*Process, chan bool) {
-	var cmd *exec.Cmd
+	var cmdstr string
+	var args []string
 	switch code {
 	case 0:
-		cmd = exec.Command("sleep", "10")
+		cmdstr = "sleep"
+		args = []string{"10"}
 	case 1:
-		cmd = exec.Command("invalid-command")
+		cmdstr = "fake-command"
+		args = nil
 	}
 	return &Process{
-		cmd:  cmd,
-		stop: make(chan bool),
-		kill: make(chan bool),
-		fail: make(chan error),
+		cmdstr: cmdstr,
+		args:   args,
+		stop:   make(chan bool),
+		kill:   make(chan bool),
+		fail:   make(chan error),
 	}, make(chan bool)
 }
 
@@ -45,6 +48,7 @@ func TestProcessStart(t *testing.T) {
 		go p1.Start(d1)
 		<-d1
 
+		t.Logf("%+v", p1)
 		if proc := p1.cmd.Process; proc == nil {
 			t.Fatalf("P.Cmd.Process returned %v expected not %v", proc, nil)
 		} else if running := p1.running; running != true {
