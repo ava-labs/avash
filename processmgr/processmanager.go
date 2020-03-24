@@ -153,7 +153,7 @@ func (pm *ProcessManager) RemoveProcess(name string) error {
 	return nil
 }
 
-// ProcessTable returns a formatted tablmetadatae for the data provided
+// ProcessTable returns a formatted metadata table for the data provided
 func (pm *ProcessManager) ProcessTable(table *tablewriter.Table) *tablewriter.Table {
 	table.SetHeader([]string{"Name", "Status", "Metadata", "Command"})
 	table.SetBorder(false)
@@ -185,7 +185,8 @@ func (pm *ProcessManager) ProcessSummary() *[][]string {
 		} else {
 			running = "stopped"
 		}
-		line := []string{val.name, running, val.metadata, val.cmdstr}
+		cmd := val.cmdstr + " " + strings.Join(val.args, " ")
+		line := []string{val.name, running, val.metadata, cmd}
 		data = append(data, line)
 	}
 	return &data
