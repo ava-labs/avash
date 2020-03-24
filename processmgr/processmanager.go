@@ -143,9 +143,10 @@ func (pm *ProcessManager) RemoveProcess(name string) error {
 	if _, ok := pm.processes[name]; !ok {
 		return fmt.Errorf("Process does not exist, cannot remove: %s", name)
 	}
-	err := pm.StopProcess(name)
-	if err != nil {
-		return err
+	if pm.processes[name].running {
+		if err := pm.StopProcess(name); err != nil {
+			return err
+		}
 	}
 	delete(pm.processes, name)
 	cfg.Config.Log.Info("Process removed: %s", name)
