@@ -42,6 +42,7 @@ help procmanager start
 ### Commands
 
  * avawallet - Tools for interacting with AVA Payments over the network.
+ * callrpc - Issues an RPC to a node.
  * exit - Exit the shell.
  * help - Help about any command.
  * procmanager - Access the process manager for the avash client.
