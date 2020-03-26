@@ -92,6 +92,7 @@ func init() {
 
 	cfg.InitConfig(cfgpath)
 	RootCmd.AddCommand(AVAWalletCmd)
+	RootCmd.AddCommand(CallRPCCmd)
 	RootCmd.AddCommand(ExitCmd)
 	RootCmd.AddCommand(ProcmanagerCmd)
 	RootCmd.AddCommand(RunScriptCmd)
