@@ -15,6 +15,28 @@ import (
 	"github.com/spf13/pflag"
 )
 
+const usageTmpl string = `Usage:{{if .Runnable}}
+  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
+  {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
+
+Aliases:
+  {{.NameAndAliases}}{{end}}{{if .HasExample}}
+
+Examples:
+{{.Example}}{{end}}{{if .HasAvailableSubCommands}}
+
+Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
+
+Flags:
+{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
+
+Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+
+Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}
+`
+
 type historyrecord struct {
 	cmd   *cobra.Command
 	flags []string
@@ -98,6 +120,7 @@ func init() {
 	RootCmd.AddCommand(SetOutputCmd)
 	RootCmd.AddCommand(StartnodeCmd)
 	RootCmd.AddCommand(VarStoreCmd)
+	RootCmd.SetUsageTemplate(usageTmpl)
 }
 
 // RootCmd represents the root command
