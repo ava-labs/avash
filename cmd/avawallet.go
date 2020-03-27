@@ -487,7 +487,7 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 
 // AVAWalletCompareCmd compares the UTXO set between two wallets, stores difference in a variable
 var AVAWalletCompareCmd = &cobra.Command{
-	Use:   "compare [wallet name A] [wallet name B] [variable scope] [variable name]",
+	Use:   "compare [wallet name A] [wallet name B] [var scope] [var name]",
 	Short: "Compares the UTXO set between two wallets.",
 	Long:  `Compares the UTXO set between two wallets.`,
 	Run: func(cmd *cobra.Command, args []string) {
