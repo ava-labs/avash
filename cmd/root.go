@@ -57,22 +57,22 @@ func (sh *Shell) addHistory(cmd *cobra.Command, flags []string) {
 	sh.history = append(sh.history, hr)
 }
 
-func pcFromCommands(parent readline.PrefixCompleterInterface, c *cobra.Command) {
-	pc := readline.PcItem(c.Use)
-	parent.SetChildren(append(parent.GetChildren(), pc))
+func completerFromRoot(c *cobra.Command) []readline.PrefixCompleterInterface {
+	var children []readline.PrefixCompleterInterface
 	for _, child := range c.Commands() {
-		pcFromCommands(pc, child)
+		childPC := readline.PcItem(child.Name(), completerFromRoot(child)...)
+		children = append(children, childPC)
 	}
+	return children
 }
 
 // ShellLoop is an execution loop for the terminal application
 func (sh *Shell) ShellLoop() {
-	completer := readline.NewPrefixCompleter()
-	for _, child := range sh.root.Commands() {
-		pcFromCommands(completer, child)
-	}
+	rootPC := completerFromRoot(sh.root)
+	completer := readline.NewPrefixCompleter(rootPC...)
 	rln, err := readline.NewEx(&readline.Config{
-		Prompt:         "avash> ",
+		Prompt:       "avash> ",
+		AutoComplete: completer,
 	})
 	sh.rl = rln
 	if err != nil {
