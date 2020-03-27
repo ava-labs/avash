@@ -6,7 +6,6 @@ package processmgr
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -48,19 +47,27 @@ type Process struct {
 // Start begins a new process
 func (p *Process) Start(done chan bool) {
 	log := cfg.Config.Log
-	log.Info("\rStarting process %s.", p.name)
-	log.Info("Command: %s\n", p.cmd.Args)
 	if p.running {
-		log.Error("Process %s is already running", p.name)
+		log.Error("Process is already running, cannot start: %s", p.name)
+		done <- true
 		return
 	}
-	p.running = true
-	done <- true
+	log.Info("Starting process %s.", p.name)
+	p.cmd = exec.Command(p.cmdstr, p.args...)
+	log.Info("Command: %s\n", p.cmd.Args)
 
+	selfStopped := false
 	go func() {
-		err := p.cmd.Run()
-		// Procmanager not expecting termination
-		if p.running {
+		err := p.cmd.Start()
+		if err != nil {
+			p.fail <- err
+			return
+		}
+		p.running = true
+		p.failed = false
+		done <- true
+		err = p.cmd.Wait()
+		if !selfStopped {
 			p.fail <- err
 		}
 	}()
@@ -78,10 +85,11 @@ func (p *Process) Start(done chan bool) {
 	for {
 		select {
 		case sp := <-p.stop:
-			log.Info("\rCalling stop() on %s", p.name)
+			log.Info("Calling stop() on %s", p.name)
 			if sp {
+				selfStopped = true
 				if err := p.endProcess(false); err != nil {
-					log.Error("SIGINT failed on process: %s", p.name)
+					log.Error("SIGINT failed on process: %s: %s", p.name, err.Error())
 					p.stop <- false
 					return
 				}
@@ -90,10 +98,11 @@ func (p *Process) Start(done chan bool) {
 				return
 			}
 		case kl := <-p.kill:
-			log.Info("\rCalling kill() on %s.", p.name)
+			log.Info("Calling kill() on %s.", p.name)
 			if kl {
+				selfStopped = true
 				if err := p.endProcess(true); err != nil {
-					log.Error("SIGTERM failed on process: %s", p.name)
+					log.Error("SIGTERM failed on process: %s: %s", p.name, err.Error())
 					p.kill <- false
 					return
 				}
@@ -102,13 +111,17 @@ func (p *Process) Start(done chan bool) {
 				return
 			}
 		case fl := <-p.fail:
-			errMsg := "inspect related logs for FATAL output"
+			p.failed = true
+			errMsg := "inspect for process validity (command, args, flags) or FATAL output in related logs"
 			if fl != nil {
 				errMsg = fl.Error()
 			}
-			log.Error("\rProcess %s failure: %s", p.name, errMsg)
+			log.Error("Process failure: %s: %s", p.name, errMsg)
+			// Specific case for a bad `p.cmd.Start()` call
+			if !p.running {
+				done <- false
+			}
 			p.running = false
-			p.failed = true
 			return
 		}
 	}
@@ -117,30 +130,29 @@ func (p *Process) Start(done chan bool) {
 // Stop ends a process with SIGINT
 func (p *Process) Stop() error {
 	if !p.running {
-		return fmt.Errorf("Cannot stop process %s because it is not running", p.name)
+		return fmt.Errorf("Process is not running, cannot stop: %s", p.name)
 	}
 	p.stop <- true
 	result := <-p.stop
-	if result {
-		p.running = false
-	} else {
-		return fmt.Errorf("Unable to stop process %s: ", p.name)
+	p.running = false
+	if !result {
+		p.failed = true
+		return fmt.Errorf("Unable to properly stop process: %s", p.name)
 	}
 	return nil
 }
 
 // Kill ends a process with SIGTERM
 func (p *Process) Kill() error {
-	if p.running {
-		p.kill <- true
-		result := <-p.kill
-		if result {
-			p.running = false
-		} else {
-			return errors.New("Unable to kill process: " + p.name)
-		}
-	} else {
-		return errors.New("Process is not running, cannot kill: " + p.name)
+	if !p.running {
+		return fmt.Errorf("Process is not running, cannot kill: %s", p.name)
+	}
+	p.kill <- true
+	result := <-p.kill
+	p.running = false
+	if !result {
+		p.failed = true
+		return fmt.Errorf("Unable to properly kill process: %s", p.name)
 	}
 	return nil
 }

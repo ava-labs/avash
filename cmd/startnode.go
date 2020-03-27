@@ -24,6 +24,7 @@ type Metadata struct {
 	Serverhost     string `json:"public-ip"`
 	Stakingport    string `json:"staking-port"`
 	HTTPport       string `json:"http-port"`
+	HTTPTLS        bool   `json:"http-tls-enabled"`
 	Dbdir          string `json:"db-dir"`
 	Datadir        string `json:"data-dir"`
 	Logsdir        string `json:"log-dir"`
@@ -249,6 +250,7 @@ func flagsToArgs(basedir string) ([]string, Metadata) {
 		Serverhost:     flags.publicIP,
 		Stakingport:    stakingPortString,
 		HTTPport:       httpPortString,
+		HTTPTLS:        flags.httpTLSEnabled,
 		Dbdir:          dbPath,
 		Datadir:        dataPath,
 		Logsdir:        logPath,

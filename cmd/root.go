@@ -15,6 +15,28 @@ import (
 	"github.com/spf13/pflag"
 )
 
+const usageTmpl string = `Usage:{{if .Runnable}}
+  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
+  {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
+
+Aliases:
+  {{.NameAndAliases}}{{end}}{{if .HasExample}}
+
+Examples:
+{{.Example}}{{end}}{{if .HasAvailableSubCommands}}
+
+Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
+
+Flags:
+{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
+
+Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+
+Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}
+`
+
 type historyrecord struct {
 	cmd   *cobra.Command
 	flags []string
@@ -35,22 +57,22 @@ func (sh *Shell) addHistory(cmd *cobra.Command, flags []string) {
 	sh.history = append(sh.history, hr)
 }
 
-func pcFromCommands(parent readline.PrefixCompleterInterface, c *cobra.Command) {
-	pc := readline.PcItem(c.Use)
-	parent.SetChildren(append(parent.GetChildren(), pc))
+func completerFromRoot(c *cobra.Command) []readline.PrefixCompleterInterface {
+	var children []readline.PrefixCompleterInterface
 	for _, child := range c.Commands() {
-		pcFromCommands(pc, child)
+		childPC := readline.PcItem(child.Name(), completerFromRoot(child)...)
+		children = append(children, childPC)
 	}
+	return children
 }
 
 // ShellLoop is an execution loop for the terminal application
 func (sh *Shell) ShellLoop() {
-	completer := readline.NewPrefixCompleter()
-	for _, child := range sh.root.Commands() {
-		pcFromCommands(completer, child)
-	}
+	rootPC := completerFromRoot(sh.root)
+	completer := readline.NewPrefixCompleter(rootPC...)
 	rln, err := readline.NewEx(&readline.Config{
-		Prompt:         "avash> ",
+		Prompt:       "avash> ",
+		AutoComplete: completer,
 	})
 	sh.rl = rln
 	if err != nil {
@@ -92,12 +114,14 @@ func init() {
 
 	cfg.InitConfig(cfgpath)
 	RootCmd.AddCommand(AVAWalletCmd)
+	RootCmd.AddCommand(CallRPCCmd)
 	RootCmd.AddCommand(ExitCmd)
 	RootCmd.AddCommand(ProcmanagerCmd)
 	RootCmd.AddCommand(RunScriptCmd)
 	RootCmd.AddCommand(SetOutputCmd)
 	RootCmd.AddCommand(StartnodeCmd)
 	RootCmd.AddCommand(VarStoreCmd)
+	RootCmd.SetUsageTemplate(usageTmpl)
 }
 
 // RootCmd represents the root command

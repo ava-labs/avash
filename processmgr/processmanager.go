@@ -6,9 +6,7 @@ Copyright © 2019 AVA Labs <collin@avalabs.org>
 package processmgr
 
 import (
-	"errors"
 	"fmt"
-	"os/exec"
 	"strings"
 
 	"github.com/ava-labs/avash/cfg"
@@ -23,12 +21,12 @@ type ProcessManager struct {
 }
 
 // AddProcess places a process into the process manager with an associated name
-func (p *ProcessManager) AddProcess(cmdstr string, proctype string, args []string, name string, metadata string, ih InputHandler, oh OutputHandler, eh OutputHandler) error {
+func (pm *ProcessManager) AddProcess(cmdstr string, proctype string, args []string, name string, metadata string, ih InputHandler, oh OutputHandler, eh OutputHandler) error {
 	pname := strings.TrimSpace(name)
 	if pname == "" {
-		return errors.New("Process name cannot be empty")
+		return fmt.Errorf("Process name cannot be empty")
 	}
-	_, exists := p.processes[pname]
+	_, exists := pm.processes[pname]
 	if exists {
 		return fmt.Errorf("Process with name %s already exists", pname)
 	}
@@ -38,7 +36,7 @@ func (p *ProcessManager) AddProcess(cmdstr string, proctype string, args []strin
 	stop := make(chan bool)
 	kill := make(chan bool)
 	fail := make(chan error)
-	proc := &Process{
+	p := &Process{
 		cmdstr:    cmdstr,
 		args:      args,
 		name:      pname,
@@ -54,104 +52,109 @@ func (p *ProcessManager) AddProcess(cmdstr string, proctype string, args []strin
 		outhandle: oh,
 		errhandle: eh,
 	}
-	p.processes[name] = proc
+	pm.processes[name] = p
 
 	return nil
 }
 
 // StartProcess starts the process at the name
-func (p *ProcessManager) StartProcess(name string) error {
-	if _, ok := p.processes[name]; !ok {
-		return fmt.Errorf("Can't start process %s because it does not exist", name)
-
+func (pm *ProcessManager) StartProcess(name string) error {
+	p, ok := pm.processes[name]
+	if !ok {
+		return fmt.Errorf("Process does not exist, cannot start: %s", name)
 	}
-	if p.processes[name].running {
-		return fmt.Errorf("Proccess %s is already running", name)
-	}
-	p.processes[name].cmd = exec.Command(p.processes[name].cmdstr, p.processes[name].args...)
 	done := make(chan bool)
-	go p.processes[name].Start(done)
+	go p.Start(done)
 	<-done
 	return nil
 }
 
 // StopProcess stops the process at the name
-func (p *ProcessManager) StopProcess(name string) error {
-	if _, ok := p.processes[name]; !ok {
-		return fmt.Errorf("Cannot stop process '%s' because it doesn't exist", name)
-
+func (pm *ProcessManager) StopProcess(name string) error {
+	p, ok := pm.processes[name]
+	if !ok {
+		return fmt.Errorf("Process does not exist, cannot stop: %s", name)
 	}
-	if !p.processes[name].running {
-		return fmt.Errorf("Cannot stop process '%s' because it isn't running", name)
-	}
-	return p.processes[name].Stop()
+	return p.Stop()
 }
 
-// StopAllProcesses goes through each process and calls Stop(), returning name of process that failed and error
-func (p *ProcessManager) StopAllProcesses() (string, error) {
-	for name := range p.processes {
-		if p.processes[name].running {
-			err := p.StopProcess(name)
+// StopAllProcesses calls Stop() on every running process, logging errors
+func (pm *ProcessManager) StopAllProcesses() {
+	existsRunning := false
+	for name := range pm.processes {
+		if pm.processes[name].running {
+			existsRunning = true
+			err := pm.StopProcess(name)
 			if err != nil {
-				cfg.Config.Log.Error("Error while stopping process '%s': %s", name, err)
-				return name, err
+				cfg.Config.Log.Error(err.Error())
 			}
 		}
 	}
-	return "", nil
+	if !existsRunning {
+		cfg.Config.Log.Info("No processes currently running.")
+	}
 }
 
 // KillProcess kills the process at the name
-func (p *ProcessManager) KillProcess(name string) error {
-	if _, ok := p.processes[name]; ok {
-		if !p.processes[name].running {
-			return errors.New("process cannot kill: '" + name + "' isn't running.")
-		}
-	} else {
-		return errors.New("process cannot kill: '" + name + "' doesn't exist.")
+func (pm *ProcessManager) KillProcess(name string) error {
+	p, ok := pm.processes[name]
+	if !ok {
+		return fmt.Errorf("Process does not exist, cannot kill: %s", name)
 	}
-	return p.processes[name].Kill()
+	return p.Kill()
 }
 
-// KillAllProcesses goes through each process and calls Kill(), returning name of process that failed and error
-func (p *ProcessManager) KillAllProcesses() (string, error) {
-	for name := range p.processes {
-		if p.processes[name].running {
-			err := p.KillProcess(name)
+// KillAllProcesses calls Kill() on every running process, logging errors
+func (pm *ProcessManager) KillAllProcesses() {
+	existsRunning := false
+	for name := range pm.processes {
+		if pm.processes[name].running {
+			existsRunning = true
+			err := pm.KillProcess(name)
 			if err != nil {
-				return name, err
+				cfg.Config.Log.Error(err.Error())
 			}
 		}
 	}
-	return "", nil
+	if !existsRunning {
+		cfg.Config.Log.Info("No processes currently running.")
+	}
 }
 
-// StartAllProcesses goes through each process and calls Start(), returning name of process that failed and error
-func (p *ProcessManager) StartAllProcesses() (string, error) {
-	for name := range p.processes {
-		if !p.processes[name].running {
-			err := p.StartProcess(name)
+// StartAllProcesses calls Start() on every stopped process, logging errors
+func (pm *ProcessManager) StartAllProcesses() {
+	existsStopped := false
+	for name := range pm.processes {
+		if !pm.processes[name].running {
+			existsStopped = true
+			err := pm.StartProcess(name)
 			if err != nil {
-				return name, err
+				cfg.Config.Log.Error(err.Error())
 			}
 		}
 	}
-	return "", nil
+	if !existsStopped {
+		cfg.Config.Log.Info("All processes currently running.")
+	}
 }
 
 // RemoveProcess removes a process from the list of available named processes
-func (p *ProcessManager) RemoveProcess(name string) error {
-	if _, ok := p.processes[name]; !ok {
-		return fmt.Errorf("Cannot remove process '%s' because it doesn't exist", name)
+func (pm *ProcessManager) RemoveProcess(name string) error {
+	if _, ok := pm.processes[name]; !ok {
+		return fmt.Errorf("Process does not exist, cannot remove: %s", name)
 	}
-	p.StopProcess(name)
-	delete(p.processes, name)
-	cfg.Config.Log.Info("Process %s removed", name)
+	if pm.processes[name].running {
+		if err := pm.StopProcess(name); err != nil {
+			return err
+		}
+	}
+	delete(pm.processes, name)
+	cfg.Config.Log.Info("Process removed: %s", name)
 	return nil
 }
 
-// ProcessTable returns a formatted tablmetadatae for the data provided
-func (p *ProcessManager) ProcessTable(table *tablewriter.Table) *tablewriter.Table {
+// ProcessTable returns a formatted metadata table for the data provided
+func (pm *ProcessManager) ProcessTable(table *tablewriter.Table) *tablewriter.Table {
 	table.SetHeader([]string{"Name", "Status", "Metadata", "Command"})
 	table.SetBorder(false)
 
@@ -164,16 +167,16 @@ func (p *ProcessManager) ProcessTable(table *tablewriter.Table) *tablewriter.Tab
 		tablewriter.Colors{tablewriter.Normal},
 		tablewriter.Colors{tablewriter.Normal},
 		tablewriter.Colors{tablewriter.Normal})
-	psd := p.ProcessSummary()
+	psd := pm.ProcessSummary()
 	table.AppendBulk(*psd)
 	table.SetReflowDuringAutoWrap(true)
 	return table
 }
 
 // ProcessSummary returns data table of all processes and their statuses
-func (p *ProcessManager) ProcessSummary() *[][]string {
+func (pm *ProcessManager) ProcessSummary() *[][]string {
 	var data [][]string
-	for _, val := range p.processes {
+	for _, val := range pm.processes {
 		var running string
 		if val.running {
 			running = "running"
@@ -182,22 +185,33 @@ func (p *ProcessManager) ProcessSummary() *[][]string {
 		} else {
 			running = "stopped"
 		}
-		line := []string{val.name, running, val.metadata, val.cmdstr}
+		cmd := val.cmdstr + " " + strings.Join(val.args, " ")
+		line := []string{val.name, running, val.metadata, cmd}
 		data = append(data, line)
 	}
 	return &data
 
 }
 
-// Metadata returns the metadata given the node name
-func (p *ProcessManager) Metadata(name string) (string, error) {
+// Metadata returns the metadata given the process name
+func (pm *ProcessManager) Metadata(name string) (string, error) {
 	if name == "" {
-		return "", fmt.Errorf("Node name required")
+		return "", fmt.Errorf("Process name required")
 	}
-	if pr, ok := p.processes[name]; ok {
-		return pr.metadata, nil
+	if p, ok := pm.processes[name]; ok {
+		return p.metadata, nil
 	}
-	return "", fmt.Errorf("No such node: %s", name)
+	return "", fmt.Errorf("Process does not exist, cannot get metadata: %s", name)
+}
+
+// HasRunning returns true if there exists a running process, otherwise false
+func (pm *ProcessManager) HasRunning() bool {
+	for _, val := range pm.processes {
+		if val.running {
+			return true
+		}
+	}
+	return false
 }
 
 // ProcManager is a global
