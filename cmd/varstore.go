@@ -85,12 +85,11 @@ func (v *VarStore) Get(store string) (VarScope, error) {
 
 // VarStoreCmd represents the vars command
 var VarStoreCmd = &cobra.Command{
-	Use:   "varstore [operation]",
+	Use:   "varstore",
 	Short: "Tools for creating variable stores and printing variables within them.",
 	Long: `Tools for creating variable stores and printing variables within them. Using this 
 	command you can create variable stores, list all variables they store, and print data 
 	placed into these stores. Variable assigment and update is often managed by avash commands.`,
-	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},

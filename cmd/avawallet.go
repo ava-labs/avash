@@ -30,7 +30,7 @@ import (
 
 // AVAWalletCmd represents the avawallet command
 var AVAWalletCmd = &cobra.Command{
-	Use:   "avawallet [command]",
+	Use:   "avawallet",
 	Short: "Tools for interacting with AVA Payments over the network.",
 	Long: `Tools for interacting with AVA Payments over the network. Using this 
 	command you can create, send, and get the status of a transaction.`,
