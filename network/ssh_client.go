@@ -1,6 +1,7 @@
 package network
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net"
 	"os"
@@ -75,7 +76,7 @@ func promptAuth() ssh.AuthMethod {
 	var sshMethod string
 	authPrompt := &survey.Select{
 		Message: "Choose a method to provide SSH credentials:",
-		Options: []string{strPassword, strKeyFile, strAgent, "cancel"},
+		Options: []string{strPassword, strKeyFile, strAgent, "quit"},
 	}
 	var auth ssh.AuthMethod
 	for {
@@ -121,23 +122,22 @@ func promptClient(config *ssh.ClientConfig) *SSHClient {
 	}
 }
 
-// NewSSH instantiates a new SSH client, returns nil if user quits
-func NewSSH() *SSHClient {
-	var user string
-	userPrompt := &survey.Input{
-		Message: "SSH username:",
-	}
-	survey.AskOne(userPrompt, &user)
+// NewSSH instantiates a new SSH client
+func NewSSH(username string, ip string) (*SSHClient, error) {
 	auth := promptAuth()
 	if auth == nil {
-		return nil
+		return nil, fmt.Errorf("Authentication quit")
 	}
 	sshConfig := &ssh.ClientConfig{
-		User: user,
+		User: username,
 		Auth: []ssh.AuthMethod{auth},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-	return promptClient(sshConfig)
+	client, err := ssh.Dial("tcp", ip + ":22", sshConfig)
+	if err != nil {
+		return nil, err
+	}
+	return &SSHClient{client}, nil
 }
 
 // TestOutput logs a test message through client
