@@ -2,11 +2,13 @@ package network
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"os"
 	"github.com/AlecAivazis/survey"
 	"github.com/ava-labs/avash/cfg"
+	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 )
@@ -140,27 +142,74 @@ func NewSSH(username string, ip string) (*SSHClient, error) {
 	return &SSHClient{client}, nil
 }
 
-// TestOutput logs a test message through client
-func (client *SSHClient) TestOutput() {
-	session, err := client.NewSession()
-	if err != nil {
-		return
-	}
-	defer session.Close()
+// Run runs a series of commands on remote host and waits for exit
+func (client *SSHClient) Run(cmds []string) error {
+	for _, cmd := range cmds {
+		session, err := client.NewSession()
+		if err != nil {
+			return err
+		}
+		modes := ssh.TerminalModes{
+			ssh.ECHO:          0,     // disable echoing
+			ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
+			ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
+		}
+		if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
+			return err
+		}
+		session.Stdout = os.Stdout
+		session.Stderr = os.Stderr
 
-	modes := ssh.TerminalModes{
-		ssh.ECHO:          0,     // disable echoing
-		ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
-		ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
+		cfg.Config.Log.Debug("Running command: %s", cmd)
+		if err := session.Run(cmd); err != nil {
+			return err
+		}
+
+		session.Close()
 	}
-	if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
-		return
-	}
-	stdout, err := session.StdoutPipe()
+	
+	return nil
+}
+
+// CopyFile copies the contents of `fp` to `cfp` through client
+func (client *SSHClient) CopyFile(fp string, cfp string) error {
+	sftpClient, err := sftp.NewClient(client.Client)
 	if err != nil {
-		return
+		return err
 	}
-	session.Run("echo this is a test")
-	b, err := ioutil.ReadAll(stdout)
-	cfg.Config.Log.Info(string(b))
+	defer sftpClient.Close()
+
+	dstFile, err := sftpClient.Create(cfp)
+	if err != nil {
+		return err
+	}
+	defer dstFile.Close()
+
+	srcFile, err := os.Open(fp)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	numBytes, err := io.Copy(dstFile, srcFile)
+	if err != nil {
+		return err
+	}
+	cfg.Config.Log.Debug("%d bytes copied: %s --> %s", numBytes, fp, cfp)
+	return nil
+}
+
+// Remove removes file or directory `path` through client
+func (client *SSHClient) Remove(path string) error {
+	sftpClient, err := sftp.NewClient(client.Client)
+	if err != nil {
+		return err
+	}
+	defer sftpClient.Close()
+
+	if err := sftpClient.Remove(path); err != nil {
+		return err
+	}
+	cfg.Config.Log.Debug("Removed: %s", path)
+	return nil
 }

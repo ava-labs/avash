@@ -32,13 +32,30 @@ var SSHDeployCommand = &cobra.Command{
 	Short: "Deploys a remotely running node.",
 	Long:  `Deploys a remotely running node to a specified host.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
+		const cfp string = "./install.sh"
+		cmds := []string{
+			"chmod 777 " + cfp,
+			cfp,
+		}
 		client, err := network.NewSSH(args[1], args[2])
 		if err != nil {
-			cfg.Config.Log.Error(err.Error())
+			log.Error(err.Error())
 			return
 		}
 		defer client.Close()
-		client.TestOutput()
+
+		if err := client.CopyFile("network/startnode.sh", cfp); err != nil {
+			log.Error(err.Error())
+			return
+		}
+		defer client.Remove(cfp)
+
+		if err := client.Run(cmds); err != nil {
+			log.Error(err.Error())
+			return
+		}
+		log.Info("Node successfully deployed!")
 	},
 }
 
