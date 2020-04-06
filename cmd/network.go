@@ -33,30 +33,65 @@ var SSHDeployCommand = &cobra.Command{
 	Long:  `Deploys a remotely running node to a specified host.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log := cfg.Config.Log
-		const cfp string = "./install.sh"
-		cmds := []string{
-			"chmod 777 " + cfp,
-			cfp,
-		}
-		client, err := network.NewSSH(args[1], args[2])
+		c1, err := network.NewSSH(args[1], args[2])
 		if err != nil {
 			log.Error(err.Error())
 			return
 		}
-		defer client.Close()
-
-		if err := client.CopyFile("network/startnode.sh", cfp); err != nil {
+		defer c1.Close()
+		if err := initHost(c1); err != nil {
 			log.Error(err.Error())
 			return
 		}
-		defer client.Remove(cfp)
-
-		if err := client.Run(cmds); err != nil {
+		// New connection necessary to refresh user groups
+		c2, err := c1.Clone()
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
+		defer c2.Close()
+		if err := deploy(c2); err != nil {
 			log.Error(err.Error())
 			return
 		}
 		log.Info("Node successfully deployed!")
 	},
+}
+
+func initHost(client *network.SSHClient) error {
+	const cfp string = "./init.sh"
+	cmds := []string{
+		"chmod 777 " + cfp,
+		cfp,
+	}
+
+	if err := client.CopyFile("network/init.sh", cfp); err != nil {
+		return err
+	}
+	defer client.Remove(cfp)
+
+	if err := client.Run(cmds); err != nil {
+		return err
+	}
+	return nil
+}
+
+func deploy(client *network.SSHClient) error {
+	const cfp string = "./startnode.sh"
+	cmds := []string{
+		"chmod 777 " + cfp,
+		cfp + " --staking-tls-enabled=false",
+	}
+
+	if err := client.CopyFile("network/startnode.sh", cfp); err != nil {
+		return err
+	}
+	defer client.Remove(cfp)
+
+	if err := client.Run(cmds); err != nil {
+		return err
+	}
+	return nil
 }
 
 func init() {

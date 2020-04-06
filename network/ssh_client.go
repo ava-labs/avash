@@ -16,6 +16,8 @@ import (
 // SSHClient implements an SSH client
 type SSHClient struct {
 	*ssh.Client
+	config *ssh.ClientConfig
+	ip string
 }
 
 func promptRetry(err error) bool {
@@ -120,7 +122,7 @@ func promptClient(config *ssh.ClientConfig) *SSHClient {
 			}
 			return nil
 		}
-		return &SSHClient{client}
+		return &SSHClient{client, config, host}
 	}
 }
 
@@ -139,7 +141,7 @@ func NewSSH(username string, ip string) (*SSHClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &SSHClient{client}, nil
+	return &SSHClient{client, sshConfig, ip}, nil
 }
 
 // Run runs a series of commands on remote host and waits for exit
@@ -212,4 +214,13 @@ func (client *SSHClient) Remove(path string) error {
 	}
 	cfg.Config.Log.Debug("Removed: %s", path)
 	return nil
+}
+
+// Clone creates another client instance connected to the same host
+func (client *SSHClient) Clone() (*SSHClient, error) {
+	clone, err := ssh.Dial("tcp", client.ip + ":22", client.config)
+	if err != nil {
+		return nil, err
+	}
+	return &SSHClient{clone, client.config, client.ip}, nil
 }
