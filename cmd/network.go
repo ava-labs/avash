@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/network"
 	"github.com/spf13/cobra"
@@ -50,11 +51,31 @@ var SSHDeployCommand = &cobra.Command{
 			return
 		}
 		defer c2.Close()
-		if err := deploy(c2); err != nil {
+		if err := deploy(c2, args[0]); err != nil {
 			log.Error(err.Error())
 			return
 		}
 		log.Info("Node successfully deployed!")
+	},
+}
+
+// SSHKillCommand kills a node through an SSH client
+var SSHKillCommand = &cobra.Command{
+	Use: "kill [node name] [SSH username] [IP address]",
+	Short: "Kills a remotely running node.",
+	Long:  `Kills a remotely running node on a specified host.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
+		client, err := network.NewSSH(args[1], args[2])
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
+		defer client.Close()
+		if err := kill(client, args[0]); err != nil {
+			log.Error(err.Error())
+			return
+		}
 	},
 }
 
@@ -68,7 +89,7 @@ func initHost(client *network.SSHClient) error {
 	if err := client.CopyFile("network/init.sh", cfp); err != nil {
 		return err
 	}
-	defer client.Remove(cfp)
+	defer client.RemovePath(cfp)
 
 	if err := client.Run(cmds); err != nil {
 		return err
@@ -76,18 +97,28 @@ func initHost(client *network.SSHClient) error {
 	return nil
 }
 
-func deploy(client *network.SSHClient) error {
+func deploy(client *network.SSHClient, name string) error {
 	const cfp string = "./startnode.sh"
 	cmds := []string{
-		"chmod 777 " + cfp,
-		cfp + " --staking-tls-enabled=false",
+		fmt.Sprintf("chmod 777 %s", cfp),
+		fmt.Sprintf("%s --name=%s --staking-tls-enabled=false", cfp, name),
 	}
 
 	if err := client.CopyFile("network/startnode.sh", cfp); err != nil {
 		return err
 	}
-	defer client.Remove(cfp)
+	defer client.RemovePath(cfp)
 
+	if err := client.Run(cmds); err != nil {
+		return err
+	}
+	return nil
+}
+
+func kill(client *network.SSHClient, name string) error {
+	cmds := []string{
+		fmt.Sprintf("docker kill %s", name),
+	}
 	if err := client.Run(cmds); err != nil {
 		return err
 	}
@@ -96,5 +127,6 @@ func deploy(client *network.SSHClient) error {
 
 func init() {
 	NetworkSSHCommand.AddCommand(SSHDeployCommand)
+	NetworkSSHCommand.AddCommand(SSHKillCommand)
 	NetworkCommand.AddCommand(NetworkSSHCommand)
 }
