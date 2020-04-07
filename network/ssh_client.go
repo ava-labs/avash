@@ -201,8 +201,8 @@ func (client *SSHClient) CopyFile(fp string, cfp string) error {
 	return nil
 }
 
-// Remove removes file or directory `path` through client
-func (client *SSHClient) Remove(path string) error {
+// RemovePath removes file or directory `path` through client
+func (client *SSHClient) RemovePath(path string) error {
 	sftpClient, err := sftp.NewClient(client.Client)
 	if err != nil {
 		return err
