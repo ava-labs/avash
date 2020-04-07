@@ -55,15 +55,15 @@ var SSHDeployCommand = &cobra.Command{
 			log.Error(err.Error())
 			return
 		}
-		log.Info("Node successfully deployed!")
+		log.Info("Node '%s' deployed by '%s' at %s", args[0], args[1], args[2])
 	},
 }
 
-// SSHKillCommand kills a node through an SSH client
-var SSHKillCommand = &cobra.Command{
-	Use: "kill [node name] [SSH username] [IP address]",
-	Short: "Kills a remotely running node.",
-	Long:  `Kills a remotely running node on a specified host.`,
+// SSHRemoveCommand removes a node through an SSH client
+var SSHRemoveCommand = &cobra.Command{
+	Use: "remove [node name] [SSH username] [IP address]",
+	Short: "Removes a remotely running node.",
+	Long:  `Removes a remotely running node on a specified host.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log := cfg.Config.Log
 		client, err := network.NewSSH(args[1], args[2])
@@ -72,10 +72,11 @@ var SSHKillCommand = &cobra.Command{
 			return
 		}
 		defer client.Close()
-		if err := kill(client, args[0]); err != nil {
+		if err := remove(client, args[0]); err != nil {
 			log.Error(err.Error())
 			return
 		}
+		log.Info("Node '%s' removed by '%s' at %s", args[0], args[1], args[2])
 	},
 }
 
@@ -115,9 +116,10 @@ func deploy(client *network.SSHClient, name string) error {
 	return nil
 }
 
-func kill(client *network.SSHClient, name string) error {
+func remove(client *network.SSHClient, name string) error {
 	cmds := []string{
-		fmt.Sprintf("docker kill %s", name),
+		fmt.Sprintf("docker stop %s", name),
+		fmt.Sprintf("docker rm %s", name),
 	}
 	if err := client.Run(cmds); err != nil {
 		return err
@@ -127,6 +129,6 @@ func kill(client *network.SSHClient, name string) error {
 
 func init() {
 	NetworkSSHCommand.AddCommand(SSHDeployCommand)
-	NetworkSSHCommand.AddCommand(SSHKillCommand)
+	NetworkSSHCommand.AddCommand(SSHRemoveCommand)
 	NetworkCommand.AddCommand(NetworkSSHCommand)
 }
