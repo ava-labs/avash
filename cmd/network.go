@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/network"
 	"github.com/spf13/cobra"
@@ -17,41 +16,25 @@ var NetworkCommand = &cobra.Command{
 	},
 }
 
-// NetworkSSHCommand represents the network ssh command
-var NetworkSSHCommand = &cobra.Command{
-	Use: "ssh",
-	Short: "Tools for interacting with remote hosts via SSH.",
-	Long:  `Tools for interacting with remote hosts via SSH.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
-}
-
 // SSHDeployCommand deploys a node through an SSH client
 var SSHDeployCommand = &cobra.Command{
 	Use: "deploy [node name] [SSH username] [IP address]",
-	Short: "Deploys a remotely running node.",
-	Long:  `Deploys a remotely running node to a specified host.`,
+	Short: "Deploys a remotely running node via SSH.",
+	Long:  `Deploys a remotely running node via SSH to a specified host.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log := cfg.Config.Log
-		c1, err := network.NewSSH(args[1], args[2])
-		if err != nil {
-			log.Error(err.Error())
-			return
+		netCfg := &network.Config{
+			Hosts: []network.HostConfig{
+				network.HostConfig{
+					User: args[1],
+					IP: args[2],
+					Nodes: []string{
+						args[0],
+					},
+				},
+			},
 		}
-		defer c1.Close()
-		if err := initHost(c1); err != nil {
-			log.Error(err.Error())
-			return
-		}
-		// New connection necessary to refresh user groups
-		c2, err := c1.Clone()
-		if err != nil {
-			log.Error(err.Error())
-			return
-		}
-		defer c2.Close()
-		if err := deploy(c2, args[0]); err != nil {
+		if err := network.Deploy(netCfg, true); err != nil {
 			log.Error(err.Error())
 			return
 		}
@@ -59,20 +42,43 @@ var SSHDeployCommand = &cobra.Command{
 	},
 }
 
-// SSHRemoveCommand removes a node through an SSH client
-var SSHRemoveCommand = &cobra.Command{
-	Use: "remove [node name] [SSH username] [IP address]",
-	Short: "Removes a remotely running node.",
-	Long:  `Removes a remotely running node on a specified host.`,
+var SSHDeployAllCommand = &cobra.Command{
+	Use: "deploy-all [config file]",
 	Run: func(cmd *cobra.Command, args []string) {
 		log := cfg.Config.Log
-		client, err := network.NewSSH(args[1], args[2])
+		netCfg, err := network.InitConfig(args[0])
 		if err != nil {
 			log.Error(err.Error())
 			return
 		}
-		defer client.Close()
-		if err := remove(client, args[0]); err != nil {
+		log.Info("Deployment starting... (this process typically takes 3-6 minutes depending on host)")
+		if err := network.Deploy(netCfg, false); err != nil {
+			log.Error(err.Error())
+			return
+		}
+		log.Info("Deployment complete.")
+	},
+}
+
+// SSHRemoveCommand removes a node through an SSH client
+var SSHRemoveCommand = &cobra.Command{
+	Use: "remove [node name] [SSH username] [IP address]",
+	Short: "Removes a remotely running node via SSH.",
+	Long:  `Removes a remotely running node via SSH on a specified host.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
+		netCfg := &network.Config{
+			Hosts: []network.HostConfig{
+				network.HostConfig{
+					User: args[1],
+					IP: args[2],
+					Nodes: []string{
+						args[0],
+					},
+				},
+			},
+		}
+		if err := network.Remove(netCfg, true); err != nil {
 			log.Error(err.Error())
 			return
 		}
@@ -80,55 +86,27 @@ var SSHRemoveCommand = &cobra.Command{
 	},
 }
 
-func initHost(client *network.SSHClient) error {
-	const cfp string = "./init.sh"
-	cmds := []string{
-		"chmod 777 " + cfp,
-		cfp,
-	}
-
-	if err := client.CopyFile("network/init.sh", cfp); err != nil {
-		return err
-	}
-	defer client.RemovePath(cfp)
-
-	if err := client.Run(cmds); err != nil {
-		return err
-	}
-	return nil
-}
-
-func deploy(client *network.SSHClient, name string) error {
-	const cfp string = "./startnode.sh"
-	cmds := []string{
-		fmt.Sprintf("chmod 777 %s", cfp),
-		fmt.Sprintf("%s --name=%s --staking-tls-enabled=false", cfp, name),
-	}
-
-	if err := client.CopyFile("network/startnode.sh", cfp); err != nil {
-		return err
-	}
-	defer client.RemovePath(cfp)
-
-	if err := client.Run(cmds); err != nil {
-		return err
-	}
-	return nil
-}
-
-func remove(client *network.SSHClient, name string) error {
-	cmds := []string{
-		fmt.Sprintf("docker stop %s", name),
-		fmt.Sprintf("docker rm %s", name),
-	}
-	if err := client.Run(cmds); err != nil {
-		return err
-	}
-	return nil
+var SSHRemoveAllCommand = &cobra.Command{
+	Use: "remove-all [config file]",
+	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
+		netCfg, err := network.InitConfig(args[0])
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
+		log.Info("Removal starting...")
+		if err := network.Remove(netCfg, false); err != nil {
+			log.Error(err.Error())
+			return
+		}
+		log.Info("Removal complete.")
+	},
 }
 
 func init() {
-	NetworkSSHCommand.AddCommand(SSHDeployCommand)
-	NetworkSSHCommand.AddCommand(SSHRemoveCommand)
-	NetworkCommand.AddCommand(NetworkSSHCommand)
+	NetworkCommand.AddCommand(SSHDeployCommand)
+	NetworkCommand.AddCommand(SSHDeployAllCommand)
+	NetworkCommand.AddCommand(SSHRemoveCommand)
+	NetworkCommand.AddCommand(SSHRemoveAllCommand)
 }
