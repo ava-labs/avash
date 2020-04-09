@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
+
 	"github.com/AlecAivazis/survey"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/pkg/sftp"
@@ -127,13 +128,21 @@ func promptClient(config *ssh.ClientConfig) *SSHClient {
 }
 
 // NewSSH instantiates a new SSH client
-func NewSSH(username string, ip string) (*SSHClient, error) {
-	auth := promptAuth()
-	if auth == nil {
-		return nil, fmt.Errorf("Authentication quit")
+func NewSSH(user, ip string, isPrompt bool) (*SSHClient, error) {
+	var auth ssh.AuthMethod
+	if isPrompt {
+		auth = promptAuth()
+		if auth == nil {
+			return nil, fmt.Errorf("authentication quit")
+		}
+	} else {
+		auth = sshAgent()
+		if auth == nil {
+			return nil, fmt.Errorf("make sure `ssh-agent` is configured properly")
+		}
 	}
 	sshConfig := &ssh.ClientConfig{
-		User: username,
+		User: user,
 		Auth: []ssh.AuthMethod{auth},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
@@ -147,29 +156,40 @@ func NewSSH(username string, ip string) (*SSHClient, error) {
 // Run runs a series of commands on remote host and waits for exit
 func (client *SSHClient) Run(cmds []string) error {
 	for _, cmd := range cmds {
-		session, err := client.NewSession()
-		if err != nil {
-			return err
-		}
-		modes := ssh.TerminalModes{
-			ssh.ECHO:          0,     // disable echoing
-			ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
-			ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
-		}
-		if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
-			return err
-		}
-		session.Stdout = os.Stdout
-		session.Stderr = os.Stderr
+		if err := func(cmd string) error {
+			session, err := client.NewSession()
+			if err != nil {
+				return err
+			}
+			defer session.Close()
+			modes := ssh.TerminalModes{
+				ssh.ECHO:          0,     // disable echoing
+				ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
+				ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
+			}
+			if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
+				return err
+			}
+			reader, err := session.StdoutPipe()
+			if err != nil {
+				return err
+			}
 
-		cfg.Config.Log.Debug("Running command: %s", cmd)
-		if err := session.Run(cmd); err != nil {
+			cfg.Config.Log.Debug("%s: running command: %s", client.ip, cmd)
+			if err := session.Run(cmd); err != nil {
+				return err
+			}
+			buf, err := ioutil.ReadAll(reader)
+			if err != nil {
+				return err
+			}
+			sessionOutput := string(buf)
+			cfg.Config.Log.Verbo(sessionOutput)
+			return nil
+		}(cmd); err != nil {
 			return err
 		}
-
-		session.Close()
 	}
-	
 	return nil
 }
 
