@@ -16,34 +16,11 @@ var NetworkCommand = &cobra.Command{
 	},
 }
 
-// SSHDeployCommand deploys a node through an SSH client
+// SSHDeployCommand deploys a network config through an SSH client
 var SSHDeployCommand = &cobra.Command{
-	Use: "deploy [node name] [SSH username] [IP address]",
-	Short: "Deploys a remotely running node via SSH.",
-	Long:  `Deploys a remotely running node via SSH to a specified host.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		log := cfg.Config.Log
-		netCfg := &network.Config{
-			Hosts: []network.HostConfig{
-				network.HostConfig{
-					User: args[1],
-					IP: args[2],
-					Nodes: []string{
-						args[0],
-					},
-				},
-			},
-		}
-		if err := network.Deploy(netCfg, true); err != nil {
-			log.Error(err.Error())
-			return
-		}
-		log.Info("Node '%s' deployed by '%s' at %s", args[0], args[1], args[2])
-	},
-}
-
-var SSHDeployAllCommand = &cobra.Command{
-	Use: "deploy-all [config file]",
+	Use: "deploy [config file]",
+	Short: "Deploys a remote network of nodes.",
+	Long:  `Deploys a remote network of nodes from the provided config file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log := cfg.Config.Log
 		netCfg, err := network.InitConfig(args[0])
@@ -60,34 +37,11 @@ var SSHDeployAllCommand = &cobra.Command{
 	},
 }
 
-// SSHRemoveCommand removes a node through an SSH client
+// SSHRemoveCommand removes a network config through an SSH client
 var SSHRemoveCommand = &cobra.Command{
-	Use: "remove [node name] [SSH username] [IP address]",
-	Short: "Removes a remotely running node via SSH.",
-	Long:  `Removes a remotely running node via SSH on a specified host.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		log := cfg.Config.Log
-		netCfg := &network.Config{
-			Hosts: []network.HostConfig{
-				network.HostConfig{
-					User: args[1],
-					IP: args[2],
-					Nodes: []string{
-						args[0],
-					},
-				},
-			},
-		}
-		if err := network.Remove(netCfg, true); err != nil {
-			log.Error(err.Error())
-			return
-		}
-		log.Info("Node '%s' removed by '%s' at %s", args[0], args[1], args[2])
-	},
-}
-
-var SSHRemoveAllCommand = &cobra.Command{
-	Use: "remove-all [config file]",
+	Use: "remove [config file]",
+	Short: "Removes a remote network of nodes.",
+	Long:  `Removes a remote network of nodes from the provided config file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log := cfg.Config.Log
 		netCfg, err := network.InitConfig(args[0])
@@ -106,7 +60,5 @@ var SSHRemoveAllCommand = &cobra.Command{
 
 func init() {
 	NetworkCommand.AddCommand(SSHDeployCommand)
-	NetworkCommand.AddCommand(SSHDeployAllCommand)
 	NetworkCommand.AddCommand(SSHRemoveCommand)
-	NetworkCommand.AddCommand(SSHRemoveAllCommand)
 }
