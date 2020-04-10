@@ -2,8 +2,15 @@ package network
 
 import (
 	"fmt"
+	"strings"
 	"sync"
+	"github.com/kennygrant/sanitize"
 	"github.com/ava-labs/avash/cfg"
+	"github.com/ava-labs/avash/node"
+)
+
+const (
+	datadir string = "./stash"
 )
 
 // InitHost initializes a host environment to be able to run nodes.
@@ -44,7 +51,7 @@ func Deploy(config *Config, isPrompt bool) error {
 	var wg sync.WaitGroup
 	wg.Add(len(config.Hosts))
 	for _, host := range config.Hosts {
-		go func(user, ip string, nodes []string) {
+		go func(user, ip string, nodes []NodeConfig) {
 			defer wg.Done()
 
 			client, err := InitHost(user, ip, isPrompt)
@@ -63,8 +70,13 @@ func Deploy(config *Config, isPrompt bool) error {
 			cmds := []string{
 				fmt.Sprintf("chmod 777 %s", cfp),
 			}
-			for _, name := range nodes {
-				cmd := fmt.Sprintf("%s --name=%s --staking-tls-enabled=false", cfp, name)
+			for _, n := range nodes {
+				basename := sanitize.BaseName(n.Name)
+				datapath := datadir + "/" + basename
+				n.Flags.SetDefaults()
+				flags, _ := node.FlagsToArgs(n.Flags, datapath)
+				args := strings.Join(flags, " ")
+				cmd := fmt.Sprintf("%s --name=%s %s", cfp, n.Name, args)
 				cmds = append(cmds, cmd)
 			}
 
@@ -86,7 +98,7 @@ func Remove(config *Config, isPrompt bool) error {
 	var wg sync.WaitGroup
 	wg.Add(len(config.Hosts))
 	for _, host := range config.Hosts {
-		go func(user, ip string, nodes []string) {
+		go func(user, ip string, nodes []NodeConfig) {
 			defer wg.Done()
 
 			client, err := NewSSH(user, ip, isPrompt)
@@ -97,10 +109,10 @@ func Remove(config *Config, isPrompt bool) error {
 			defer client.Close()
 
 			var cmds []string
-			for _, name := range nodes {
+			for _, n := range nodes {
 				tmpCmds := []string{
-					fmt.Sprintf("docker stop %s", name),
-					fmt.Sprintf("docker rm %s", name),
+					fmt.Sprintf("docker stop %s", n.Name),
+					fmt.Sprintf("docker rm %s", n.Name),
 				}
 				cmds = append(cmds, tmpCmds...)
 			}

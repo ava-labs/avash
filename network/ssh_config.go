@@ -2,6 +2,7 @@ package network
 
 import (
 	"io/ioutil"
+	"github.com/ava-labs/avash/node"
 	"gopkg.in/yaml.v2"
 )
 
@@ -13,7 +14,13 @@ type Config struct {
 // HostConfig is a host configuration
 type HostConfig struct {
 	User, IP string
-	Nodes    []string
+	Nodes    []NodeConfig
+}
+
+// NodeConfig is a node configuration
+type NodeConfig struct {
+	Name  string
+	Flags node.Flags
 }
 
 // InitConfig returns a network configuration from `cfgpath`
