@@ -56,13 +56,13 @@ func Deploy(config *Config, isPrompt bool) error {
 
 			client, err := InitHost(user, ip, isPrompt)
 			if err != nil {
-				log.Error(err.Error())
+				log.Error("%s: %s", ip, err.Error())
 				return
 			}
 			defer client.Close()
 
 			if err := client.CopyFile("network/startnode.sh", cfp); err != nil {
-				log.Error(err.Error())
+				log.Error("%s: %s", ip, err.Error())
 				return
 			}
 			defer client.RemovePath(cfp)
@@ -81,7 +81,7 @@ func Deploy(config *Config, isPrompt bool) error {
 			}
 
 			if err := client.Run(cmds); err != nil {
-				log.Error(err.Error())
+				log.Error("%s: %s", ip, err.Error())
 				return
 			}
 			log.Info("%s: successfully deployed", ip)
@@ -103,7 +103,7 @@ func Remove(config *Config, isPrompt bool) error {
 
 			client, err := NewSSH(user, ip, isPrompt)
 			if err != nil {
-				log.Error(err.Error())
+				log.Error("%s: %s", ip, err.Error())
 				return
 			}
 			defer client.Close()
@@ -118,7 +118,7 @@ func Remove(config *Config, isPrompt bool) error {
 			}
 
 			if err := client.Run(cmds); err != nil {
-				log.Error(err.Error())
+				log.Error("%s: %s", ip, err.Error())
 				return
 			}
 			log.Info("%s: successfully removed", ip)

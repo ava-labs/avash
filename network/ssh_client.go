@@ -155,6 +155,7 @@ func NewSSH(user, ip string, isPrompt bool) (*SSHClient, error) {
 
 // Run runs a series of commands on remote host and waits for exit
 func (client *SSHClient) Run(cmds []string) error {
+	log := cfg.Config.Log
 	for _, cmd := range cmds {
 		if err := func(cmd string) error {
 			session, err := client.NewSession()
@@ -163,28 +164,23 @@ func (client *SSHClient) Run(cmds []string) error {
 			}
 			defer session.Close()
 			modes := ssh.TerminalModes{
-				ssh.ECHO:          0,     // disable echoing
 				ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
 				ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
 			}
 			if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
 				return err
 			}
-			reader, err := session.StdoutPipe()
-			if err != nil {
-				return err
-			}
 
-			cfg.Config.Log.Debug("%s: running command: %s", client.ip, cmd)
-			if err := session.Run(cmd); err != nil {
-				return err
-			}
-			buf, err := ioutil.ReadAll(reader)
+			log.Info("%s: running command: %s", client.ip, cmd)
+			bytes, err := session.CombinedOutput(cmd)
+			sessionOutput := string(bytes)
 			if err != nil {
+				log.Error("%s: %s", client.ip, sessionOutput)
 				return err
 			}
-			sessionOutput := string(buf)
-			cfg.Config.Log.Verbo(sessionOutput)
+			if sessionOutput != "" {
+				log.Debug("%s: %s", client.ip, sessionOutput)
+			}
 			return nil
 		}(cmd); err != nil {
 			return err
@@ -217,7 +213,7 @@ func (client *SSHClient) CopyFile(fp string, cfp string) error {
 	if err != nil {
 		return err
 	}
-	cfg.Config.Log.Debug("%d bytes copied: %s --> %s", numBytes, fp, cfp)
+	cfg.Config.Log.Debug("%s: %d bytes copied: %s --> %s", client.ip, numBytes, fp, cfp)
 	return nil
 }
 
@@ -232,7 +228,7 @@ func (client *SSHClient) RemovePath(path string) error {
 	if err := sftpClient.Remove(path); err != nil {
 		return err
 	}
-	cfg.Config.Log.Debug("Removed: %s", path)
+	cfg.Config.Log.Debug("%s: removed: %s", client.ip, path)
 	return nil
 }
 
