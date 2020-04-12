@@ -27,7 +27,7 @@ func NewWallet(networkID uint32, subnetID ids.ID, txFee uint64) *Wallet {
 	return &Wallet{
 		networkID: networkID,
 		subnetID:  subnetID,
-		keyChain:  &spdagvm.Keychain{},
+		keyChain:  spdagvm.NewKeychain(networkID, subnetID),
 		utxoSet:   &UtxoSet{},
 		txFee:     txFee,
 	}
