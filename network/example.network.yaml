@@ -1,0 +1,27 @@
+hosts:
+ - user: ubuntu
+   ip: 0.0.0.0
+   nodes:
+    - name: n1
+      flags:
+       httpport: 9650
+       stakingport: 9651
+       xputserverport: 9652
+    - name: n2
+      flags:
+       httpport: 9653
+       stakingport: 9654
+       xputserverport: 9655
+ - user: ubuntu
+   ip: 0.0.0.0
+   nodes:
+    - name: n1
+      flags:
+       httpport: 9650
+       stakingport: 9651
+       xputserverport: 9652
+    - name: n2
+      flags:
+       httpport: 9653
+       stakingport: 9654
+       xputserverport: 9655

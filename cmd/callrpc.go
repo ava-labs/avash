@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ava-labs/avash/cfg"
+	"github.com/ava-labs/avash/node"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	"github.com/spf13/cobra"
 	"github.com/ybbus/jsonrpc"
@@ -25,7 +26,7 @@ var CallRPCCmd = &cobra.Command{
 			log.Error("process not found: %s", args[0])
 			return
 		}
-		var md Metadata
+		var md node.Metadata
 		if err = json.Unmarshal([]byte(meta), &md); err != nil {
 			log.Error("unable to unmarshal metadata for process %s: %s", args[0], err.Error())
 			return

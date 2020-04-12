@@ -16,6 +16,7 @@ import (
 	"github.com/ava-labs/gecko/snow"
 
 	"github.com/ava-labs/avash/cfg"
+	"github.com/ava-labs/avash/node"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	dagwallet "github.com/ava-labs/avash/wallets/dags"
 	"github.com/ava-labs/gecko/ids"
@@ -30,7 +31,7 @@ import (
 
 // AVAWalletCmd represents the avawallet command
 var AVAWalletCmd = &cobra.Command{
-	Use:   "avawallet [command]",
+	Use:   "avawallet",
 	Short: "Tools for interacting with AVA Payments over the network.",
 	Long: `Tools for interacting with AVA Payments over the network. Using this 
 	command you can create, send, and get the status of a transaction.`,
@@ -240,7 +241,7 @@ var AVAWalletSendCmd = &cobra.Command{
 		if len(args) >= 2 {
 			log := cfg.Config.Log
 			if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
-				var md Metadata
+				var md node.Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
 					jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
@@ -288,7 +289,7 @@ var AVAWalletStatusCmd = &cobra.Command{
 		if len(args) >= 2 {
 			log := cfg.Config.Log
 			if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
-				var md Metadata
+				var md node.Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
 					jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
@@ -336,7 +337,7 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 		if len(args) >= 2 {
 			log := cfg.Config.Log
 			if meta, err := pmgr.ProcManager.Metadata(args[0]); err == nil {
-				var md Metadata
+				var md node.Metadata
 				metaBytes := []byte(meta)
 				if err := json.Unmarshal(metaBytes, &md); err == nil {
 					jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
@@ -401,7 +402,7 @@ var AVAWalletRefreshCmd = &cobra.Command{
 			return
 		}
 
-		var md Metadata
+		var md node.Metadata
 		metaBytes := []byte(meta)
 		err = json.Unmarshal(metaBytes, &md)
 		if err != nil {
