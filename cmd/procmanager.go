@@ -16,7 +16,7 @@ import (
 
 // ProcmanagerCmd represents the procmanager command
 var ProcmanagerCmd = &cobra.Command{
-	Use:   "procmanager [command]",
+	Use:   "procmanager",
 	Short: "Access the process manager for the avash client.",
 	Long: `Access the process manager for the avash client. Using this 
 	command you can list, stop, and start processes registered with the 
