@@ -116,6 +116,7 @@ func init() {
 	RootCmd.AddCommand(AVAWalletCmd)
 	RootCmd.AddCommand(CallRPCCmd)
 	RootCmd.AddCommand(ExitCmd)
+	RootCmd.AddCommand(NetworkCommand)
 	RootCmd.AddCommand(ProcmanagerCmd)
 	RootCmd.AddCommand(RunScriptCmd)
 	RootCmd.AddCommand(SetOutputCmd)
