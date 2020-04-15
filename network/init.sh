@@ -41,7 +41,7 @@ esac
 if ! command_exists git; then
     if command_exists $pkg_manager
     then
-        y | sudo $pkg_manager install git-all
+        sudo $pkg_manager install git <<< y
     else
         echo
         echo "ERROR: Missing expected package manager '$pkg_manager'"
