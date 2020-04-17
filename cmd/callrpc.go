@@ -62,6 +62,7 @@ var CallRPCCmd = &cobra.Command{
 		store, err := AvashVars.Get(args[4])
 		if err != nil {
 			log.Error("store not found: %s", args[4])
+			return
 		}
 		store.Set(args[5], resVal)
 		log.Info("Response saved to %q.%q", args[4], args[5])
