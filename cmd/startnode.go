@@ -107,10 +107,15 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.AssertionsEnabled, "assertions-enabled", flags.AssertionsEnabled, "Turn on assertion execution.")
 	StartnodeCmd.Flags().UintVar(&flags.AvaTxFee, "ava-tx-fee", flags.AvaTxFee, "Ava transaction fee, in $nAva.")
 
-	StartnodeCmd.Flags().BoolVar(&flags.APIIPCsEnabled, "api-ipcs-enabled", flags.APIIPCsEnabled, "Turn on IPC.")
+	StartnodeCmd.Flags().BoolVar(&flags.APIAdminEnabled, "api-admin-enabled", flags.APIAdminEnabled, "If true, this node exposes the Admin API")
+	StartnodeCmd.Flags().BoolVar(&flags.APIKeystoreEnabled, "api-keystore-enabled", flags.APIKeystoreEnabled, "If true, this node exposes the Keystore API")
+	StartnodeCmd.Flags().BoolVar(&flags.APIMetricsEnabled, "api-metrics-enabled", flags.APIMetricsEnabled, "If true, this node exposes the Metrics API")
+	StartnodeCmd.Flags().BoolVar(&flags.APIIPCsEnabled, "api-ipcs-enabled", flags.APIIPCsEnabled, "If true, IPCs can be opened")
+	
 	StartnodeCmd.Flags().StringVar(&flags.PublicIP, "public-ip", flags.PublicIP, "Public IP of this node.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkID, "network-id", flags.NetworkID, "Network ID this node will connect to.")
 	StartnodeCmd.Flags().UintVar(&flags.XputServerPort, "xput-server-port", flags.XputServerPort, "Port of the deprecated throughput test server.")
+	StartnodeCmd.Flags().BoolVar(&flags.XputServerEnabled, "xput-server-enabled", flags.XputServerEnabled, "If true, throughput test server is created.")
 	StartnodeCmd.Flags().BoolVar(&flags.SignatureVerificationEnabled, "signature-verification-enabled", flags.SignatureVerificationEnabled, "Turn on signature verification.")
 
 	StartnodeCmd.Flags().UintVar(&flags.HTTPPort, "http-port", flags.HTTPPort, "Port of the HTTP server.")

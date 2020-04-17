@@ -25,12 +25,16 @@ type Flags struct {
 
 	// Throughput
 	XputServerPort               uint
+	XputServerEnabled            bool
 
 	// Crypto
 	SignatureVerificationEnabled bool
 
-	// IPC
+	// APIs
+	APIAdminEnabled              bool
 	APIIPCsEnabled               bool
+	APIKeystoreEnabled           bool
+	APIMetricsEnabled            bool
 
 	// HTTP
 	HTTPPort                     uint
@@ -88,8 +92,12 @@ func DefaultFlags() Flags {
 		PublicIP:                     "127.0.0.1",
 		NetworkID:                    "local",
 		XputServerPort:               9652,
+		XputServerEnabled:            false,
 		SignatureVerificationEnabled: true,
+		APIAdminEnabled:              true,
 		APIIPCsEnabled:			      true,
+		APIKeystoreEnabled:           true,
+		APIMetricsEnabled:            true,
 		HTTPPort:                     9650,
 		HTTPTLSEnabled:               false,
 		HTTPTLSCertFile:              "",
