@@ -21,8 +21,12 @@ do
 		--ava-tx-fee=*|\
 		--network-id=*|\
 		--xput-server-port=*|\
+        --xput-server-enabled=*|\
 		--signature-verification-enabled=*|\
+        --api-admin-enabled=*|\
 		--api-ipcs-enabled=*|\
+        --api-keystore-enabled=*|\
+        --api-metrics-enabled=*|\
 		--http-tls-enabled=*|\
 		--http-tls-cert-file=*|\
 		--http-tls-key-file=*|\
