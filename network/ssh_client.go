@@ -1,7 +1,6 @@
 package network
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
@@ -17,7 +16,6 @@ import (
 // SSHClient implements an SSH client
 type SSHClient struct {
 	*ssh.Client
-	config *ssh.ClientConfig
 	ip string
 }
 
@@ -43,7 +41,7 @@ func promptPassword() ssh.AuthMethod {
 func promptKeyFile() ssh.AuthMethod {
 	var fp string
 	fpPrompt := &survey.Input{
-		Message: "Full path to key file (PEM):",
+		Message: "Full path to key file:",
 	}
 	for {
 		survey.AskOne(fpPrompt, &fp)
@@ -74,13 +72,20 @@ func sshAgent() ssh.AuthMethod {
 	return ssh.PublicKeysCallback(agent.NewClient(sshAgent).Signers)
 }
 
-func promptAuth() ssh.AuthMethod {
+// PromptAuth returns an `ssh.AuthMethod` object for establishing an `SSHClient`
+// Requires user input at terminal
+func PromptAuth(ip *string) ssh.AuthMethod {
 	const strPassword string = "password"
 	const strKeyFile string = "key file"
 	const strAgent string = "ssh agent"
 	var sshMethod string
+	msg := "Choose a method to provide SSH credentials"
+	if ip != nil {
+		msg += " for " + *ip
+	}
+	msg += ":"
 	authPrompt := &survey.Select{
-		Message: "Choose a method to provide SSH credentials:",
+		Message: msg,
 		Options: []string{strPassword, strKeyFile, strAgent, "quit"},
 	}
 	var auth ssh.AuthMethod
@@ -123,24 +128,12 @@ func promptClient(config *ssh.ClientConfig) *SSHClient {
 			}
 			return nil
 		}
-		return &SSHClient{client, config, host}
+		return &SSHClient{client, host}
 	}
 }
 
 // NewSSH instantiates a new SSH client
-func NewSSH(user, ip string, isPrompt bool) (*SSHClient, error) {
-	var auth ssh.AuthMethod
-	if isPrompt {
-		auth = promptAuth()
-		if auth == nil {
-			return nil, fmt.Errorf("authentication quit")
-		}
-	} else {
-		auth = sshAgent()
-		if auth == nil {
-			return nil, fmt.Errorf("make sure `ssh-agent` is configured properly")
-		}
-	}
+func NewSSH(user, ip string, auth ssh.AuthMethod) (*SSHClient, error) {
 	sshConfig := &ssh.ClientConfig{
 		User: user,
 		Auth: []ssh.AuthMethod{auth},
@@ -150,7 +143,7 @@ func NewSSH(user, ip string, isPrompt bool) (*SSHClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &SSHClient{client, sshConfig, ip}, nil
+	return &SSHClient{client, ip}, nil
 }
 
 // Run runs a series of commands on remote host and waits for exit
@@ -230,13 +223,4 @@ func (client *SSHClient) RemovePath(path string) error {
 	}
 	cfg.Config.Log.Debug("%s: removed: %s", client.ip, path)
 	return nil
-}
-
-// Clone creates another client instance connected to the same host
-func (client *SSHClient) Clone() (*SSHClient, error) {
-	clone, err := ssh.Dial("tcp", client.ip + ":22", client.config)
-	if err != nil {
-		return nil, err
-	}
-	return &SSHClient{clone, client.config, client.ip}, nil
 }

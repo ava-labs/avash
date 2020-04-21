@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+
+	"github.com/AlecAivazis/survey"
 	"github.com/kennygrant/sanitize"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/node"
+	"golang.org/x/crypto/ssh"
 )
 
 const (
@@ -14,33 +17,63 @@ const (
 )
 
 // InitHost initializes a host environment to be able to run nodes.
-// Returns a connection to the host machine.
-func InitHost(user, ip string, isPrompt bool) (*SSHClient, error) {
+func InitHost(user, ip string, auth ssh.AuthMethod) error {
 	const cfp string = "./init.sh"
 	cmds := []string{
 		"chmod 777 " + cfp,
 		cfp,
 	}
 
-	client, err := NewSSH(user, ip, isPrompt)
+	client, err := NewSSH(user, ip, auth)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer client.Close()
 
 	if err := client.CopyFile("network/init.sh", cfp); err != nil {
-		return nil, err
+		return err
 	}
 	defer client.RemovePath(cfp)
 
 	if err := client.Run(cmds); err != nil {
-		return nil, err
+		return err
 	}
-	conn, err := client.Clone()
-	if err != nil {
-		return nil, err
+	return nil
+}
+
+// InitAuth creates a mapping of IPs to SSH authentications
+// Requires user input at terminal
+func InitAuth(hosts []HostConfig) (map[string]ssh.AuthMethod, error) {
+	m := make(map[string]ssh.AuthMethod)
+
+	var authAll bool
+	if len(hosts) > 1 {
+		var authPrompt = &survey.Confirm{
+			Message: "Would you like to use the same SSH credentials for all hosts?:",
+		}
+		survey.AskOne(authPrompt, &authAll)
+	} else {
+		authAll = false
 	}
-	return conn, nil
+
+	var authFunc func(*string) ssh.AuthMethod
+	if authAll {
+		auth := PromptAuth(nil)
+		authFunc = func(_ *string) ssh.AuthMethod {
+			return auth
+		}
+	} else {
+		authFunc = PromptAuth
+	}
+	
+	for _, host := range hosts {
+		auth := authFunc(&host.IP)
+		if auth == nil {
+			return nil, fmt.Errorf("Authentication cancelled")
+		}
+		m[host.IP] = auth
+	}
+	return m, nil
 }
 
 // Deploy deploys nodes to hosts as specified in `config`
@@ -48,13 +81,24 @@ func Deploy(config *Config, isPrompt bool) error {
 	log := cfg.Config.Log
 	const cfp string = "./startnode.sh"
 
+	authMap, err := InitAuth(config.Hosts)
+	if err != nil {
+		return err
+	}
+
 	var wg sync.WaitGroup
 	wg.Add(len(config.Hosts))
 	for _, host := range config.Hosts {
 		go func(user, ip string, nodes []NodeConfig) {
 			defer wg.Done()
+			auth := authMap[ip]
 
-			client, err := InitHost(user, ip, isPrompt)
+			if err := InitHost(user, ip, auth); err != nil {
+				log.Error("%s: %s", ip, err.Error())
+				return
+			}
+
+			client, err := NewSSH(user, ip, auth)
 			if err != nil {
 				log.Error("%s: %s", ip, err.Error())
 				return
@@ -95,13 +139,18 @@ func Deploy(config *Config, isPrompt bool) error {
 func Remove(config *Config, isPrompt bool) error {
 	log := cfg.Config.Log
 
+	authMap, err := InitAuth(config.Hosts)
+	if err != nil {
+		return err
+	}
+
 	var wg sync.WaitGroup
 	wg.Add(len(config.Hosts))
 	for _, host := range config.Hosts {
 		go func(user, ip string, nodes []NodeConfig) {
 			defer wg.Done()
 
-			client, err := NewSSH(user, ip, isPrompt)
+			client, err := NewSSH(user, ip, authMap[ip])
 			if err != nil {
 				log.Error("%s: %s", ip, err.Error())
 				return
