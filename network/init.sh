@@ -66,7 +66,7 @@ then
 else
     cd gecko
     git_remote="$(git config --get remote.origin.url)"
-    if [ git_remote != gecko_remote ]
+    if [ $git_remote == $gecko_remote ]
     then
         git pull
         cd ..
