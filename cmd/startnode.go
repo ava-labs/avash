@@ -52,7 +52,7 @@ var StartnodeCmd = &cobra.Command{
 			return
 		}
 
-		args, md := node.FlagsToArgs(flags, sanitize.Path(datapath))
+		args, md := node.FlagsToArgs(flags, sanitize.Path(datapath), false)
 		// Set flags to default for next `startnode` call
 		flags = node.DefaultFlags()
 		mdbytes, _ := json.MarshalIndent(md, " ", "    ")

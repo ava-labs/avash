@@ -33,7 +33,7 @@ var SSHDeployCommand = &cobra.Command{
 			log.Error(err.Error())
 			return
 		}
-		log.Info("Deployment complete.")
+		log.Info("All hosts finished.")
 	},
 }
 
@@ -54,7 +54,7 @@ var SSHRemoveCommand = &cobra.Command{
 			log.Error(err.Error())
 			return
 		}
-		log.Info("Removal complete.")
+		log.Info("All hosts finished.")
 	},
 }
 

@@ -1,13 +1,15 @@
 #!/bin/bash
 set -e
 
+DATA_DIR="$(pwd)"
+CTNR_DIR="/data"
+
 # Node name
 NAME=""
 
 # Required flag defaults
 H_PORT="9650"
 S_PORT="9651"
-PUBLIC_IP="127.0.0.1"
 
 # Process flags
 FLAGS=""
@@ -20,6 +22,7 @@ do
         --assertions-enabled=*|\
 		--ava-tx-fee=*|\
 		--network-id=*|\
+        --public-ip=*|\
 		--xput-server-port=*|\
         --xput-server-enabled=*|\
 		--signature-verification-enabled=*|\
@@ -33,9 +36,7 @@ do
 		--bootstrap-ips=*|\
 		--bootstrap-ids=*|\
 		--db-enabled=*|\
-		--db-dir=*|\
 		--log-level=*|\
-		--log-dir=*|\
 		--snow-avalanche-batch-size=*|\
 		--snow-avalanche-num-parents=*|\
 		--snow-sample-size=*|\
@@ -47,14 +48,19 @@ do
 		--staking-tls-cert-file=*)
             FLAGS+="${arg} "
             ;;
+        --db-dir=*|\
+        --log-dir=*|\
+        --plugin-dir=*)
+            FLAGS+="${arg%=*}=$CTNR_DIR/${arg#*=} "
+            ;;
+        --data-dir=*)
+            DATA_DIR+="/${arg#*=}"
+            ;;
         --http-port=*)
             H_PORT="${arg#*=}"
             ;;
         --staking-port=*)
             S_PORT="${arg#*=}"
-            ;;
-        --public-ip=*)
-            PUBLIC_IP="${arg#*=}"
             ;;
         *)
             echo
@@ -66,7 +72,6 @@ do
 done
 FLAGS+="--http-port=${H_PORT} "
 FLAGS+="--staking-port=${S_PORT} "
-FLAGS+="--public-ip=${PUBLIC_IP} "
 
 if [ -z $NAME ]; then
     echo
@@ -81,4 +86,10 @@ docker_image="$(docker images -q gecko-$GECKO_COMMIT:latest 2> /dev/null)"
 if [ -z $docker_image ]; then
     ./gecko/scripts/build_image.sh
 fi
-docker run -d --name $NAME -p $H_PORT:$H_PORT -p $S_PORT:$S_PORT gecko-$GECKO_COMMIT /gecko/build/ava $FLAGS
+mkdir -p $DATA_DIR
+docker run -d --name $NAME \
+    -v $DATA_DIR:$CTNR_DIR \
+    -p $H_PORT:$H_PORT \
+    -p $S_PORT:$S_PORT \
+    gecko-$GECKO_COMMIT \
+    /gecko/build/ava $FLAGS
