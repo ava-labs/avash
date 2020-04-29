@@ -118,7 +118,7 @@ func Deploy(config *Config, isPrompt bool) error {
 				basename := sanitize.BaseName(n.Name)
 				datapath := datadir + "/" + basename
 				n.Flags.SetDefaults()
-				flags, _ := node.FlagsToArgs(n.Flags, datapath)
+				flags, _ := node.FlagsToArgs(n.Flags, datapath, true)
 				args := strings.Join(flags, " ")
 				cmd := fmt.Sprintf("%s --name=%s %s", cfp, n.Name, args)
 				cmds = append(cmds, cmd)

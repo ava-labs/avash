@@ -8,7 +8,7 @@ import (
 )
 
 // FlagsToArgs converts a `Flags` struct into a CLI command flag string
-func FlagsToArgs(flags Flags, basedir string) ([]string, Metadata) {
+func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata) {
     // Port targets
     httpPortString := strconv.FormatUint(uint64(flags.HTTPPort), 10)
     stakingPortString := strconv.FormatUint(uint64(flags.StakingPort), 10)
@@ -17,6 +17,11 @@ func FlagsToArgs(flags Flags, basedir string) ([]string, Metadata) {
 	dbPath := basedir + "/" + flags.DBDir
 	dataPath := basedir + "/" + flags.DataDir
 	logPath := basedir + "/" + flags.LogDir
+	if sepBase {
+		dbPath = flags.DBDir
+		dataPath = flags.DataDir
+		logPath = flags.LogDir
+	}
 
 	wd, _ := os.Getwd()
 	// If the path given in the flag doesn't begin with "/", treat it as relative
@@ -73,6 +78,9 @@ func FlagsToArgs(flags Flags, basedir string) ([]string, Metadata) {
 		"--staking-port=" + stakingPortString,
 		"--staking-tls-key-file=" + stakerKeyFile,
 		"--staking-tls-cert-file=" + stakerCertFile,
+	}
+	if sepBase {
+		args = append(args, "--data-dir=" + basedir)
 	}
 	args = removeEmptyFlags(args)
 
