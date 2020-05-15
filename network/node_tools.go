@@ -16,6 +16,12 @@ const (
 	datadir string = "./stash"
 )
 
+// HostAuth represents a full set of host SSH credentials
+type HostAuth struct {
+	User, IP string
+	Auth     ssh.AuthMethod
+}
+
 // InitHost initializes a host environment to be able to run nodes.
 func InitHost(user, ip string, auth ssh.AuthMethod) error {
 	const cfp string = "./init.sh"
@@ -41,13 +47,13 @@ func InitHost(user, ip string, auth ssh.AuthMethod) error {
 	return nil
 }
 
-// InitAuth creates a mapping of IPs to SSH authentications
+// InitAuth creates a mapping of host names to SSH authentications
 // Requires user input at terminal
-func InitAuth(hosts []HostConfig) (map[string]ssh.AuthMethod, error) {
-	m := make(map[string]ssh.AuthMethod)
+func InitAuth(deploys []DeployConfig) (map[string]HostAuth, error) {
+	m := make(map[string]HostAuth)
 
 	var authAll bool
-	if len(hosts) > 1 {
+	if len(deploys) > 1 {
 		var authPrompt = &survey.Confirm{
 			Message: "Would you like to use the same SSH credentials for all hosts?:",
 		}
@@ -66,35 +72,36 @@ func InitAuth(hosts []HostConfig) (map[string]ssh.AuthMethod, error) {
 		authFunc = PromptAuth
 	}
 	
-	for _, host := range hosts {
-		auth := authFunc(&host.IP)
+	for _, deploy := range deploys {
+		auth := authFunc(&deploy.IP)
 		if auth == nil {
 			return nil, fmt.Errorf("Authentication cancelled")
 		}
-		m[host.IP] = auth
+		m[deploy.IP] = HostAuth{deploy.User, deploy.IP, auth}
 	}
 	return m, nil
 }
 
 // Deploy deploys nodes to hosts as specified in `config`
-func Deploy(config *Config, isPrompt bool) error {
+func Deploy(deploys []DeployConfig, isPrompt bool) error {
 	log := cfg.Config.Log
 	const cfp string = "./startnode.sh"
 
-	authMap, err := InitAuth(config.Hosts)
+	authMap, err := InitAuth(deploys)
 	if err != nil {
 		return err
 	}
 
 	var wg sync.WaitGroup
-	wg.Add(len(config.Hosts))
-	for _, host := range config.Hosts {
-		go func(user, ip string, nodes []NodeConfig) {
+	wg.Add(len(deploys))
+	for _, deploy := range deploys {
+		go func(deploy DeployConfig) {
 			defer wg.Done()
-			auth := authMap[ip]
+			hostAuth := authMap[deploy.IP]
+			user, ip, auth := hostAuth.User, hostAuth.IP, hostAuth.Auth
 
 			if err := InitHost(user, ip, auth); err != nil {
-				log.Error("%s: %s", ip, err.Error())
+				log.Error("%s: %s", hostAuth.IP, err.Error())
 				return
 			}
 
@@ -114,10 +121,9 @@ func Deploy(config *Config, isPrompt bool) error {
 			cmds := []string{
 				fmt.Sprintf("chmod 777 %s", cfp),
 			}
-			for _, n := range nodes {
+			for _, n := range deploy.Nodes {
 				basename := sanitize.BaseName(n.Name)
 				datapath := datadir + "/" + basename
-				n.Flags.SetDefaults()
 				flags, _ := node.FlagsToArgs(n.Flags, datapath, true)
 				args := strings.Join(flags, " ")
 				cmd := fmt.Sprintf("%s --name=%s %s", cfp, n.Name, args)
@@ -129,28 +135,30 @@ func Deploy(config *Config, isPrompt bool) error {
 				return
 			}
 			log.Info("%s: successfully deployed", ip)
-		}(host.User, host.IP, host.Nodes)
+		}(deploy)
 	}
 	wg.Wait()
 	return nil
 }
 
 // Remove removes nodes from hosts as specified in `config`
-func Remove(config *Config, isPrompt bool) error {
+func Remove(deploys []DeployConfig, isPrompt bool) error {
 	log := cfg.Config.Log
 
-	authMap, err := InitAuth(config.Hosts)
+	authMap, err := InitAuth(deploys)
 	if err != nil {
 		return err
 	}
 
 	var wg sync.WaitGroup
-	wg.Add(len(config.Hosts))
-	for _, host := range config.Hosts {
-		go func(user, ip string, nodes []NodeConfig) {
+	wg.Add(len(deploys))
+	for _, deploy := range deploys {
+		go func(deploy DeployConfig) {
 			defer wg.Done()
+			hostAuth := authMap[deploy.IP]
+			user, ip, auth := hostAuth.User, hostAuth.IP, hostAuth.Auth
 
-			client, err := NewSSH(user, ip, authMap[ip])
+			client, err := NewSSH(user, ip, auth)
 			if err != nil {
 				log.Error("%s: %s", ip, err.Error())
 				return
@@ -158,7 +166,7 @@ func Remove(config *Config, isPrompt bool) error {
 			defer client.Close()
 
 			var cmds []string
-			for _, n := range nodes {
+			for _, n := range deploy.Nodes {
 				tmpCmds := []string{
 					fmt.Sprintf("docker stop %s", n.Name),
 					fmt.Sprintf("docker rm %s", n.Name),
@@ -171,7 +179,7 @@ func Remove(config *Config, isPrompt bool) error {
 				return
 			}
 			log.Info("%s: successfully removed", ip)
-		}(host.User, host.IP, host.Nodes)
+		}(deploy)
 	}
 	wg.Wait()
 	return nil

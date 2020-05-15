@@ -1,27 +1,31 @@
 hosts:
- - user: ubuntu
-   ip: 0.0.0.0
-   nodes:
-    - name: n1
-      flags:
-       httpport: 9650
-       stakingport: 9651
-       xputserverport: 9652
-    - name: n2
-      flags:
-       httpport: 9653
-       stakingport: 9654
-       xputserverport: 9655
- - user: ubuntu
-   ip: 0.0.0.0
-   nodes:
-    - name: n1
-      flags:
-       httpport: 9650
-       stakingport: 9651
-       xputserverport: 9652
-    - name: n2
-      flags:
-       httpport: 9653
-       stakingport: 9654
-       xputserverport: 9655
+  - name: host-1
+    user: ubuntu
+    ip: 0.0.0.0
+  - name: host-2
+    user: ec2-user
+    ip: 0.0.0.0
+
+nodes:
+  - class: default
+  - class: staker
+    flags:
+      staking-tls-enabled: true
+      staking-tls-cert-file: certs/keys1/staker.crt
+      staking-tls-key-file: certs/keys1/staker.key
+
+deploys:
+  - host: host-1
+    nodes:
+      - name: n1
+        class: default
+      - name: n2
+        class: default
+        flags:
+          http-port: 9660
+          staking-port: 9661
+          xput-server-port: 9662
+  - host: host-2
+    nodes:
+      - name: stake-node
+        class: staker
