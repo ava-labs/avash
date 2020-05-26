@@ -2,6 +2,8 @@ package network
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -122,6 +124,10 @@ func Deploy(deploys []DeployConfig, isPrompt bool) error {
 				fmt.Sprintf("chmod 777 %s", cfp),
 			}
 			for _, n := range deploy.Nodes {
+				if err := configureCLIFiles(&n.Flags, datadir, client); err != nil {
+					log.Error("%s: %s", ip, err.Error())
+					return
+				}
 				basename := sanitize.BaseName(n.Name)
 				datapath := datadir + "/" + basename
 				flags, _ := node.FlagsToArgs(n.Flags, datapath, true)
@@ -182,5 +188,50 @@ func Remove(deploys []DeployConfig, isPrompt bool) error {
 		}(deploy)
 	}
 	wg.Wait()
+	return nil
+}
+
+func configureCLIFiles(flags *node.Flags, datadir string, client *SSHClient) error {
+	wd, _ := os.Getwd()
+	if fp := flags.HTTPTLSCertFile; fp != "" {
+		if string(fp[0]) != "/" {
+			fp = fmt.Sprintf("%s/%s", wd, fp)
+		}
+		cfp := datadir + "/" + filepath.Base(fp)
+		if err := client.CopyFile(fp, cfp); err != nil {
+			return fmt.Errorf("%s: %s", err.Error(), fp)
+		}
+		flags.HTTPTLSCertFile = cfp
+	}
+	if fp := flags.HTTPTLSKeyFile; fp != "" {
+		if string(fp[0]) != "/" {
+			fp = fmt.Sprintf("%s/%s", wd, fp)
+		}
+		cfp := datadir + "/" + filepath.Base(fp)
+		if err := client.CopyFile(fp, cfp); err != nil {
+			return fmt.Errorf("%s: %s", err.Error(), fp)
+		}
+		flags.HTTPTLSKeyFile = cfp
+	}
+	if fp := flags.StakingTLSCertFile; fp != "" {
+		if string(fp[0]) != "/" {
+			fp = fmt.Sprintf("%s/%s", wd, fp)
+		}
+		cfp := datadir + "/" + filepath.Base(fp)
+		if err := client.CopyFile(fp, cfp); err != nil {
+			return fmt.Errorf("%s: %s", err.Error(), fp)
+		}
+		flags.StakingTLSCertFile = cfp
+	}
+	if fp := flags.StakingTLSKeyFile; fp != "" {
+		if string(fp[0]) != "/" {
+			fp = fmt.Sprintf("%s/%s", wd, fp)
+		}
+		cfp := datadir + "/" + filepath.Base(fp)
+		if err := client.CopyFile(fp, cfp); err != nil {
+			return fmt.Errorf("%s: %s", err.Error(), fp)
+		}
+		flags.StakingTLSKeyFile = cfp
+	}
 	return nil
 }
