@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/AlecAivazis/survey"
+	survey "github.com/AlecAivazis/survey/v2"
 	"github.com/kennygrant/sanitize"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/node"
