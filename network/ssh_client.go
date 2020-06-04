@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/AlecAivazis/survey"
+	survey "github.com/AlecAivazis/survey/v2"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
