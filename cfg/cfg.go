@@ -38,6 +38,8 @@ var Config Configuration
 
 // DefaultCfgName is the default config filename
 const DefaultCfgName = ".avash.yaml"
+// DefaultCfgNameShort is the default config filename with yml extension
+const DefaultCfgNameShort = ".avash.yml"
 
 // InitConfig initializes the config for commands to reference
 func InitConfig(cfgpath string) {
@@ -46,8 +48,8 @@ func InitConfig(cfgpath string) {
 		cfgpath, cfgname = filepath.Split(cfgpath)
 		viper.AddConfigPath(cfgpath)
 	}
-	if !strings.HasSuffix(cfgname, ".yaml") {
-		fmt.Println("Config filename must end with extension '.yaml'")
+	if !strings.HasSuffix(cfgname, ".yaml") && !strings.HasSuffix(cfgname, ".yml") {
+		fmt.Println("Config filename must end with extension '.yaml' or '.yml'")
 		os.Exit(1)
 	}
 	viper.SetConfigName(cfgname)
@@ -60,11 +62,18 @@ func InitConfig(cfgpath string) {
 			fmt.Printf("Invalid config path: %s%s\n", cfgpath, cfgname)
 			os.Exit(1)
 		}
-		fmt.Printf("Config file not found: %s%s\n", cfgpath, cfgname)
-		home, _ := homedir.Dir()
-		os.OpenFile(home + "/" + cfgname, os.O_RDONLY|os.O_CREATE, 0644)
-		fmt.Printf("Created empty config file: %s/%s\n", home, cfgname)
-		viper.SetConfigFile(home + "/" + cfgname)
+
+		// try finding filename with yml extension
+		viper.SetConfigName(DefaultCfgNameShort)
+		if err := viper.ReadInConfig(); err != nil {
+			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+				fmt.Printf("Config file not found: %s%s\n", cfgpath, cfgname)
+				home, _ := homedir.Dir()
+				os.OpenFile(home + "/" + cfgname, os.O_RDONLY|os.O_CREATE, 0644)
+				fmt.Printf("Created empty config file: %s/%s\n", home, cfgname)
+				viper.SetConfigFile(home + "/" + cfgname)
+			}
+		}
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
