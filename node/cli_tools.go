@@ -27,22 +27,22 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 	// If the path given in the flag doesn't begin with "/", treat it as relative
     // to the directory of the avash binary
     httpCertFile := flags.HTTPTLSCertFile
-	if httpCertFile != "" && string(httpCertFile[0]) != "/" {
+	if httpCertFile != "" && string(httpCertFile[0]) != "/" && !sepBase {
 		httpCertFile = fmt.Sprintf("%s/%s", wd, httpCertFile)
 	}
 
     httpKeyFile := flags.HTTPTLSKeyFile
-	if httpKeyFile != "" && string(httpKeyFile[0]) != "/" {
+	if httpKeyFile != "" && string(httpKeyFile[0]) != "/" && !sepBase {
 		httpKeyFile = fmt.Sprintf("%s/%s", wd, httpKeyFile)
 	}
 
 	stakerCertFile := flags.StakingTLSCertFile
-	if stakerCertFile != "" && string(stakerCertFile[0]) != "/" {
+	if stakerCertFile != "" && string(stakerCertFile[0]) != "/" && !sepBase {
 		stakerCertFile = fmt.Sprintf("%s/%s", wd, stakerCertFile)
 	}
 
 	stakerKeyFile := flags.StakingTLSKeyFile
-	if stakerKeyFile != "" && string(stakerKeyFile[0]) != "/" {
+	if stakerKeyFile != "" && string(stakerKeyFile[0]) != "/" && !sepBase {
 		stakerKeyFile = fmt.Sprintf("%s/%s", wd, stakerKeyFile)
 	}
 
