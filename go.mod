@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.0.7
-	github.com/ava-labs/gecko v0.5.0
+	github.com/ava-labs/gecko v0.5.5
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/rpc v1.2.0
