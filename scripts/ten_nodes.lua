@@ -3,13 +3,14 @@ second = 1000000
 nodeprefix = "a"
 
 -- Deploys 10 nodes: a1 -> a10 
+-- Commands 1-3 deploy initial nodes for others to 
 cmds = {
-    "startnode " .. nodeprefix .. "1 --db-enabled=false --api-ipcs-enabled=true --http-port=9650 --staking-port=9150 --log-level=verbo --bootstrap-ips=",
-    "startnode " .. nodeprefix .. "2 --db-enabled=false --api-ipcs-enabled=false --http-port=9651 --staking-port=9151 --log-level=verbo --bootstrap-ips=127.0.0.1:9150",
-    "startnode " .. nodeprefix .. "3 --db-enabled=false --api-ipcs-enabled=false --http-port=9652 --staking-port=9152 --log-level=verbo --bootstrap-ips=127.0.0.1:9150,127.0.0.1:9151",
+    "startnode " .. nodeprefix .. "1 --db-enabled=false --api-ipcs-enabled=true --http-port=9650 --staking-port=9150 --log-level=verbo --bootstrap-ips= --staking-tls-cert-file=certs/keys1/staker.crt --staking-tls-key-file=certs/keys1/staker.key",
+    "startnode " .. nodeprefix .. "2 --db-enabled=false --api-ipcs-enabled=false --http-port=9651 --staking-port=9151 --log-level=verbo --bootstrap-ips=127.0.0.1:9150 --bootstrap-ids=7Xhw2mDxuDS44j42TCB6U5579esbSt3Lg --staking-tls-cert-file=certs/keys2/staker.crt --staking-tls-key-file=certs/keys2/staker.key",
+    "startnode " .. nodeprefix .. "3 --db-enabled=false --api-ipcs-enabled=false --http-port=9652 --staking-port=9152 --log-level=verbo --bootstrap-ips=127.0.0.1:9150,127.0.0.1:9151 --bootstrap-ids=7Xhw2mDxuDS44j42TCB6U5579esbSt3Lg,MFrZFVCXPv5iCn6M9K6XduxGTYp891xXZ --staking-tls-cert-file=certs/keys3/staker.crt --staking-tls-key-file=certs/keys3/staker.key",
 }
 
-bsips = " --log-level=verbo --bootstrap-ips=127.0.0.1:9150,127.0.0.1:9151,127.0.0.1:9152"
+bsips = " --log-level=verbo --bootstrap-ips=127.0.0.1:9150,127.0.0.1:9151,127.0.0.1:9152 --bootstrap-ids=7Xhw2mDxuDS44j42TCB6U5579esbSt3Lg,MFrZFVCXPv5iCn6M9K6XduxGTYp891xXZ,NFBbbJ4qCmNaCzeW7sxErhvWqvEQMnYcN"
 
 cmds_template = {
     " --db-enabled=false --api-ipcs-enabled=false --http-port=965",
@@ -17,9 +18,13 @@ cmds_template = {
     "--xput-server-port=925"
 }
 
+-- Add empty string into cmds_template because table.concat does not append to last element
+table.insert(cmds_template, "")
+
 for i=4, 10 do
     iminus1 = i - 1
-    new_cmd = "startnode " .. nodeprefix .. i .. " " .. table.concat(cmds_template, iminus1 .. " ") .. iminus1
+    key_params = "--staking-tls-cert-file=certs/keys" .. i .. "/staker.crt --staking-tls-key-file=certs/keys" .. i .. "/staker.key"
+    new_cmd = "startnode " .. nodeprefix .. i .. " " .. table.concat(cmds_template, iminus1 .. " ") .. key_params
     cmds[i] = new_cmd .. bsips
 end
 

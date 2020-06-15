@@ -43,6 +43,7 @@ do
 		--snow-quorum-size=*|\
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
+        --p2p-tls-enabled=*|\
 		--staking-tls-enabled=*|\
 		--staking-tls-key-file=*|\
 		--staking-tls-cert-file=*)
