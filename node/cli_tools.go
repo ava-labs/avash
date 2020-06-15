@@ -66,6 +66,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--bootstrap-ids=" + flags.BootstrapIDs,
 		"--db-enabled=" + strconv.FormatBool(flags.DBEnabled),
 		"--db-dir=" + dbPath,
+		"--plugin-dir=" + flags.PluginDir,
 		"--log-level=" + flags.LogLevel,
 		"--log-dir=" + logPath,
 		"--snow-avalanche-batch-size=" + strconv.Itoa(flags.SnowAvalancheBatchSize),

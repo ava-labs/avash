@@ -51,6 +51,9 @@ type Flags struct {
 	DBEnabled bool
 	DBDir     string
 
+	// Plugins
+	PluginDir string
+
 	// Logging
 	LogLevel string
 	LogDir   string
@@ -95,6 +98,7 @@ type FlagsYAML struct {
 	BootstrapIDs                 *string `yaml:"bootstrap-ids,omitempty"`
 	DBEnabled                    *bool   `yaml:"db-enabled,omitempty"`
 	DBDir                        *string `yaml:"db-dir,omitempty"`
+	PluginDir                    *string `yaml:"plugin-dir,omitempty"`
 	LogLevel                     *string `yaml:"log-level,omitempty"`
 	LogDir                       *string `yaml:"log-dir,omitempty"`
 	SnowAvalancheBatchSize       *int    `yaml:"snow-avalanche-batch-size,omitempty"`
@@ -161,6 +165,7 @@ func DefaultFlags() Flags {
 		BootstrapIDs:                 "",
 		DBEnabled:                    true,
 		DBDir:                        "db",
+		PluginDir:                    "$GOPATH/src/github.com/ava-labs/gecko/build/plugins",
 		LogLevel:                     "info",
 		LogDir:                       "logs",
 		SnowAvalancheBatchSize:       30,
