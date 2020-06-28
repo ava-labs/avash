@@ -24,7 +24,7 @@ var StartnodeCmd = &cobra.Command{
 	Use:   "startnode [node name] args...",
 	Short: "Starts a node process and gives it a name.",
 	Long: `Starts an ava client node using pmgo and gives it a name. Example:
-	startnode MyNode1 --public-ip=127.0.0.1 --staking-port=5001 --http-port=9650 ... `,
+	startnode MyNode1 --public-ip=127.0.0.1 --staking-port=9651 --http-port=9650 ... `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
 			cmd.Help()
