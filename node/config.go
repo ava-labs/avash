@@ -71,6 +71,10 @@ type Flags struct {
 	StakingPort        uint
 	StakingTLSKeyFile  string
 	StakingTLSCertFile string
+
+	// Auth
+	APIRequireAuth  bool
+	APIAuthPassword string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -111,6 +115,8 @@ type FlagsYAML struct {
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
 	StakingTLSCertFile           *string `yaml:"staking-tls-cert-file,omitempty"`
+	APIRequireAuth               *bool   `yaml:"api-require-auth,omitempty"`
+	APIAuthPassword              *string `yaml:"api-auth-password,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -179,5 +185,7 @@ func DefaultFlags() Flags {
 		StakingPort:                  9651,
 		StakingTLSKeyFile:            "",
 		StakingTLSCertFile:           "",
+		APIRequireAuth:               false,
+		APIAuthPassword:              "",
 	}
 }

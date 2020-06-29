@@ -41,6 +41,7 @@ github.com/ava-labs/gecko v0.5.0 h1:sn3YttyHUUsQtTQozaH9V1WuzgzpvKK7CZfMV/4ImS4=
 github.com/ava-labs/gecko v0.5.0/go.mod h1:QfN4AE6A2DCnfsMlQG2OvmvicZ1mOJsNWHQnv8/Qm7k=
 github.com/ava-labs/gecko v0.5.5 h1:3QNluPirgWvuhITabFrdny2qfU5qBiHvkqk9/am/4Qw=
 github.com/ava-labs/gecko v0.5.5/go.mod h1:hRzG8puZHehr8fjFO76eocJ8sAMQNmeS0IfiS7uwXeY=
+github.com/ava-labs/gecko v0.5.7 h1:8jivA5z3LQ92MA2qIBa6izVGtOqJSVH2lCik6S8xnOI=
 github.com/ava-labs/go-ethereum v1.9.3/go.mod h1:a+agc6fXfZFsPZCylA3ry4Y8CLCqLKg3Rc23NXZ9aw8=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=

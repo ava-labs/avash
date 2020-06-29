@@ -146,4 +146,7 @@ func init() {
 	StartnodeCmd.Flags().UintVar(&flags.StakingPort, "staking-port", flags.StakingPort, "Port of the consensus server.")
 	StartnodeCmd.Flags().StringVar(&flags.StakingTLSCertFile, "staking-tls-cert-file", flags.StakingTLSCertFile, "TLS certificate file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.crt")
 	StartnodeCmd.Flags().StringVar(&flags.StakingTLSKeyFile, "staking-tls-key-file", flags.StakingTLSKeyFile, "TLS private key file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.key")
+
+	StartnodeCmd.Flags().BoolVar(&flags.APIRequireAuth, "api-require-auth", flags.APIRequireAuth, "If the node is started with this CLI, all API calls require authorization tokens.")
+	StartnodeCmd.Flags().StringVar(&flags.APIAuthPassword, "api-auth-password", flags.APIAuthPassword, "If you run your node with `--api-require-auth`, you must also specify an authorization token password with this CLI")
 }
