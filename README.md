@@ -20,7 +20,7 @@ Avash provides the ability to run Lua scripts which can execute a sequence of sh
  3. `cd $GOPATH/src/github.com/ava-labs/avash`
  4. `go build`
 
-For full documentation of Avash configuration and commands, please see the official [AVA Documentation](https://docs.ava.network/v1.0/en/tools/avash/).
+For full documentation of Avash configuration and commands, please see the official [AVA Documentation](https://docs.avax.network/v1.0/en/tools/avash/).
 
 ## Using Avash
 
