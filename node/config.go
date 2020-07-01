@@ -71,10 +71,6 @@ type Flags struct {
 	StakingPort        uint
 	StakingTLSKeyFile  string
 	StakingTLSCertFile string
-
-	// Auth
-	APIRequireAuth  bool
-	APIAuthPassword string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
