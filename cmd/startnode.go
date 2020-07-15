@@ -23,7 +23,7 @@ var flags node.Flags
 var StartnodeCmd = &cobra.Command{
 	Use:   "startnode [node name] args...",
 	Short: "Starts a node process and gives it a name.",
-	Long: `Starts an ava client node using pmgo and gives it a name. Example:
+	Long: `Starts an Avalanche client node using pmgo and gives it a name. Example:
 	startnode MyNode1 --public-ip=127.0.0.1 --staking-port=9651 --http-port=9650 ... `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
@@ -61,11 +61,11 @@ var StartnodeCmd = &cobra.Command{
 		if meta != "" {
 			metadata = meta
 		}
-		avalocation := flags.ClientLocation
-		if avalocation == "" {
-			avalocation = cfg.Config.AvaLocation
+		avalancheLocation := flags.ClientLocation
+		if avalancheLocation == "" {
+			avalancheLocation = cfg.Config.AvalancheLocation
 		}
-		err = pmgr.ProcManager.AddProcess(avalocation, "ava node", args, name, metadata, nil, nil, nil)
+		err = pmgr.ProcManager.AddProcess(avalancheLocation, "avalanche node", args, name, metadata, nil, nil, nil)
 		if err != nil {
 			log.Error(err.Error())
 			return
@@ -105,7 +105,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DataDir, "data-dir", flags.DataDir, "Name of directory for the data stash.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.AssertionsEnabled, "assertions-enabled", flags.AssertionsEnabled, "Turn on assertion execution.")
-	StartnodeCmd.Flags().UintVar(&flags.AvaTxFee, "ava-tx-fee", flags.AvaTxFee, "Ava transaction fee, in $nAva.")
+	StartnodeCmd.Flags().UintVar(&flags.AvaxTxFee, "avax-tx-fee", flags.AvaxTxFee, "Avax transaction fee, in $nAVAX.")
 
 	StartnodeCmd.Flags().StringVar(&flags.PluginDir, "plugin-dir", flags.PluginDir, "Directory to search for plugins")
 
@@ -129,7 +129,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.BootstrapIDs, "bootstrap-ids", flags.BootstrapIDs, "Comma separated list of bootstrap peer ids to connect to. Example: JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
 
 	StartnodeCmd.Flags().BoolVar(&flags.DBEnabled, "db-enabled", flags.DBEnabled, "Turn on persistent storage.")
-	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Ava state.")
+	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Avalanche state.")
 
 	StartnodeCmd.Flags().StringVar(&flags.LogLevel, "log-level", flags.LogLevel, "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().StringVar(&flags.LogDir, "log-dir", flags.LogDir, "Name of directory for the node's logging.")

@@ -20,7 +20,7 @@ do
             NAME="${arg#*=}"
             ;;
         --assertions-enabled=*|\
-		--ava-tx-fee=*|\
+		--avax-tx-fee=*|\
 		--network-id=*|\
         --public-ip=*|\
 		--xput-server-port=*|\
@@ -93,4 +93,4 @@ docker run -d --name $NAME \
     -p $H_PORT:$H_PORT \
     -p $S_PORT:$S_PORT \
     gecko-$GECKO_COMMIT \
-    /gecko/build/ava $FLAGS
+    /gecko/build/avalanche $FLAGS

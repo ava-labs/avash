@@ -134,11 +134,11 @@ func AvashSetVar(L *lua.LState) int {
 // AvashCall hooks avash calls into scripts
 func AvashCall(L *lua.LState) int { /* returns number of results */
 	lv := L.ToString(1) /* get argument */
-	cmd, flags, err := AvaShell.root.Find(strings.Fields(lv))
+	cmd, flags, err := AvalancheShell.root.Find(strings.Fields(lv))
 	if err != nil {
-		AvaShell.rl.Terminal.Write([]byte(err.Error()))
+		AvalancheShell.rl.Terminal.Write([]byte(err.Error()))
 	}
-	AvaShell.addHistory(cmd, flags)
+	AvalancheShell.addHistory(cmd, flags)
 	cmd.ParseFlags(flags)
 	captureDone := capture()
 	cmd.Run(cmd, flags)

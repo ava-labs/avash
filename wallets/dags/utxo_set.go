@@ -26,7 +26,7 @@ func (us *UtxoSetResult) Put(utxo *spdagvm.UTXO) {
 	if _, ok := us.UtxoMap[utxo.ID().String()]; !ok {
 		us.UtxoMap[utxo.ID().String()] = len(us.Utxos)
 		newUTXO := UTXO{}
-		newUTXO.copyFromAvaUTXO(utxo)
+		newUTXO.copyFromAvaxUTXO(utxo)
 		us.Utxos = append(us.Utxos, newUTXO)
 	}
 }
@@ -51,7 +51,7 @@ type OutputPayment struct {
 	Addresses []string `json:"addresses"`
 }
 
-func (u *UTXO) copyFromAvaUTXO(utxo *spdagvm.UTXO) {
+func (u *UTXO) copyFromAvaxUTXO(utxo *spdagvm.UTXO) {
 	sid, sidx := utxo.Source()
 	u.SourceID = sid.String()
 	u.SourceIndex = sidx
