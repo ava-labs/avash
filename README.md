@@ -1,8 +1,8 @@
-# Avash &mdash; The AVA Shell Client
+# Avash &mdash; The Avalanche Shell Client
 
 This is a temporary stateful shell execution environment used to deploy networks locally, manage their processes, and run network tests.
 
-Avash opens a shell environment of its own. This environment is completely wiped when Avash exits. Any AVA nodes deployed by Avash should be exited as well, leaving only their stash behind.
+Avash opens a shell environment of its own. This environment is completely wiped when Avash exits. Any Avalanche nodes deployed by Avash should be exited as well, leaving only their stash behind.
 
 Avash provides the ability to run Lua scripts which can execute a sequence of shell commands in Avash. This allows for automation of regular tasks. For instance, different network configurations can be programmed into a lua script and deployed as-needed, allowing for rapid tests against various network types.
 
@@ -11,16 +11,16 @@ Avash provides the ability to run Lua scripts which can execute a sequence of sh
 ### Requirements
 
  * Golang 1.13+
- * An AVA Client Implementing AVA Standard CLI Flags
+ * An Avalanche Client Implementing Avalanche Standard CLI Flags
 
 ### Quick Setup
 
- 1. Install and build an AVA client
+ 1. Install and build an Avalanche client
  2. `go get github.com/ava-labs/avash`
  3. `cd $GOPATH/src/github.com/ava-labs/avash`
  4. `go build`
 
-For full documentation of Avash configuration and commands, please see the official [AVA Documentation](https://docs.avax.network/v1.0/en/tools/avash/).
+For full documentation of Avash configuration and commands, please see the official [Avalanche Documentation](https://docs.avax.network/v1.0/en/tools/avash/).
 
 ## Using Avash
 
@@ -41,7 +41,7 @@ help procmanager start
 
 ### Commands
 
- * avawallet - Tools for interacting with AVA Payments over the network.
+ * avawallet - Tools for interacting with Avalanche Payments over the network.
  * callrpc - Issues an RPC call to a node.
  * exit - Exit the shell.
  * help - Help about any command.
