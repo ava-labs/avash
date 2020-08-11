@@ -10,7 +10,7 @@ nodes:
   - class: default
   - class: staker
     flags:
-      staking-tls-enabled: true
+      staking-enabled: true
       staking-tls-cert-file: certs/keys1/staker.crt
       staking-tls-key-file: certs/keys1/staker.key
 

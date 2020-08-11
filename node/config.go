@@ -67,7 +67,7 @@ type Flags struct {
 	SnowRogueCommitThreshold    int
 
 	// Staking
-	StakingTLSEnabled  bool
+	StakingEnabled  bool
 	StakingPort        uint
 	StakingTLSKeyFile  string
 	StakingTLSCertFile string
@@ -107,7 +107,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
-	StakingTLSEnabled            *bool   `yaml:"staking-tls-enabled,omitempty"`
+	StakingEnabled            *bool   `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
 	StakingTLSCertFile           *string `yaml:"staking-tls-cert-file,omitempty"`
@@ -175,7 +175,7 @@ func DefaultFlags() Flags {
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
 		P2PTLSEnabled:                true,
-		StakingTLSEnabled:            false,
+		StakingEnabled:            false,
 		StakingPort:                  9651,
 		StakingTLSKeyFile:            "",
 		StakingTLSCertFile:           "",
