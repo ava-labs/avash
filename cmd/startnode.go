@@ -126,7 +126,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.HTTPTLSKeyFile, "http-tls-key-file", flags.HTTPTLSKeyFile, "TLS private key file for the HTTPS server.")
 
 	StartnodeCmd.Flags().StringVar(&flags.BootstrapIPs, "bootstrap-ips", flags.BootstrapIPs, "Comma separated list of bootstrap nodes to connect to. Example: 127.0.0.1:9630,127.0.0.1:9620")
-	StartnodeCmd.Flags().StringVar(&flags.BootstrapIDs, "bootstrap-ids", flags.BootstrapIDs, "Comma separated list of bootstrap peer ids to connect to. Example: JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
+	StartnodeCmd.Flags().StringVar(&flags.BootstrapIDs, "bootstrap-ids", flags.BootstrapIDs, "Comma separated list of bootstrap peer ids to connect to. Example: NodeID-JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,NodeID-8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
 
 	StartnodeCmd.Flags().BoolVar(&flags.DBEnabled, "db-enabled", flags.DBEnabled, "Turn on persistent storage.")
 	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Avalanche state.")
