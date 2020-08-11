@@ -48,7 +48,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 
 	args := []string{
 		"--assertions-enabled=" + strconv.FormatBool(flags.AssertionsEnabled),
-		"--ava-tx-fee=" + strconv.FormatUint(uint64(flags.AvaTxFee), 10),
+		"--avax-tx-fee=" + strconv.FormatUint(uint64(flags.AvaxTxFee), 10),
 		"--public-ip=" + flags.PublicIP,
 		"--network-id=" + flags.NetworkID,
 		"--xput-server-port=" + strconv.FormatUint(uint64(flags.XputServerPort), 10),

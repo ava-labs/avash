@@ -32,7 +32,7 @@ var PMListCmd = &cobra.Command{
 	Short: "Lists the processes currently running.",
 	Long:  `Lists the processes currently running in tabular format.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		table := tablewriter.NewWriter(AvaShell.rl.Stdout())
+		table := tablewriter.NewWriter(AvalancheShell.rl.Stdout())
 		table = pmgr.ProcManager.ProcessTable(table)
 		table.Render()
 	},

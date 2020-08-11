@@ -29,19 +29,19 @@ import (
 	"github.com/ybbus/jsonrpc"
 )
 
-// AVAWalletCmd represents the avawallet command
-var AVAWalletCmd = &cobra.Command{
-	Use:   "avawallet",
-	Short: "Tools for interacting with AVA Payments over the network.",
-	Long: `Tools for interacting with AVA Payments over the network. Using this 
+// AVAXWalletCmd represents the avawallet command
+var AVAXWalletCmd = &cobra.Command{
+	Use:   "avaxwallet",
+	Short: "Tools for interacting with AVAX Payments over the network.",
+	Long: `Tools for interacting with AVAX Payments over the network. Using this 
 	command you can create, send, and get the status of a transaction.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
 }
 
-// AVAWalletCreateCmd creates a new named wallet
-var AVAWalletCreateCmd = &cobra.Command{
+// AVAXWalletCreateCmd creates a new named wallet
+var AVAXWalletCreateCmd = &cobra.Command{
 	Use:   "create [wallet name] [networkID] [blockchainID] [txFee]",
 	Short: "Creates a wallet.",
 	Long:  `Creates a wallet persistent for this session.`,
@@ -65,8 +65,8 @@ var AVAWalletCreateCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletNewKeyCmd creates a new private key
-var AVAWalletNewKeyCmd = &cobra.Command{
+// AVAXWalletNewKeyCmd creates a new private key
+var AVAXWalletNewKeyCmd = &cobra.Command{
 	Use:   "newkey",
 	Short: "Creates a random private key.",
 	Long:  `Creates a random private key.`,
@@ -84,8 +84,8 @@ var AVAWalletNewKeyCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletAddKeyCmd adds a private key to a wallet
-var AVAWalletAddKeyCmd = &cobra.Command{
+// AVAXWalletAddKeyCmd adds a private key to a wallet
+var AVAXWalletAddKeyCmd = &cobra.Command{
 	Use:   "addkey [wallet name] [private key]",
 	Short: "Adds a private key to a wallet.",
 	Long:  `Adds a private key to a wallet from a b58 string and returns its address. Reminder: refresh the UTXOs after keys are imported.`,
@@ -112,8 +112,8 @@ var AVAWalletAddKeyCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletMakeTxCmd will create a transaction and return its signed string
-var AVAWalletMakeTxCmd = &cobra.Command{
+// AVAXWalletMakeTxCmd will create a transaction and return its signed string
+var AVAXWalletMakeTxCmd = &cobra.Command{
 	Use:   "maketx [wallet name] [destination address] [amount]",
 	Short: "Creates a signed transaction.",
 	Long:  `Creates a signed transaction for an amount to an address. Returns the a string of the transaction.`,
@@ -162,8 +162,8 @@ var AVAWalletMakeTxCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletRemoveCmd will remove a transaction from the UTXO set
-var AVAWalletRemoveCmd = &cobra.Command{
+// AVAXWalletRemoveCmd will remove a transaction from the UTXO set
+var AVAXWalletRemoveCmd = &cobra.Command{
 	Use:   "remove [wallet name] [tx string]",
 	Short: "Removes a transaction from a wallet's UTXO set.",
 	Long:  `Removes a transaction from a wallet's UTXO set.`,
@@ -199,8 +199,8 @@ var AVAWalletRemoveCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletSpendCmd will spend (update inputs and outputs) a transaction from the UTXO set
-var AVAWalletSpendCmd = &cobra.Command{
+// AVAXWalletSpendCmd will spend (update inputs and outputs) a transaction from the UTXO set
+var AVAXWalletSpendCmd = &cobra.Command{
 	Use:   "spend [wallet name] [tx string]",
 	Short: "Spends a transaction from a wallet's UTXO set.",
 	Long:  `Spends a transaction from a wallet's UTXO set.`,
@@ -232,8 +232,8 @@ var AVAWalletSpendCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletSendCmd will send a transaction through a node
-var AVAWalletSendCmd = &cobra.Command{
+// AVAXWalletSendCmd will send a transaction through a node
+var AVAXWalletSendCmd = &cobra.Command{
 	Use:   "send [node name] [tx string]",
 	Short: "Sends a transaction to a node.",
 	Long:  `Sends a transaction to a node.`,
@@ -280,8 +280,8 @@ var AVAWalletSendCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletStatusCmd will get the status of a transaction for a particular node
-var AVAWalletStatusCmd = &cobra.Command{
+// AVAXWalletStatusCmd will get the status of a transaction for a particular node
+var AVAXWalletStatusCmd = &cobra.Command{
 	Use:   "status [node name] [tx id]",
 	Short: "Checks the status of a transaction on a node.",
 	Long:  `Checks the status of a transaction on a node.`,
@@ -328,8 +328,8 @@ var AVAWalletStatusCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletGetBalanceCmd will get the balance of an address from a node
-var AVAWalletGetBalanceCmd = &cobra.Command{
+// AVAXWalletGetBalanceCmd will get the balance of an address from a node
+var AVAXWalletGetBalanceCmd = &cobra.Command{
 	Use:   "balance [node name] [address]",
 	Short: "Checks the balance of an address from a node.",
 	Long:  `Checks the balance of an address from a node.`,
@@ -347,7 +347,7 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 						AssetID string
 					}{
 						Address: args[1],
-						AssetID: "AVA",
+						AssetID: "AVAX",
 					})
 					if err != nil {
 						log.Error("error sent address: %s", args[1])
@@ -378,8 +378,8 @@ var AVAWalletGetBalanceCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletRefreshCmd will send a transaction through a node
-var AVAWalletRefreshCmd = &cobra.Command{
+// AVAXWalletRefreshCmd will send a transaction through a node
+var AVAXWalletRefreshCmd = &cobra.Command{
 	Use:   "refresh [node name] [wallet name]",
 	Short: "Refreshes UTXO set from node.",
 	Long:  `Refreshes UTXO set from node.`,
@@ -413,7 +413,7 @@ var AVAWalletRefreshCmd = &cobra.Command{
 		jrpcloc := fmt.Sprintf("http://%s:%s/ext/bc/avm", md.Serverhost, md.HTTPport)
 		rpcClient := jsonrpc.NewClient(jrpcloc)
 
-		response, err := rpcClient.Call("ava.getUTXOs", struct {
+		response, err := rpcClient.Call("avm.getUTXOs", struct {
 			Addresses []string
 		}{
 			Addresses: w.Addresses(),
@@ -448,8 +448,8 @@ var AVAWalletRefreshCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletWriteUTXOCmd writes the UTXOs of a wallet to the filename specified in the stash
-var AVAWalletWriteUTXOCmd = &cobra.Command{
+// AVAXWalletWriteUTXOCmd writes the UTXOs of a wallet to the filename specified in the stash
+var AVAXWalletWriteUTXOCmd = &cobra.Command{
 	Use:   "writeutxo [wallet name A] [filename]",
 	Short: "Writes the UTXO set to a file.",
 	Long:  `Writes the UTXO set to a file.`,
@@ -486,8 +486,8 @@ var AVAWalletWriteUTXOCmd = &cobra.Command{
 	},
 }
 
-// AVAWalletCompareCmd compares the UTXO set between two wallets, stores difference in a variable
-var AVAWalletCompareCmd = &cobra.Command{
+// AVAXWalletCompareCmd compares the UTXO set between two wallets, stores difference in a variable
+var AVAXWalletCompareCmd = &cobra.Command{
 	Use:   "compare [wallet name A] [wallet name B] [var scope] [var name]",
 	Short: "Compares the UTXO set between two wallets.",
 	Long:  `Compares the UTXO set between two wallets.`,
@@ -529,7 +529,7 @@ var AVAWalletCompareCmd = &cobra.Command{
 }
 
 /*
-avawallet
+avaxwallet
 	create [wallet name] -> "wallet created: " + [wallet name]
 	addkey [wallet name] [private key] -> address
 	balance [node name] [address] -> uint
@@ -542,16 +542,16 @@ avawallet
 */
 
 func init() {
-	AVAWalletCmd.AddCommand(AVAWalletCreateCmd)
-	AVAWalletCmd.AddCommand(AVAWalletNewKeyCmd)
-	AVAWalletCmd.AddCommand(AVAWalletAddKeyCmd)
-	AVAWalletCmd.AddCommand(AVAWalletGetBalanceCmd)
-	AVAWalletCmd.AddCommand(AVAWalletMakeTxCmd)
-	AVAWalletCmd.AddCommand(AVAWalletRemoveCmd)
-	AVAWalletCmd.AddCommand(AVAWalletSpendCmd)
-	AVAWalletCmd.AddCommand(AVAWalletSendCmd)
-	AVAWalletCmd.AddCommand(AVAWalletRefreshCmd)
-	AVAWalletCmd.AddCommand(AVAWalletCompareCmd)
-	AVAWalletCmd.AddCommand(AVAWalletStatusCmd)
-	AVAWalletCmd.AddCommand(AVAWalletWriteUTXOCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletCreateCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletNewKeyCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletAddKeyCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletGetBalanceCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletMakeTxCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletRemoveCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletSpendCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletSendCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletRefreshCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletCompareCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletStatusCmd)
+	AVAXWalletCmd.AddCommand(AVAXWalletWriteUTXOCmd)
 }

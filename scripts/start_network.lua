@@ -10,19 +10,3 @@ for key, cmd in ipairs(cmds) do
     print("calling " .. cmd)
     avash_call(cmd)
 end
---[[
-avash_sleepmicro(1 * second)
-avash_call("procmanager list")
-avash_call("procmanager stopall")
-avash_sleepmicro(1 * second)
-avash_call("procmanager list")
-avash_call("procmanager startall")
-avash_sleepmicro(1 * second)
-avash_call("procmanager list")
-avash_call("procmanager remove a1")
-avash_call("procmanager remove a2")
-avash_call("procmanager remove a3")
-avash_call("procmanager remove jrpcnode")
-avash_sleepmicro(1 * second)
-avash_call("procmanager list")
-]]

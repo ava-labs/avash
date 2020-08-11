@@ -15,7 +15,7 @@ type Flags struct {
 	AssertionsEnabled bool
 
 	// TX fees
-	AvaTxFee uint
+	AvaxTxFee uint
 
 	// IP
 	PublicIP string
@@ -80,7 +80,7 @@ type FlagsYAML struct {
 	Meta                         *string `yaml:"-"`
 	DataDir                      *string `yaml:"-"`
 	AssertionsEnabled            *bool   `yaml:"assertions-enabled,omitempty"`
-	AvaTxFee                     *uint   `yaml:"ava-tx-fee,omitempty"`
+	AvaxTxFee                    *uint   `yaml:"avax-tx-fee,omitempty"`
 	PublicIP                     *string `yaml:"public-ip,omitempty"`
 	NetworkID                    *string `yaml:"network-id,omitempty"`
 	XputServerPort               *uint   `yaml:"xput-server-port,omitempty"`
@@ -147,7 +147,7 @@ func DefaultFlags() Flags {
 		Meta:                         "",
 		DataDir:                      "",
 		AssertionsEnabled:            true,
-		AvaTxFee:                     0,
+		AvaxTxFee:                    0,
 		PublicIP:                     "127.0.0.1",
 		NetworkID:                    "local",
 		XputServerPort:               9652,
