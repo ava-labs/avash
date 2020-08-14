@@ -76,7 +76,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
-		"--staking-tls-enabled=" + strconv.FormatBool(flags.StakingTLSEnabled),
+		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
 		"--staking-tls-key-file=" + stakerKeyFile,
 		"--staking-tls-cert-file=" + stakerCertFile,
@@ -96,7 +96,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		Logsdir:           logPath,
 		Loglevel:          flags.LogLevel,
 		P2PTLSEnabled:     flags.P2PTLSEnabled,
-		StakingTLSEnabled: flags.StakingTLSEnabled,
+		StakingEnabled: flags.StakingEnabled,
 		StakerCertPath:    stakerCertFile,
 		StakerKeyPath:     stakerKeyFile,
 	}
