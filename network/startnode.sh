@@ -20,7 +20,7 @@ do
             NAME="${arg#*=}"
             ;;
         --assertions-enabled=*|\
-		--avax-tx-fee=*|\
+		--tx-fee=*|\
 		--network-id=*|\
         --public-ip=*|\
 		--xput-server-port=*|\

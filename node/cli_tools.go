@@ -48,7 +48,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 
 	args := []string{
 		"--assertions-enabled=" + strconv.FormatBool(flags.AssertionsEnabled),
-		"--avax-tx-fee=" + strconv.FormatUint(uint64(flags.AvaxTxFee), 10),
+		"--tx-fee=" + strconv.FormatUint(uint64(flags.TxFee), 10),
 		"--public-ip=" + flags.PublicIP,
 		"--network-id=" + flags.NetworkID,
 		"--xput-server-port=" + strconv.FormatUint(uint64(flags.XputServerPort), 10),
@@ -87,18 +87,18 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 	args = removeEmptyFlags(args)
 
 	metadata := Metadata{
-		Serverhost:        flags.PublicIP,
-		Stakingport:       stakingPortString,
-		HTTPport:          httpPortString,
-		HTTPTLS:           flags.HTTPTLSEnabled,
-		Dbdir:             dbPath,
-		Datadir:           dataPath,
-		Logsdir:           logPath,
-		Loglevel:          flags.LogLevel,
-		P2PTLSEnabled:     flags.P2PTLSEnabled,
+		Serverhost:     flags.PublicIP,
+		Stakingport:    stakingPortString,
+		HTTPport:       httpPortString,
+		HTTPTLS:        flags.HTTPTLSEnabled,
+		Dbdir:          dbPath,
+		Datadir:        dataPath,
+		Logsdir:        logPath,
+		Loglevel:       flags.LogLevel,
+		P2PTLSEnabled:  flags.P2PTLSEnabled,
 		StakingEnabled: flags.StakingEnabled,
-		StakerCertPath:    stakerCertFile,
-		StakerKeyPath:     stakerKeyFile,
+		StakerCertPath: stakerCertFile,
+		StakerKeyPath:  stakerKeyFile,
 	}
 
 	return args, metadata

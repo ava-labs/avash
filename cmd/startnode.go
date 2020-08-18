@@ -105,7 +105,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DataDir, "data-dir", flags.DataDir, "Name of directory for the data stash.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.AssertionsEnabled, "assertions-enabled", flags.AssertionsEnabled, "Turn on assertion execution.")
-	StartnodeCmd.Flags().UintVar(&flags.AvaxTxFee, "avax-tx-fee", flags.AvaxTxFee, "Avax transaction fee, in $nAVAX.")
+	StartnodeCmd.Flags().UintVar(&flags.TxFee, "tx-fee", flags.TxFee, "Transaction fee, in $nAVAX.")
 
 	StartnodeCmd.Flags().StringVar(&flags.PluginDir, "plugin-dir", flags.PluginDir, "Directory to search for plugins")
 

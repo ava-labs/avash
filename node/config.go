@@ -15,7 +15,7 @@ type Flags struct {
 	AssertionsEnabled bool
 
 	// TX fees
-	AvaxTxFee uint
+	TxFee uint
 
 	// IP
 	PublicIP string
@@ -67,7 +67,7 @@ type Flags struct {
 	SnowRogueCommitThreshold    int
 
 	// Staking
-	StakingEnabled  bool
+	StakingEnabled     bool
 	StakingPort        uint
 	StakingTLSKeyFile  string
 	StakingTLSCertFile string
@@ -80,7 +80,7 @@ type FlagsYAML struct {
 	Meta                         *string `yaml:"-"`
 	DataDir                      *string `yaml:"-"`
 	AssertionsEnabled            *bool   `yaml:"assertions-enabled,omitempty"`
-	AvaxTxFee                    *uint   `yaml:"avax-tx-fee,omitempty"`
+	TxFee                        *uint   `yaml:"tx-fee,omitempty"`
 	PublicIP                     *string `yaml:"public-ip,omitempty"`
 	NetworkID                    *string `yaml:"network-id,omitempty"`
 	XputServerPort               *uint   `yaml:"xput-server-port,omitempty"`
@@ -107,7 +107,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
-	StakingEnabled            *bool   `yaml:"staking-enabled,omitempty"`
+	StakingEnabled               *bool   `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
 	StakingTLSCertFile           *string `yaml:"staking-tls-cert-file,omitempty"`
@@ -147,7 +147,7 @@ func DefaultFlags() Flags {
 		Meta:                         "",
 		DataDir:                      "",
 		AssertionsEnabled:            true,
-		AvaxTxFee:                    0,
+		TxFee:                        0,
 		PublicIP:                     "127.0.0.1",
 		NetworkID:                    "local",
 		XputServerPort:               9652,
@@ -175,7 +175,7 @@ func DefaultFlags() Flags {
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
 		P2PTLSEnabled:                true,
-		StakingEnabled:            false,
+		StakingEnabled:               false,
 		StakingPort:                  9651,
 		StakingTLSKeyFile:            "",
 		StakingTLSCertFile:           "",
