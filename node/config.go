@@ -147,7 +147,7 @@ func DefaultFlags() Flags {
 		Meta:                         "",
 		DataDir:                      "",
 		AssertionsEnabled:            true,
-		TxFee:                        0,
+		TxFee:                        1000000,
 		PublicIP:                     "127.0.0.1",
 		NetworkID:                    "local",
 		XputServerPort:               9652,
