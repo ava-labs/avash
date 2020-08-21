@@ -23,7 +23,7 @@ var flags node.Flags
 var StartnodeCmd = &cobra.Command{
 	Use:   "startnode [node name] args...",
 	Short: "Starts a node process and gives it a name.",
-	Long: `Starts an ava client node using pmgo and gives it a name. Example:
+	Long: `Starts an Avalanche client node using pmgo and gives it a name. Example:
 	startnode MyNode1 --public-ip=127.0.0.1 --staking-port=9651 --http-port=9650 ... `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
@@ -61,11 +61,11 @@ var StartnodeCmd = &cobra.Command{
 		if meta != "" {
 			metadata = meta
 		}
-		avalocation := flags.ClientLocation
-		if avalocation == "" {
-			avalocation = cfg.Config.AvaLocation
+		avalancheLocation := flags.ClientLocation
+		if avalancheLocation == "" {
+			avalancheLocation = cfg.Config.AvalancheLocation
 		}
-		err = pmgr.ProcManager.AddProcess(avalocation, "ava node", args, name, metadata, nil, nil, nil)
+		err = pmgr.ProcManager.AddProcess(avalancheLocation, "avalanche node", args, name, metadata, nil, nil, nil)
 		if err != nil {
 			log.Error(err.Error())
 			return
@@ -105,7 +105,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DataDir, "data-dir", flags.DataDir, "Name of directory for the data stash.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.AssertionsEnabled, "assertions-enabled", flags.AssertionsEnabled, "Turn on assertion execution.")
-	StartnodeCmd.Flags().UintVar(&flags.AvaTxFee, "ava-tx-fee", flags.AvaTxFee, "Ava transaction fee, in $nAva.")
+	StartnodeCmd.Flags().UintVar(&flags.TxFee, "tx-fee", flags.TxFee, "Transaction fee, in $nAVAX.")
 
 	StartnodeCmd.Flags().StringVar(&flags.PluginDir, "plugin-dir", flags.PluginDir, "Directory to search for plugins")
 
@@ -126,10 +126,10 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.HTTPTLSKeyFile, "http-tls-key-file", flags.HTTPTLSKeyFile, "TLS private key file for the HTTPS server.")
 
 	StartnodeCmd.Flags().StringVar(&flags.BootstrapIPs, "bootstrap-ips", flags.BootstrapIPs, "Comma separated list of bootstrap nodes to connect to. Example: 127.0.0.1:9630,127.0.0.1:9620")
-	StartnodeCmd.Flags().StringVar(&flags.BootstrapIDs, "bootstrap-ids", flags.BootstrapIDs, "Comma separated list of bootstrap peer ids to connect to. Example: JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
+	StartnodeCmd.Flags().StringVar(&flags.BootstrapIDs, "bootstrap-ids", flags.BootstrapIDs, "Comma separated list of bootstrap peer ids to connect to. Example: NodeID-JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,NodeID-8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
 
 	StartnodeCmd.Flags().BoolVar(&flags.DBEnabled, "db-enabled", flags.DBEnabled, "Turn on persistent storage.")
-	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Ava state.")
+	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Avalanche state.")
 
 	StartnodeCmd.Flags().StringVar(&flags.LogLevel, "log-level", flags.LogLevel, "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().StringVar(&flags.LogDir, "log-dir", flags.LogDir, "Name of directory for the node's logging.")
@@ -142,7 +142,7 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.SnowRogueCommitThreshold, "snow-rogue-commit-threshold", flags.SnowRogueCommitThreshold, "Beta value to use for rogue transactions.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.P2PTLSEnabled, "p2p-tls-enabled", flags.P2PTLSEnabled, "Require TLS to authenticate network communications")
-	StartnodeCmd.Flags().BoolVar(&flags.StakingTLSEnabled, "staking-tls-enabled", flags.StakingTLSEnabled, "Enable staking. If enabled, Network TLS is required.")
+	StartnodeCmd.Flags().BoolVar(&flags.StakingEnabled, "staking-enabled", flags.StakingEnabled, "Enable staking. If enabled, Network TLS is required.")
 	StartnodeCmd.Flags().UintVar(&flags.StakingPort, "staking-port", flags.StakingPort, "Port of the consensus server.")
 	StartnodeCmd.Flags().StringVar(&flags.StakingTLSCertFile, "staking-tls-cert-file", flags.StakingTLSCertFile, "TLS certificate file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.crt")
 	StartnodeCmd.Flags().StringVar(&flags.StakingTLSKeyFile, "staking-tls-key-file", flags.StakingTLSKeyFile, "TLS private key file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.key")

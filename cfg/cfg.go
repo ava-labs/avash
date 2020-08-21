@@ -20,13 +20,13 @@ import (
 
 // Configuration is a shell-usable wrapper of the config file
 type Configuration struct {
-	AvaLocation, DataDir string
-	Log                  logging.Log
+	AvalancheLocation, DataDir string
+	Log                        logging.Log
 }
 
 type configFile struct {
-	AvaLocation, DataDir string
-	Log                  configFileLog
+	AvalancheLocation, DataDir string
+	Log                        configFileLog
 }
 
 type configFileLog struct {
@@ -38,6 +38,7 @@ var Config Configuration
 
 // DefaultCfgName is the default config filename
 const DefaultCfgName = ".avash.yaml"
+
 // DefaultCfgNameShort is the default config filename with yml extension
 const DefaultCfgNameShort = ".avash.yml"
 
@@ -69,7 +70,7 @@ func InitConfig(cfgpath string) {
 			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 				fmt.Printf("Config file not found: %s%s\n", cfgpath, cfgname)
 				home, _ := homedir.Dir()
-				os.OpenFile(home + "/" + cfgname, os.O_RDONLY|os.O_CREATE, 0644)
+				os.OpenFile(home+"/"+cfgname, os.O_RDONLY|os.O_CREATE, 0644)
 				fmt.Printf("Created empty config file: %s/%s\n", home, cfgname)
 				viper.SetConfigFile(home + "/" + cfgname)
 			}
@@ -87,17 +88,17 @@ func InitConfig(cfgpath string) {
 		os.Exit(1)
 	}
 
-	// Set default `avalocation` if missing
-	if config.AvaLocation == "" {
+	// Set default `avalancheLocation` if missing
+	if config.AvalancheLocation == "" {
 		gopath := os.Getenv("GOPATH")
 		if gopath == "" {
 			gopath = build.Default.GOPATH
 		}
-		config.AvaLocation = gopath + "/src/github.com/ava-labs/gecko/build/ava"
+		config.AvalancheLocation = gopath + "/src/github.com/ava-labs/gecko/build/avalanche"
 	}
-	if _, err := os.Stat(config.AvaLocation); err != nil {
-		fmt.Printf("Invalid ava binary location: %s\n", config.AvaLocation)
-		fmt.Println("Make sure your $GOPATH is set or provide a configuration file with a valid `avalocation` value. See README.md for more details.")
+	if _, err := os.Stat(config.AvalancheLocation); err != nil {
+		fmt.Printf("Invalid ava binary location: %s\n", config.AvalancheLocation)
+		fmt.Println("Make sure your $GOPATH is set or provide a configuration file with a valid `avalancheLocation` value. See README.md for more details.")
 		os.Exit(1)
 	}
 
@@ -121,9 +122,9 @@ func InitConfig(cfgpath string) {
 	}
 
 	Config = Configuration{
-		AvaLocation: config.AvaLocation,
-		DataDir:     config.DataDir,
-		Log:         *log,
+		AvalancheLocation: config.AvalancheLocation,
+		DataDir:           config.DataDir,
+		Log:               *log,
 	}
 	Config.Log.Info("Config file set: %s", viper.ConfigFileUsed())
 	Config.Log.Info("Avash successfully configured.")

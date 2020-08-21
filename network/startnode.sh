@@ -20,7 +20,7 @@ do
             NAME="${arg#*=}"
             ;;
         --assertions-enabled=*|\
-		--ava-tx-fee=*|\
+		--tx-fee=*|\
 		--network-id=*|\
         --public-ip=*|\
 		--xput-server-port=*|\
@@ -44,7 +44,7 @@ do
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
         --p2p-tls-enabled=*|\
-		--staking-tls-enabled=*|\
+		--staking-enabled=*|\
 		--staking-tls-key-file=*|\
 		--staking-tls-cert-file=*)
             FLAGS+="${arg} "
@@ -93,4 +93,4 @@ docker run -d --name $NAME \
     -p $H_PORT:$H_PORT \
     -p $S_PORT:$S_PORT \
     gecko-$GECKO_COMMIT \
-    /gecko/build/ava $FLAGS
+    /gecko/build/avalanche $FLAGS

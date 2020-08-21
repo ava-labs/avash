@@ -17,7 +17,7 @@ var CallRPCCmd = &cobra.Command{
 	Short:   "Issues an RPC call to a node.",
 	Long:    `Issues an RPC call to a node endpoint for the specified method and params.
 	Response is saved to the local varstore.`,
-	Example: `callrpc n1 ext/bc/X avm.getBalance {"address":"X-KqpU28P2ipUxfTfwaT847wWxyXB4XuWad","assetID":"AVA"} s v`,
+	Example: `callrpc n1 ext/bc/X avm.getBalance {"address":"X-KqpU28P2ipUxfTfwaT847wWxyXB4XuWad","assetID":"AVAX"} s v`,
 	Args: cobra.MinimumNArgs(6),
 	Run: func(cmd *cobra.Command, args []string) {
 		log := cfg.Config.Log
