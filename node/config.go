@@ -1,6 +1,8 @@
 package node
 
 import (
+	"fmt"
+	"os"
 	"reflect"
 )
 
@@ -165,7 +167,7 @@ func DefaultFlags() Flags {
 		BootstrapIDs:                 "",
 		DBEnabled:                    true,
 		DBDir:                        "db",
-		PluginDir:                    "$GOPATH/src/github.com/ava-labs/gecko/build/plugins",
+		PluginDir:                    fmt.Sprintf("%s/src/github.com/ava-labs/gecko/build/plugins", os.Getenv("GOPATH")),
 		LogLevel:                     "info",
 		LogDir:                       "logs",
 		SnowAvalancheBatchSize:       30,
