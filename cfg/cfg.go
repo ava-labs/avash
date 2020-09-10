@@ -94,7 +94,7 @@ func InitConfig(cfgpath string) {
 		if gopath == "" {
 			gopath = build.Default.GOPATH
 		}
-		config.AvalancheLocation = gopath + "/src/github.com/ava-labs/gecko/build/avalanche"
+		config.AvalancheLocation = gopath + "/src/github.com/ava-labs/avalanche-go/build/avalanche"
 	}
 	if _, err := os.Stat(config.AvalancheLocation); err != nil {
 		fmt.Printf("Invalid ava binary location: %s\n", config.AvalancheLocation)

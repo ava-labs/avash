@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ava-labs/gecko/utils/formatting"
-	"github.com/ava-labs/gecko/vms/spdagvm"
+	"github.com/ava-labs/avalanche-go/utils/formatting"
+	"github.com/ava-labs/avalanche-go/vms/spdagvm"
 
-	"github.com/ava-labs/gecko/ids"
+	"github.com/ava-labs/avalanche-go/ids"
 )
 
 // UtxoSetResult result for a UtxoSet

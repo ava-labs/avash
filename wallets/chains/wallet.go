@@ -3,9 +3,9 @@ package chainwallet
 import (
 	"fmt"
 
-	"github.com/ava-labs/gecko/ids"
-	"github.com/ava-labs/gecko/modules/chains/payments"
-	"github.com/ava-labs/gecko/utils/crypto"
+	"github.com/ava-labs/avalanche-go/ids"
+	"github.com/ava-labs/avalanche-go/modules/chains/payments"
+	"github.com/ava-labs/avalanche-go/utils/crypto"
 )
 
 // Wallet is a holder for keys and UTXOs.

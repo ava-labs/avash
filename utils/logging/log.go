@@ -1,7 +1,7 @@
 package logging
 
 import (
-	"github.com/ava-labs/gecko/utils/logging"
+	"github.com/ava-labs/avalanche-go/utils/logging"
 )
 
 // Log is a wrapper struct for the shell output log

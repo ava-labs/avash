@@ -82,15 +82,15 @@ if [ -z $NAME ]; then
 fi
 
 # Build and run Docker image as daemon
-GECKO_COMMIT="$(git --git-dir="./gecko/.git" rev-parse --short HEAD)"
-docker_image="$(docker images -q gecko-$GECKO_COMMIT:latest 2> /dev/null)"
+AVALANCHE_COMMIT="$(git --git-dir="./avalanche-go/.git" rev-parse --short HEAD)"
+docker_image="$(docker images -q avalanche-go-$AVALANCHE_COMMIT:latest 2> /dev/null)"
 if [ -z $docker_image ]; then
-    ./gecko/scripts/build_image.sh
+    ./avalanche-go/scripts/build_image.sh
 fi
 mkdir -p $DATA_DIR
 docker run -d --name $NAME \
     -v $DATA_DIR:$CTNR_DIR \
     -p $H_PORT:$H_PORT \
     -p $S_PORT:$S_PORT \
-    gecko-$GECKO_COMMIT \
-    /gecko/build/avalanche $FLAGS
+    avalanche-go-$AVALANCHE_COMMIT \
+    /avalanche-go/build/avalanche $FLAGS

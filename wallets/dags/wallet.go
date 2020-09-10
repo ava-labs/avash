@@ -5,10 +5,10 @@ import (
 	"math"
 
 	"github.com/ava-labs/avash/cfg"
-	"github.com/ava-labs/gecko/ids"
-	"github.com/ava-labs/gecko/utils/crypto"
-	"github.com/ava-labs/gecko/utils/timer"
-	"github.com/ava-labs/gecko/vms/spdagvm"
+	"github.com/ava-labs/avalanche-go/ids"
+	"github.com/ava-labs/avalanche-go/utils/crypto"
+	"github.com/ava-labs/avalanche-go/utils/timer"
+	"github.com/ava-labs/avalanche-go/vms/spdagvm"
 )
 
 // Wallet is a holder for keys and UTXOs for the Avalanche DAG.

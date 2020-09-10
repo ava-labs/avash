@@ -13,18 +13,18 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ava-labs/gecko/snow"
+	"github.com/ava-labs/avalanche-go/snow"
 
+	"github.com/ava-labs/avalanche-go/ids"
+	"github.com/ava-labs/avalanche-go/utils/formatting"
+	"github.com/ava-labs/avalanche-go/vms/spdagvm"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/node"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	dagwallet "github.com/ava-labs/avash/wallets/dags"
-	"github.com/ava-labs/gecko/ids"
-	"github.com/ava-labs/gecko/utils/formatting"
-	"github.com/ava-labs/gecko/vms/spdagvm"
 	"github.com/spf13/cobra"
 
-	"github.com/ava-labs/gecko/utils/crypto"
+	"github.com/ava-labs/avalanche-go/utils/crypto"
 
 	"github.com/ybbus/jsonrpc"
 )
