@@ -46,7 +46,9 @@ do
         --p2p-tls-enabled=*|\
 		--staking-enabled=*|\
 		--staking-tls-key-file=*|\
-		--staking-tls-cert-file=*)
+		--staking-tls-cert-file=*|\
+		--api-auth-required=*|\
+		--api-auth-password=*)
             FLAGS+="${arg} "
             ;;
         --db-dir=*|\
