@@ -46,11 +46,11 @@ do
         --p2p-tls-enabled=*|\
 		--staking-enabled=*|\
 		--staking-tls-key-file=*|\
-		--staking-tls-cert-file=*|\
-		--api-auth-required=*|\
-		--api-auth-password=*)
+		--staking-tls-cert-file=*)
             FLAGS+="${arg} "
             ;;
+		--api-auth-required=*|\
+		--api-auth-password=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)
