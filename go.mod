@@ -19,6 +19,8 @@ require (
 	github.com/yourbasic/radix v0.0.0-20180308122924-cbe1cc82e907
 	github.com/yuin/gopher-lua v0.0.0-20200603152657-dc2b0ca8b37e
 	go.uber.org/multierr v1.1.0
-	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	gopkg.in/yaml.v2 v2.2.8
 )
+
+replace github.com/ava-labs/avalanche-go => ../gecko
