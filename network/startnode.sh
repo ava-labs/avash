@@ -82,15 +82,15 @@ if [ -z $NAME ]; then
 fi
 
 # Build and run Docker image as daemon
-AVALANCHE_COMMIT="$(git --git-dir="./avalanche-go/.git" rev-parse --short HEAD)"
-docker_image="$(docker images -q avalanche-go-$AVALANCHE_COMMIT:latest 2> /dev/null)"
+AVALANCHE_COMMIT="$(git --git-dir="./avalanchego/.git" rev-parse --short HEAD)"
+docker_image="$(docker images -q avalanchego-$AVALANCHE_COMMIT:latest 2> /dev/null)"
 if [ -z $docker_image ]; then
-    ./avalanche-go/scripts/build_image.sh
+    ./avalanchego/scripts/build_image.sh
 fi
 mkdir -p $DATA_DIR
 docker run -d --name $NAME \
     -v $DATA_DIR:$CTNR_DIR \
     -p $H_PORT:$H_PORT \
     -p $S_PORT:$S_PORT \
-    avalanche-go-$AVALANCHE_COMMIT \
-    /avalanche-go/build/avalanche $FLAGS
+    avalanchego-$AVALANCHE_COMMIT \
+    /avalanchego/build/avalanche $FLAGS

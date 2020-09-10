@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.0.7
-	github.com/ava-labs/avalanche-go v0.8.0
+	github.com/ava-labs/avalanchego v0.8.0
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/rpc v1.2.0
@@ -23,4 +23,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.8
 )
 
-replace github.com/ava-labs/avalanche-go => ../gecko
+replace github.com/ava-labs/avalanchego => ../gecko

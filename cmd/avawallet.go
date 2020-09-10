@@ -8,13 +8,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ava-labs/avalanche-go/utils/formatting"
+	"github.com/ava-labs/avalanchego/utils/formatting"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/node"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	"github.com/spf13/cobra"
 
-	"github.com/ava-labs/avalanche-go/utils/crypto"
+	"github.com/ava-labs/avalanchego/utils/crypto"
 
 	"github.com/ybbus/jsonrpc"
 )

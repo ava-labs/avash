@@ -167,7 +167,7 @@ func DefaultFlags() Flags {
 		BootstrapIDs:                 "",
 		DBEnabled:                    true,
 		DBDir:                        "db",
-		PluginDir:                    fmt.Sprintf("%s/src/github.com/ava-labs/avalanche-go/build/plugins", os.Getenv("GOPATH")),
+		PluginDir:                    fmt.Sprintf("%s/src/github.com/ava-labs/avalanchego/build/plugins", os.Getenv("GOPATH")),
 		LogLevel:                     "info",
 		LogDir:                       "logs",
 		SnowAvalancheBatchSize:       30,

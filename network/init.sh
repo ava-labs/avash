@@ -58,13 +58,13 @@ fi
 sudo service docker start
 sudo usermod -aG docker $USER
 
-# Download avalanche-go
-avalanche_remote="https://github.com/ava-labs/avalanche-go.git"
-if [ ! -d avalanche-go ]
+# Download avalanchego
+avalanche_remote="https://github.com/ava-labs/avalanchego.git"
+if [ ! -d avalanchego ]
 then
     git clone $avalanche_remote
 else
-    cd avalanche-go
+    cd avalanchego
     git_remote="$(git config --get remote.origin.url)"
     if [ $git_remote == $avalanche_remote ]
     then
@@ -72,7 +72,7 @@ else
         cd ..
     else
         echo
-        echo "ERROR: Existing directory 'avalanche-go' not using '$avalanche_remote' as git remote.origin.url"
+        echo "ERROR: Existing directory 'avalanchego' not using '$avalanche_remote' as git remote.origin.url"
         echo
         exit 1
     fi
