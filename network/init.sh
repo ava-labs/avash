@@ -58,21 +58,21 @@ fi
 sudo service docker start
 sudo usermod -aG docker $USER
 
-# Download Gecko
-gecko_remote="https://github.com/ava-labs/gecko.git"
-if [ ! -d gecko ]
+# Download avalanchego
+avalanche_remote="https://github.com/ava-labs/avalanchego.git"
+if [ ! -d avalanchego ]
 then
-    git clone $gecko_remote
+    git clone $avalanche_remote
 else
-    cd gecko
+    cd avalanchego
     git_remote="$(git config --get remote.origin.url)"
-    if [ $git_remote == $gecko_remote ]
+    if [ $git_remote == $avalanche_remote ]
     then
         git pull
         cd ..
     else
         echo
-        echo "ERROR: Existing directory 'gecko' not using '$gecko_remote' as git remote.origin.url"
+        echo "ERROR: Existing directory 'avalanchego' not using '$avalanche_remote' as git remote.origin.url"
         echo
         exit 1
     fi

@@ -2,7 +2,7 @@
 
 This is a temporary stateful shell execution environment used to deploy networks locally, manage their processes, and run network tests.
 
-Avash opens a shell environment of its own. This environment is completely wiped when Avash exits. Any Avalanche nodes deployed by Avash should be exited as well, leaving only their stash behind.
+Avash opens a shell environment of its own. This environment is completely wiped when Avash exits. Any Avalanche nodes deployed by Avash should be exited as well, leaving only their stash (containing only their log files) behind.
 
 Avash provides the ability to run Lua scripts which can execute a sequence of shell commands in Avash. This allows for automation of regular tasks. For instance, different network configurations can be programmed into a lua script and deployed as-needed, allowing for rapid tests against various network types.
 
@@ -66,13 +66,13 @@ The functions available to Lua are:
 
  When writing Lua, the standard Lua functionality is available to automate the execution of series of Avash commands. This allows a developer to automate:
 
- * Local network deployments 
+ * Local network deployments
  * Sending transations, both virtuous and conflicting
  * Order transaction test cases
  * Save the value of UTXO sets and test results to disk
  * Compare the values of two nodes UTXO sets
  * Track expected results and compare them with real nodes
  
- Example Lua scripts are in the `./scripts` folder. 
+ Example Lua scripts are in the `./scripts` folder.
 
 
