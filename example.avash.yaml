@@ -1,4 +1,4 @@
-avalocation: <$GOPATH>/src/github.com/ava-labs/gecko/build/ava
+avalocation: <$GOPATH>/src/github.com/ava-labs/avalanchego/build/avalanchego
 datadir: <$GOPATH>/src/github.com/ava-labs/avash/stash
 log:
   terminal: info

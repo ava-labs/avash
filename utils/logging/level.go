@@ -1,7 +1,7 @@
 package logging
 
 import (
-	"github.com/ava-labs/gecko/utils/logging"
+	"github.com/ava-labs/avalanchego/utils/logging"
 )
 
 // Level ...
