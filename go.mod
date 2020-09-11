@@ -22,5 +22,3 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	gopkg.in/yaml.v2 v2.2.8
 )
-
-replace github.com/ava-labs/avalanchego => ../gecko
