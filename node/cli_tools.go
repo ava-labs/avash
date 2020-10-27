@@ -80,6 +80,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--staking-port=" + stakingPortString,
 		"--staking-tls-key-file=" + stakerKeyFile,
 		"--staking-tls-cert-file=" + stakerCertFile,
+		"--min-stake-duration=" + flags.MinStakeDuration,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
