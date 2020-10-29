@@ -149,4 +149,5 @@ func init() {
 
 	StartnodeCmd.Flags().BoolVar(&flags.APIAuthRequired, "api-auth-required", flags.APIAuthRequired, "If set to true, API calls require an authorization token. Defaults to `false`")
 	StartnodeCmd.Flags().StringVar(&flags.APIAuthPassword, "api-auth-password", flags.APIAuthPassword, "The password needed to create/revoke authorization tokens. If `--api-auth-required=true`, must be specified; otherwise ignored.")
+	StartnodeCmd.Flags().StringVar(&flags.MinStakeDuration, "min-stake-duration", flags.MinStakeDuration, "Set the minimum staking duration. Ex: --min-stake-duration=5m")
 }

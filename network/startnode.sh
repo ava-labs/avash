@@ -51,6 +51,7 @@ do
             ;;
 		--api-auth-required=*|\
 		--api-auth-password=*|\
+        --min-stake-duration=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)

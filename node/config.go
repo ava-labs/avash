@@ -75,8 +75,9 @@ type Flags struct {
 	StakingTLSCertFile string
 
 	// Auth
-	APIAuthRequired bool
-	APIAuthPassword string
+	APIAuthRequired  bool
+	APIAuthPassword  string
+	MinStakeDuration string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -119,6 +120,7 @@ type FlagsYAML struct {
 	StakingTLSCertFile           *string `yaml:"staking-tls-cert-file,omitempty"`
 	APIAuthRequired              *bool   `yaml:"api-auth-required,omitempty"`
 	APIAuthPassword              *string `yaml:"api-auth-password,omitempty"`
+	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -189,5 +191,6 @@ func DefaultFlags() Flags {
 		StakingTLSCertFile:           "",
 		APIAuthRequired:              false,
 		APIAuthPassword:              "",
+		MinStakeDuration:             "",
 	}
 }

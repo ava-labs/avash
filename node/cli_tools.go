@@ -82,6 +82,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--staking-tls-cert-file=" + stakerCertFile,
 		"--api-auth-required=" + strconv.FormatBool(flags.APIAuthRequired),
 		"--api-auth-password=" + flags.APIAuthPassword,
+		"--min-stake-duration=" + flags.MinStakeDuration,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
