@@ -73,7 +73,11 @@ type Flags struct {
 	StakingPort        uint
 	StakingTLSKeyFile  string
 	StakingTLSCertFile string
-	MinStakeDuration   string
+
+	// Auth
+	APIAuthRequired  bool
+	APIAuthPassword  string
+	MinStakeDuration string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -114,6 +118,8 @@ type FlagsYAML struct {
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
 	StakingTLSCertFile           *string `yaml:"staking-tls-cert-file,omitempty"`
+	APIAuthRequired              *bool   `yaml:"api-auth-required,omitempty"`
+	APIAuthPassword              *string `yaml:"api-auth-password,omitempty"`
 	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
 }
 
@@ -183,6 +189,8 @@ func DefaultFlags() Flags {
 		StakingPort:                  9651,
 		StakingTLSKeyFile:            "",
 		StakingTLSCertFile:           "",
+		APIAuthRequired:              false,
+		APIAuthPassword:              "",
 		MinStakeDuration:             "",
 	}
 }
