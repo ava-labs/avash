@@ -49,6 +49,7 @@ do
 		--staking-tls-cert-file=*)
             FLAGS+="${arg} "
             ;;
+        --min-stake-duration=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)
