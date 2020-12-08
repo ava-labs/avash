@@ -78,6 +78,9 @@ type Flags struct {
 	APIAuthRequired  bool
 	APIAuthPassword  string
 	MinStakeDuration string
+
+	// Whitelisted Subnets
+	WhitelistedSubnets string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -121,6 +124,7 @@ type FlagsYAML struct {
 	APIAuthRequired              *bool   `yaml:"api-auth-required,omitempty"`
 	APIAuthPassword              *string `yaml:"api-auth-password,omitempty"`
 	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
+	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
