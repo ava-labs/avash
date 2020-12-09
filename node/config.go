@@ -200,5 +200,6 @@ func DefaultFlags() Flags {
 		APIAuthRequired:              false,
 		APIAuthPassword:              "",
 		MinStakeDuration:             "",
+		ConfigFile:                   "",
 	}
 }
