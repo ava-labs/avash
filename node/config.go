@@ -196,5 +196,6 @@ func DefaultFlags() Flags {
 		APIAuthRequired:              false,
 		APIAuthPassword:              "",
 		MinStakeDuration:             "",
+		WhitelistedSubnets:           "",
 	}
 }
