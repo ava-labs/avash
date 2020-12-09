@@ -53,6 +53,7 @@ do
 		--api-auth-password=*|\
         --min-stake-duration=*|\
         --whitelisted-subnets=*|\
+        --config-file=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)
