@@ -55,6 +55,7 @@ do
         --whitelisted-subnets=*|\
         --config-file=*|\
         --api-info-enabled=*|\
+        --conn-meter-reset-duration=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)

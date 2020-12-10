@@ -86,6 +86,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--whitelisted-subnets=" + flags.WhitelistedSubnets,
 		"--config-file=" + flags.ConfigFile,
 		"--api-info-enabled=" + strconv.FormatBool(flags.APIInfoEnabled),
+		"--min-stake-duration=" + flags.ConnMeterResetDuration,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
