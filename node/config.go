@@ -85,6 +85,9 @@ type Flags struct {
 
 	// Config
 	ConfigFile string
+
+	// IPCS
+	IPCSChainIDs string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -131,6 +134,7 @@ type FlagsYAML struct {
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
 	ConfigFile                   *string `yaml:"config-file,omitempty"`
 	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
+	IPCSChainIDs                 *string `yaml:"ipcs-chain-ids,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -205,5 +209,6 @@ func DefaultFlags() Flags {
 		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
 		APIInfoEnabled:               true,
+		IPCSChainIDs:                 "",
 	}
 }
