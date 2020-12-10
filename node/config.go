@@ -82,6 +82,9 @@ type Flags struct {
 
 	// Whitelisted Subnets
 	WhitelistedSubnets string
+
+	// Config
+	ConfigFile string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -126,6 +129,7 @@ type FlagsYAML struct {
 	APIAuthPassword              *string `yaml:"api-auth-password,omitempty"`
 	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
+	ConfigFile                   *string `yaml:"config-file,omitempty"`
 	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
 }
 
@@ -198,6 +202,7 @@ func DefaultFlags() Flags {
 		APIAuthRequired:              false,
 		APIAuthPassword:              "",
 		MinStakeDuration:             "",
+		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
 		APIInfoEnabled:               true,
 	}

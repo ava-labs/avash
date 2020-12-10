@@ -84,6 +84,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--api-auth-password=" + flags.APIAuthPassword,
 		"--min-stake-duration=" + flags.MinStakeDuration,
 		"--whitelisted-subnets=" + flags.WhitelistedSubnets,
+		"--config-file=" + flags.ConfigFile,
 		"--api-info-enabled=" + strconv.FormatBool(flags.APIInfoEnabled),
 	}
 	if sepBase {

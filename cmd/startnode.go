@@ -153,4 +153,6 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.MinStakeDuration, "min-stake-duration", flags.MinStakeDuration, "Set the minimum staking duration. Ex: --min-stake-duration=5m")
 
 	StartnodeCmd.Flags().StringVar(&flags.WhitelistedSubnets, "whitelisted-subnets", flags.WhitelistedSubnets, "Comma separated list of subnets that this node would validate if added to. Defaults to empty (will only validate the Primary Network)")
+
+	StartnodeCmd.Flags().StringVar(&flags.ConfigFile, "config-file", flags.ConfigFile, "Config file specifies a JSON file to configure a node instead of specifying arguments via the command line. Command line arguments will override any options set in the config file.")
 }
