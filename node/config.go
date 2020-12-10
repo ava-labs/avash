@@ -38,6 +38,7 @@ type Flags struct {
 	APIIPCsEnabled     bool
 	APIKeystoreEnabled bool
 	APIMetricsEnabled  bool
+	APIInfoEnabled     bool
 
 	// HTTP
 	HTTPPort        uint
@@ -129,6 +130,7 @@ type FlagsYAML struct {
 	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
 	ConfigFile                   *string `yaml:"config-file,omitempty"`
+	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -201,5 +203,7 @@ func DefaultFlags() Flags {
 		APIAuthPassword:              "",
 		MinStakeDuration:             "",
 		ConfigFile:                   "",
+		WhitelistedSubnets:           "",
+		APIInfoEnabled:               true,
 	}
 }
