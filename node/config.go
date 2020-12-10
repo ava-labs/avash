@@ -38,6 +38,7 @@ type Flags struct {
 	APIIPCsEnabled     bool
 	APIKeystoreEnabled bool
 	APIMetricsEnabled  bool
+	APIHealthEnabled   bool
 
 	// HTTP
 	HTTPPort        uint
@@ -81,9 +82,6 @@ type Flags struct {
 
 	// Whitelisted Subnets
 	WhitelistedSubnets string
-
-	// Health nabled
-	APIHealthEnabled bool
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -128,7 +126,7 @@ type FlagsYAML struct {
 	APIAuthPassword              *string `yaml:"api-auth-password,omitempty"`
 	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
-	APIHealthEnabled             *string `yaml:"api-health-enabled,omitempty"`
+	APIHealthEnabled             *bool   `yaml:"api-health-enabled,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value

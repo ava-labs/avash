@@ -113,6 +113,7 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.APIKeystoreEnabled, "api-keystore-enabled", flags.APIKeystoreEnabled, "If true, this node exposes the Keystore API")
 	StartnodeCmd.Flags().BoolVar(&flags.APIMetricsEnabled, "api-metrics-enabled", flags.APIMetricsEnabled, "If true, this node exposes the Metrics API")
 	StartnodeCmd.Flags().BoolVar(&flags.APIIPCsEnabled, "api-ipcs-enabled", flags.APIIPCsEnabled, "If true, IPCs can be opened")
+	StartnodeCmd.Flags().BoolVar(&flags.APIHealthEnabled, "api-health-enabled", flags.APIHealthEnabled, "If set to `true`, this node will expose the Health API. Defaults to `true`")
 
 	StartnodeCmd.Flags().StringVar(&flags.PublicIP, "public-ip", flags.PublicIP, "Public IP of this node.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkID, "network-id", flags.NetworkID, "Network ID this node will connect to.")
@@ -152,6 +153,4 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.MinStakeDuration, "min-stake-duration", flags.MinStakeDuration, "Set the minimum staking duration. Ex: --min-stake-duration=5m")
 
 	StartnodeCmd.Flags().StringVar(&flags.WhitelistedSubnets, "whitelisted-subnets", flags.WhitelistedSubnets, "Comma separated list of subnets that this node would validate if added to. Defaults to empty (will only validate the Primary Network)")
-
-	StartnodeCmd.Flags().BoolVar(&flags.APIHealthEnabled, "api-health-enabled", flags.APIHealthEnabled, "If set to `true`, this node will expose the Health API. Defaults to `true`")
 }
