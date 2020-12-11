@@ -54,6 +54,14 @@ do
         --min-stake-duration=*|\
         --whitelisted-subnets=*|\
         --api-health-enabled=*|\
+        --config-file=*|\
+        --api-info-enabled=*|\
+        --conn-meter-reset-duration=*|\
+        --ipcs-chain-ids=*|\
+        --ipcs-path=*|\
+        --log-display-level=*|\
+        --fd-limit=*|\
+        --http-host=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)

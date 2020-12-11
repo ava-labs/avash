@@ -39,8 +39,10 @@ type Flags struct {
 	APIKeystoreEnabled bool
 	APIMetricsEnabled  bool
 	APIHealthEnabled   bool
+	APIInfoEnabled     bool
 
 	// HTTP
+	HTTPHost        string
 	HTTPPort        uint
 	HTTPTLSEnabled  bool
 	HTTPTLSCertFile string
@@ -58,8 +60,9 @@ type Flags struct {
 	PluginDir string
 
 	// Logging
-	LogLevel string
-	LogDir   string
+	LogLevel        string
+	LogDir          string
+	LogDisplayLevel string
 
 	// Consensus
 	SnowAvalancheBatchSize      int
@@ -82,6 +85,19 @@ type Flags struct {
 
 	// Whitelisted Subnets
 	WhitelistedSubnets string
+
+	// Config
+	ConfigFile string
+
+	// Connection
+	ConnMeterResetDuration string
+
+	// IPCS
+	IPCSChainIDs string
+	IPCSPath     string
+
+	// File Descriptor Limit
+	FDLimit int
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -101,6 +117,7 @@ type FlagsYAML struct {
 	APIIPCsEnabled               *bool   `yaml:"api-ipcs-enabled,omitempty"`
 	APIKeystoreEnabled           *bool   `yaml:"api-keystore-enabled,omitempty"`
 	APIMetricsEnabled            *bool   `yaml:"api-metrics-enabled,omitempty"`
+	HTTPHost                     *string `yaml:"http-host,omitempty"`
 	HTTPPort                     *uint   `yaml:"http-port,omitempty"`
 	HTTPTLSEnabled               *bool   `yaml:"http-tls-enabled,omitempty"`
 	HTTPTLSCertFile              *string `yaml:"http-tls-cert-file,omitempty"`
@@ -112,6 +129,7 @@ type FlagsYAML struct {
 	PluginDir                    *string `yaml:"plugin-dir,omitempty"`
 	LogLevel                     *string `yaml:"log-level,omitempty"`
 	LogDir                       *string `yaml:"log-dir,omitempty"`
+	LogDisplayLevel              *string `yaml:"log-display-level,omitempty"`
 	SnowAvalancheBatchSize       *int    `yaml:"snow-avalanche-batch-size,omitempty"`
 	SnowAvalancheNumParents      *int    `yaml:"snow-avalanche-num-parents,omitempty"`
 	SnowSampleSize               *int    `yaml:"snow-sample-size,omitempty"`
@@ -127,6 +145,12 @@ type FlagsYAML struct {
 	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
 	APIHealthEnabled             *bool   `yaml:"api-health-enabled,omitempty"`
+	ConfigFile                   *string `yaml:"config-file,omitempty"`
+	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
+	ConnMeterResetDuration       *string `yaml:"conn-meter-reset-duration,omitempty"`
+	IPCSChainIDs                 *string `yaml:"ipcs-chain-ids,omitempty"`
+	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
+	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -173,6 +197,7 @@ func DefaultFlags() Flags {
 		APIIPCsEnabled:               true,
 		APIKeystoreEnabled:           true,
 		APIMetricsEnabled:            true,
+		HTTPHost:                     "127.0.0.1",
 		HTTPPort:                     9650,
 		HTTPTLSEnabled:               false,
 		HTTPTLSCertFile:              "",
@@ -184,6 +209,7 @@ func DefaultFlags() Flags {
 		PluginDir:                    fmt.Sprintf("%s/src/github.com/ava-labs/avalanchego/build/plugins", os.Getenv("GOPATH")),
 		LogLevel:                     "info",
 		LogDir:                       "logs",
+		LogDisplayLevel:              "", // defaults to the value provided to --log-level
 		SnowAvalancheBatchSize:       30,
 		SnowAvalancheNumParents:      5,
 		SnowSampleSize:               2,
@@ -199,5 +225,12 @@ func DefaultFlags() Flags {
 		APIAuthPassword:              "",
 		MinStakeDuration:             "",
 		APIHealthEnabled:             true,
+		ConfigFile:                   "",
+		WhitelistedSubnets:           "",
+		APIInfoEnabled:               true,
+		ConnMeterResetDuration:       "",
+		IPCSChainIDs:                 "",
+		IPCSPath:                     "/tmp",
+		FDLimit:                      32768,
 	}
 }
