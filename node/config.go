@@ -41,6 +41,7 @@ type Flags struct {
 	APIInfoEnabled     bool
 
 	// HTTP
+	HTTPHost        string
 	HTTPPort        uint
 	HTTPTLSEnabled  bool
 	HTTPTLSCertFile string
@@ -104,6 +105,7 @@ type FlagsYAML struct {
 	APIIPCsEnabled               *bool   `yaml:"api-ipcs-enabled,omitempty"`
 	APIKeystoreEnabled           *bool   `yaml:"api-keystore-enabled,omitempty"`
 	APIMetricsEnabled            *bool   `yaml:"api-metrics-enabled,omitempty"`
+	HTTPHost                     *string `yaml:"http-host,omitempty"`
 	HTTPPort                     *uint   `yaml:"http-port,omitempty"`
 	HTTPTLSEnabled               *bool   `yaml:"http-tls-enabled,omitempty"`
 	HTTPTLSCertFile              *string `yaml:"http-tls-cert-file,omitempty"`
@@ -177,6 +179,7 @@ func DefaultFlags() Flags {
 		APIIPCsEnabled:               true,
 		APIKeystoreEnabled:           true,
 		APIMetricsEnabled:            true,
+		HTTPHost:                     "127.0.0.1",
 		HTTPPort:                     9650,
 		HTTPTLSEnabled:               false,
 		HTTPTLSCertFile:              "",

@@ -58,6 +58,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--api-ipcs-enabled=" + strconv.FormatBool(flags.APIIPCsEnabled),
 		"--api-keystore-enabled=" + strconv.FormatBool(flags.APIKeystoreEnabled),
 		"--api-metrics-enabled=" + strconv.FormatBool(flags.APIMetricsEnabled),
+		"--http-host=" + flags.HTTPHost,
 		"--http-port=" + httpPortString,
 		"--http-tls-enabled=" + strconv.FormatBool(flags.HTTPTLSEnabled),
 		"--http-tls-cert-file=" + httpCertFile,
