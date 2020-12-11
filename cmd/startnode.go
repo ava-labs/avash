@@ -121,6 +121,7 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.XputServerEnabled, "xput-server-enabled", flags.XputServerEnabled, "If true, throughput test server is created.")
 	StartnodeCmd.Flags().BoolVar(&flags.SignatureVerificationEnabled, "signature-verification-enabled", flags.SignatureVerificationEnabled, "Turn on signature verification.")
 
+	StartnodeCmd.Flags().StringVar(&flags.HTTPHost, "http-host", flags.HTTPHost, "The address that HTTP APIs listen on.")
 	StartnodeCmd.Flags().UintVar(&flags.HTTPPort, "http-port", flags.HTTPPort, "Port of the HTTP server.")
 	StartnodeCmd.Flags().BoolVar(&flags.HTTPTLSEnabled, "http-tls-enabled", flags.HTTPTLSEnabled, "Upgrade the HTTP server to HTTPS.")
 	StartnodeCmd.Flags().StringVar(&flags.HTTPTLSCertFile, "http-tls-cert-file", flags.HTTPTLSCertFile, "TLS certificate file for the HTTPS server.")
