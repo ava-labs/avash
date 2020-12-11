@@ -121,6 +121,7 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.XputServerEnabled, "xput-server-enabled", flags.XputServerEnabled, "If true, throughput test server is created.")
 	StartnodeCmd.Flags().BoolVar(&flags.SignatureVerificationEnabled, "signature-verification-enabled", flags.SignatureVerificationEnabled, "Turn on signature verification.")
 
+	StartnodeCmd.Flags().StringVar(&flags.HTTPHost, "http-host", flags.HTTPHost, "The address that HTTP APIs listen on.")
 	StartnodeCmd.Flags().UintVar(&flags.HTTPPort, "http-port", flags.HTTPPort, "Port of the HTTP server.")
 	StartnodeCmd.Flags().BoolVar(&flags.HTTPTLSEnabled, "http-tls-enabled", flags.HTTPTLSEnabled, "Upgrade the HTTP server to HTTPS.")
 	StartnodeCmd.Flags().StringVar(&flags.HTTPTLSCertFile, "http-tls-cert-file", flags.HTTPTLSCertFile, "TLS certificate file for the HTTPS server.")
@@ -134,6 +135,7 @@ func init() {
 
 	StartnodeCmd.Flags().StringVar(&flags.LogLevel, "log-level", flags.LogLevel, "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().StringVar(&flags.LogDir, "log-dir", flags.LogDir, "Name of directory for the node's logging.")
+	StartnodeCmd.Flags().StringVar(&flags.LogDisplayLevel, "log-display-level", flags.LogDisplayLevel, "{Off, Fatal, Error, Warn, Info, Debug, Verbo}. The log level determines which events to display to the screen. If left blank, will default to the value provided to `--log-level`")
 
 	StartnodeCmd.Flags().IntVar(&flags.SnowAvalancheBatchSize, "snow-avalanche-batch-size", flags.SnowAvalancheBatchSize, "Number of operations to batch in each new vertex.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowAvalancheNumParents, "snow-avalanche-num-parents", flags.SnowAvalancheNumParents, "Number of vertexes for reference from each new vertex.")
@@ -157,4 +159,9 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.ConfigFile, "config-file", flags.ConfigFile, "Config file specifies a JSON file to configure a node instead of specifying arguments via the command line. Command line arguments will override any options set in the config file.")
 
 	StartnodeCmd.Flags().StringVar(&flags.ConnMeterResetDuration, "conn-meter-reset-duration", flags.ConnMeterResetDuration, "Upgrade at most `conn-meter-max-conns` connections from a given IP per `conn-meter-reset-duration`. If `conn-meter-reset-duration` is 0, incoming connections are not rate-limited.")
+
+	StartnodeCmd.Flags().StringVar(&flags.IPCSChainIDs, "ipcs-chain-ids", flags.IPCSChainIDs, "Comma separated list of chain ids to connect to. There is no default value.")
+	StartnodeCmd.Flags().StringVar(&flags.IPCSPath, "ipcs-path", flags.IPCSPath, "The directory (Unix) or named pipe prefix (Windows) for IPC sockets. Defaults to /tmp.")
+
+	StartnodeCmd.Flags().IntVar(&flags.FDLimit, "fd-limit", flags.FDLimit, "Attempts to raise the process file descriptor limit to at least this value. Defaults to `32768`")
 }
