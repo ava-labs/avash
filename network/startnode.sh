@@ -56,6 +56,8 @@ do
         --config-file=*|\
         --api-info-enabled=*|\
         --log-display-level=*|\
+        --fd-limit=*|\
+        --http-host=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)

@@ -58,6 +58,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--api-ipcs-enabled=" + strconv.FormatBool(flags.APIIPCsEnabled),
 		"--api-keystore-enabled=" + strconv.FormatBool(flags.APIKeystoreEnabled),
 		"--api-metrics-enabled=" + strconv.FormatBool(flags.APIMetricsEnabled),
+		"--http-host=" + flags.HTTPHost,
 		"--http-port=" + httpPortString,
 		"--http-tls-enabled=" + strconv.FormatBool(flags.HTTPTLSEnabled),
 		"--http-tls-cert-file=" + httpCertFile,
@@ -87,6 +88,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--whitelisted-subnets=" + flags.WhitelistedSubnets,
 		"--config-file=" + flags.ConfigFile,
 		"--api-info-enabled=" + strconv.FormatBool(flags.APIInfoEnabled),
+		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

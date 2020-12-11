@@ -41,6 +41,7 @@ type Flags struct {
 	APIInfoEnabled     bool
 
 	// HTTP
+	HTTPHost        string
 	HTTPPort        uint
 	HTTPTLSEnabled  bool
 	HTTPTLSCertFile string
@@ -86,6 +87,9 @@ type Flags struct {
 
 	// Config
 	ConfigFile string
+
+	// File Descriptor Limit
+	FDLimit int
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -105,6 +109,7 @@ type FlagsYAML struct {
 	APIIPCsEnabled               *bool   `yaml:"api-ipcs-enabled,omitempty"`
 	APIKeystoreEnabled           *bool   `yaml:"api-keystore-enabled,omitempty"`
 	APIMetricsEnabled            *bool   `yaml:"api-metrics-enabled,omitempty"`
+	HTTPHost                     *string `yaml:"http-host,omitempty"`
 	HTTPPort                     *uint   `yaml:"http-port,omitempty"`
 	HTTPTLSEnabled               *bool   `yaml:"http-tls-enabled,omitempty"`
 	HTTPTLSCertFile              *string `yaml:"http-tls-cert-file,omitempty"`
@@ -133,6 +138,7 @@ type FlagsYAML struct {
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
 	ConfigFile                   *string `yaml:"config-file,omitempty"`
 	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
+	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -179,6 +185,7 @@ func DefaultFlags() Flags {
 		APIIPCsEnabled:               true,
 		APIKeystoreEnabled:           true,
 		APIMetricsEnabled:            true,
+		HTTPHost:                     "127.0.0.1",
 		HTTPPort:                     9650,
 		HTTPTLSEnabled:               false,
 		HTTPTLSCertFile:              "",
@@ -208,5 +215,6 @@ func DefaultFlags() Flags {
 		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
 		APIInfoEnabled:               true,
+		FDLimit:                      32768,
 	}
 }
