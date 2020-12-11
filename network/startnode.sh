@@ -56,6 +56,9 @@ do
         --config-file=*|\
         --api-info-enabled=*|\
         --ipcs-path=*|\
+        --log-display-level=*|\
+        --fd-limit=*|\
+        --http-host=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)
