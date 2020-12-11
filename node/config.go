@@ -88,6 +88,9 @@ type Flags struct {
 	// Config
 	ConfigFile string
 
+	// Connection
+	ConnMeterResetDuration string
+
 	// IPCS
 	IPCSChainIDs string
 	IPCSPath     string
@@ -142,6 +145,7 @@ type FlagsYAML struct {
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
 	ConfigFile                   *string `yaml:"config-file,omitempty"`
 	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
+	ConnMeterResetDuration       *string `yaml:"conn-meter-reset-duration,omitempty"`
 	IPCSChainIDs                 *string `yaml:"ipcs-chain-ids,omitempty"`
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
@@ -221,6 +225,7 @@ func DefaultFlags() Flags {
 		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
 		APIInfoEnabled:               true,
+		ConnMeterResetDuration:       "",
 		IPCSChainIDs:                 "",
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
