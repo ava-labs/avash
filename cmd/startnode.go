@@ -158,6 +158,8 @@ func init() {
 
 	StartnodeCmd.Flags().StringVar(&flags.ConfigFile, "config-file", flags.ConfigFile, "Config file specifies a JSON file to configure a node instead of specifying arguments via the command line. Command line arguments will override any options set in the config file.")
 
+	StartnodeCmd.Flags().StringVar(&flags.IPCSChainIDs, "ipcs-chain-ids", flags.IPCSChainIDs, "Comma separated list of chain ids to connect to. There is no default value.")
 	StartnodeCmd.Flags().StringVar(&flags.IPCSPath, "ipcs-path", flags.IPCSPath, "The directory (Unix) or named pipe prefix (Windows) for IPC sockets. Defaults to /tmp.")
+
 	StartnodeCmd.Flags().IntVar(&flags.FDLimit, "fd-limit", flags.FDLimit, "Attempts to raise the process file descriptor limit to at least this value. Defaults to `32768`")
 }

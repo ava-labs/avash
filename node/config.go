@@ -89,7 +89,8 @@ type Flags struct {
 	ConfigFile string
 
 	// IPCS
-	IPCSPath string
+	IPCSChainIDs string
+	IPCSPath     string
 
 	// File Descriptor Limit
 	FDLimit int
@@ -141,6 +142,7 @@ type FlagsYAML struct {
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
 	ConfigFile                   *string `yaml:"config-file,omitempty"`
 	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
+	IPCSChainIDs                 *string `yaml:"ipcs-chain-ids,omitempty"`
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 }
@@ -219,6 +221,7 @@ func DefaultFlags() Flags {
 		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
 		APIInfoEnabled:               true,
+		IPCSChainIDs:                 "",
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
 	}

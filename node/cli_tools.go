@@ -88,6 +88,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--whitelisted-subnets=" + flags.WhitelistedSubnets,
 		"--config-file=" + flags.ConfigFile,
 		"--api-info-enabled=" + strconv.FormatBool(flags.APIInfoEnabled),
+		"--ipcs-chain-ids=" + flags.IPCSChainIDs,
 		"--ipcs-path=" + flags.IPCSPath,
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
 	}
