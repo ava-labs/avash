@@ -59,8 +59,9 @@ type Flags struct {
 	PluginDir string
 
 	// Logging
-	LogLevel string
-	LogDir   string
+	LogLevel        string
+	LogDir          string
+	LogDisplayLevel string
 
 	// Consensus
 	SnowAvalancheBatchSize      int
@@ -120,6 +121,7 @@ type FlagsYAML struct {
 	PluginDir                    *string `yaml:"plugin-dir,omitempty"`
 	LogLevel                     *string `yaml:"log-level,omitempty"`
 	LogDir                       *string `yaml:"log-dir,omitempty"`
+	LogDisplayLevel              *string `yaml:"log-display-level,omitempty"`
 	SnowAvalancheBatchSize       *int    `yaml:"snow-avalanche-batch-size,omitempty"`
 	SnowAvalancheNumParents      *int    `yaml:"snow-avalanche-num-parents,omitempty"`
 	SnowSampleSize               *int    `yaml:"snow-sample-size,omitempty"`
@@ -195,6 +197,7 @@ func DefaultFlags() Flags {
 		PluginDir:                    fmt.Sprintf("%s/src/github.com/ava-labs/avalanchego/build/plugins", os.Getenv("GOPATH")),
 		LogLevel:                     "info",
 		LogDir:                       "logs",
+		LogDisplayLevel:              "", // defaults to the value provided to --log-level
 		SnowAvalancheBatchSize:       30,
 		SnowAvalancheNumParents:      5,
 		SnowSampleSize:               2,
