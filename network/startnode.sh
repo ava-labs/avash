@@ -55,6 +55,7 @@ do
         --whitelisted-subnets=*|\
         --config-file=*|\
         --api-info-enabled=*|\
+        --log-display-level=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)
