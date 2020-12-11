@@ -58,6 +58,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--api-ipcs-enabled=" + strconv.FormatBool(flags.APIIPCsEnabled),
 		"--api-keystore-enabled=" + strconv.FormatBool(flags.APIKeystoreEnabled),
 		"--api-metrics-enabled=" + strconv.FormatBool(flags.APIMetricsEnabled),
+		"--http-host=" + flags.HTTPHost,
 		"--http-port=" + httpPortString,
 		"--http-tls-enabled=" + strconv.FormatBool(flags.HTTPTLSEnabled),
 		"--http-tls-cert-file=" + httpCertFile,
@@ -69,6 +70,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--plugin-dir=" + flags.PluginDir,
 		"--log-level=" + flags.LogLevel,
 		"--log-dir=" + logPath,
+		"--log-display-level=" + flags.LogDisplayLevel,
 		"--snow-avalanche-batch-size=" + strconv.Itoa(flags.SnowAvalancheBatchSize),
 		"--snow-avalanche-num-parents=" + strconv.Itoa(flags.SnowAvalancheNumParents),
 		"--snow-sample-size=" + strconv.Itoa(flags.SnowSampleSize),
@@ -87,6 +89,8 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--config-file=" + flags.ConfigFile,
 		"--api-info-enabled=" + strconv.FormatBool(flags.APIInfoEnabled),
 		"--ipcs-chain-ids=" + flags.IPCSChainIDs,
+		"--ipcs-path=" + flags.IPCSPath,
+		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
