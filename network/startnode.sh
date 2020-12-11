@@ -56,6 +56,12 @@ do
         --config-file=*|\
         --api-info-enabled=*|\
         --conn-meter-max-conns=*|\
+        --conn-meter-reset-duration=*|\
+        --ipcs-chain-ids=*|\
+        --ipcs-path=*|\
+        --log-display-level=*|\
+        --fd-limit=*|\
+        --http-host=*|\
         --db-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)
