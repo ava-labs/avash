@@ -55,6 +55,7 @@ do
         --whitelisted-subnets=*|\
         --config-file=*|\
         --api-info-enabled=*|\
+        --ipcs-path=*|\
         --log-display-level=*|\
         --fd-limit=*|\
         --http-host=*|\
