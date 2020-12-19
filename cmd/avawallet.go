@@ -19,7 +19,7 @@ import (
 	"github.com/ybbus/jsonrpc"
 )
 
-// AVAXWalletCmd represents the avawallet command
+// AVAXWalletCmd represents the avaxwallet command
 var AVAXWalletCmd = &cobra.Command{
 	Use:   "avaxwallet",
 	Short: "Tools for interacting with AVAX Payments over the network.",
