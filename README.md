@@ -41,7 +41,7 @@ help procmanager start
 
 ### Commands
 
- * avawallet - Tools for interacting with Avalanche Payments over the network.
+ * avaxwallet - Tools for interacting with Avalanche Payments over the network.
  * callrpc - Issues an RPC call to a node.
  * exit - Exit the shell.
  * help - Help about any command.
