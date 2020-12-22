@@ -96,6 +96,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--ipcs-path=" + flags.IPCSPath,
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
 		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
+		"--benchlist-peer-summary-enabled=" + strconv.FormatBool(flags.BenchlistPeerSummaryEnabled),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

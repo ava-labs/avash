@@ -38,6 +38,7 @@ do
 		--db-enabled=*|\
 		--log-level=*|\
 		--benchlist-fail-threshold=*|\
+		--benchlist-peer-summary-enabled=*|\
 		--version=*|\
 		--snow-avalanche-batch-size=*|\
 		--snow-avalanche-num-parents=*|\
