@@ -105,6 +105,9 @@ type Flags struct {
 
 	// Benchlist
 	BenchlistFailThreshold int
+
+	// Restart on Disconnect
+	RestartOnDisconnected bool
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -161,6 +164,7 @@ type FlagsYAML struct {
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
+	RestartOnDisconnected        *bool   `yaml:"restart-on-disconnected,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -245,5 +249,6 @@ func DefaultFlags() Flags {
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
 		BenchlistFailThreshold:       10,
+		RestartOnDisconnected:        true,
 	}
 }
