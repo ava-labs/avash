@@ -145,6 +145,7 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.SnowQuorumSize, "snow-quorum-size", flags.SnowQuorumSize, "Alpha value to use for required number positive results.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowVirtuousCommitThreshold, "snow-virtuous-commit-threshold", flags.SnowVirtuousCommitThreshold, "Beta value to use for virtuous transactions.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowRogueCommitThreshold, "snow-rogue-commit-threshold", flags.SnowRogueCommitThreshold, "Beta value to use for rogue transactions.")
+	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
 
 	StartnodeCmd.Flags().BoolVar(&flags.P2PTLSEnabled, "p2p-tls-enabled", flags.P2PTLSEnabled, "Require TLS to authenticate network communications")
 	StartnodeCmd.Flags().BoolVar(&flags.StakingEnabled, "staking-enabled", flags.StakingEnabled, "Enable staking. If enabled, Network TLS is required.")

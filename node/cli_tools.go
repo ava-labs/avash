@@ -78,6 +78,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-quorum-size=" + strconv.Itoa(flags.SnowQuorumSize),
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
+		"--uptime-requirement=" + strconv.FormatFloat(flags.UptimeRequirement, 'e', 10, 10),
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
