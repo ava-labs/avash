@@ -113,6 +113,7 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.APIKeystoreEnabled, "api-keystore-enabled", flags.APIKeystoreEnabled, "If true, this node exposes the Keystore API")
 	StartnodeCmd.Flags().BoolVar(&flags.APIMetricsEnabled, "api-metrics-enabled", flags.APIMetricsEnabled, "If true, this node exposes the Metrics API")
 	StartnodeCmd.Flags().BoolVar(&flags.APIIPCsEnabled, "api-ipcs-enabled", flags.APIIPCsEnabled, "If true, IPCs can be opened")
+	StartnodeCmd.Flags().BoolVar(&flags.APIHealthEnabled, "api-health-enabled", flags.APIHealthEnabled, "If set to `true`, this node will expose the Health API. Defaults to `true`")
 	StartnodeCmd.Flags().BoolVar(&flags.APIInfoEnabled, "api-info-enabled", flags.APIInfoEnabled, "If set to `true`, this node will expose the Info API. Defaults to `true`")
 
 	StartnodeCmd.Flags().StringVar(&flags.PublicIP, "public-ip", flags.PublicIP, "Public IP of this node.")

@@ -38,6 +38,7 @@ type Flags struct {
 	APIIPCsEnabled     bool
 	APIKeystoreEnabled bool
 	APIMetricsEnabled  bool
+	APIHealthEnabled   bool
 	APIInfoEnabled     bool
 
 	// HTTP
@@ -144,6 +145,7 @@ type FlagsYAML struct {
 	APIAuthPassword              *string `yaml:"api-auth-password,omitempty"`
 	MinStakeDuration             *string `yaml:"min-stake-duration,omitempty"`
 	WhitelistedSubnets           *string `yaml:"whitelisted-subnets,omitempty"`
+	APIHealthEnabled             *bool   `yaml:"api-health-enabled,omitempty"`
 	ConfigFile                   *string `yaml:"config-file,omitempty"`
 	APIInfoEnabled               *bool   `yaml:"api-info-enabled,omitempty"`
 	ConnMeterMaxConns            *int    `yaml:"conn-meter-max-conns,omitempty"`
@@ -224,6 +226,7 @@ func DefaultFlags() Flags {
 		APIAuthRequired:              false,
 		APIAuthPassword:              "",
 		MinStakeDuration:             "",
+		APIHealthEnabled:             true,
 		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
 		APIInfoEnabled:               true,

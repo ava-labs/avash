@@ -53,6 +53,7 @@ do
 		--api-auth-password=*|\
         --min-stake-duration=*|\
         --whitelisted-subnets=*|\
+        --api-health-enabled=*|\
         --config-file=*|\
         --api-info-enabled=*|\
         --conn-meter-max-conns=*|\
