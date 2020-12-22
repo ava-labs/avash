@@ -95,6 +95,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--ipcs-chain-ids=" + flags.IPCSChainIDs,
 		"--ipcs-path=" + flags.IPCSPath,
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
+		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

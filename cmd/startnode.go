@@ -167,4 +167,6 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.IPCSPath, "ipcs-path", flags.IPCSPath, "The directory (Unix) or named pipe prefix (Windows) for IPC sockets. Defaults to /tmp.")
 
 	StartnodeCmd.Flags().IntVar(&flags.FDLimit, "fd-limit", flags.FDLimit, "Attempts to raise the process file descriptor limit to at least this value. Defaults to `32768`")
+
+	StartnodeCmd.Flags().IntVar(&flags.BenchlistFailThreshold, "benchlist-fail-threshold", flags.BenchlistFailThreshold, "Number of consecutive failed queries to a node before benching it (assuming all queries to it will fail). Defaults to `10`")
 }
