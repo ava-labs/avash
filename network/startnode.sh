@@ -45,6 +45,7 @@ do
 		--snow-quorum-size=*|\
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
+		--network-maximum-timeout=*|\
         --p2p-tls-enabled=*|\
 		--staking-enabled=*|\
 		--staking-tls-key-file=*|\
