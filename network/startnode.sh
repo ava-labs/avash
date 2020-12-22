@@ -61,6 +61,7 @@ do
         --ipcs-chain-ids=*|\
         --ipcs-path=*|\
         --log-display-level=*|\
+        --log-display-highlight=*|\
         --fd-limit=*|\
         --http-host=*|\
         --db-dir=*|\

@@ -71,6 +71,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--log-level=" + flags.LogLevel,
 		"--log-dir=" + logPath,
 		"--log-display-level=" + flags.LogDisplayLevel,
+		"--log-display-highlight=" + flags.LogDisplayHighlight,
 		"--snow-avalanche-batch-size=" + strconv.Itoa(flags.SnowAvalancheBatchSize),
 		"--snow-avalanche-num-parents=" + strconv.Itoa(flags.SnowAvalancheNumParents),
 		"--snow-sample-size=" + strconv.Itoa(flags.SnowSampleSize),
