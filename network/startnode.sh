@@ -38,6 +38,7 @@ do
 		--db-enabled=*|\
 		--log-level=*|\
 		--benchlist-fail-threshold=*|\
+		--consensus-gossip-frequency=*|\
 		--version=*|\
 		--snow-avalanche-batch-size=*|\
 		--snow-avalanche-num-parents=*|\
