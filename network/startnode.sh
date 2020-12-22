@@ -38,6 +38,7 @@ do
 		--db-enabled=*|\
 		--log-level=*|\
 		--benchlist-fail-threshold=*|\
+		--benchlist-min-failing-duration=*|\
 		--version=*|\
 		--snow-avalanche-batch-size=*|\
 		--snow-avalanche-num-parents=*|\

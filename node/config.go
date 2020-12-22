@@ -104,7 +104,8 @@ type Flags struct {
 	FDLimit int
 
 	// Benchlist
-	BenchlistFailThreshold int
+	BenchlistFailThreshold      int
+	BenchlistMinFailingDuration string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -161,6 +162,7 @@ type FlagsYAML struct {
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
+	BenchlistMinFailingDuration  *string `yaml:"benchlist-min-failing-duration,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -245,5 +247,6 @@ func DefaultFlags() Flags {
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
 		BenchlistFailThreshold:       10,
+		BenchlistMinFailingDuration:  "5m",
 	}
 }
