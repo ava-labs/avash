@@ -105,6 +105,9 @@ type Flags struct {
 
 	// Benchlist
 	BenchlistFailThreshold int
+
+	// Network Timeout
+	NetworkInitialTimeout string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -144,6 +147,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
+	NetworkInitialTimeout        *string `yaml:"network-initial-timeout,omitempty"`
 	StakingEnabled               *bool   `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
@@ -227,6 +231,7 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
+		NetworkInitialTimeout:        "5s",
 		P2PTLSEnabled:                true,
 		StakingEnabled:               false,
 		StakingPort:                  9651,
