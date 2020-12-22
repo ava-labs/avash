@@ -89,6 +89,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--api-health-enabled=" + strconv.FormatBool(flags.APIHealthEnabled),
 		"--config-file=" + flags.ConfigFile,
 		"--api-info-enabled=" + strconv.FormatBool(flags.APIInfoEnabled),
+		"--conn-meter-max-conns=" + strconv.Itoa(flags.ConnMeterMaxConns),
 		"--conn-meter-reset-duration=" + flags.ConnMeterResetDuration,
 		"--ipcs-chain-ids=" + flags.IPCSChainIDs,
 		"--ipcs-path=" + flags.IPCSPath,

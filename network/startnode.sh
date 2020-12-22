@@ -56,6 +56,7 @@ do
         --api-health-enabled=*|\
         --config-file=*|\
         --api-info-enabled=*|\
+        --conn-meter-max-conns=*|\
         --conn-meter-reset-duration=*|\
         --ipcs-chain-ids=*|\
         --ipcs-path=*|\
