@@ -20,7 +20,8 @@ type Flags struct {
 	TxFee uint
 
 	// IP
-	PublicIP string
+	PublicIP              string
+	DynamicUpdateDuration string
 
 	// Network ID
 	NetworkID string
@@ -110,6 +111,7 @@ type FlagsYAML struct {
 	AssertionsEnabled            *bool   `yaml:"assertions-enabled,omitempty"`
 	TxFee                        *uint   `yaml:"tx-fee,omitempty"`
 	PublicIP                     *string `yaml:"public-ip,omitempty"`
+	DynamicUpdateDuration        *string `yaml:"dynamic-update-duration,omitempty"`
 	NetworkID                    *string `yaml:"network-id,omitempty"`
 	XputServerPort               *uint   `yaml:"xput-server-port,omitempty"`
 	XputServerEnabled            *bool   `yaml:"xput-server-enabled,omitempty"`
@@ -191,6 +193,7 @@ func DefaultFlags() Flags {
 		AssertionsEnabled:            true,
 		TxFee:                        1000000,
 		PublicIP:                     "127.0.0.1",
+		DynamicUpdateDuration:        "5m",
 		NetworkID:                    "local",
 		XputServerPort:               9652,
 		XputServerEnabled:            false,

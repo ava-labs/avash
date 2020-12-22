@@ -50,6 +50,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--assertions-enabled=" + strconv.FormatBool(flags.AssertionsEnabled),
 		"--tx-fee=" + strconv.FormatUint(uint64(flags.TxFee), 10),
 		"--public-ip=" + flags.PublicIP,
+		"--dynamic-update-duration=" + flags.DynamicUpdateDuration,
 		"--network-id=" + flags.NetworkID,
 		"--xput-server-port=" + strconv.FormatUint(uint64(flags.XputServerPort), 10),
 		"--xput-server-enabled=" + strconv.FormatBool(flags.XputServerEnabled),
