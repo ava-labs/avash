@@ -23,6 +23,8 @@ do
 		--tx-fee=*|\
 		--network-id=*|\
         --public-ip=*|\
+        --dynamic-update-duration=*|\
+        --dynamic-public-ip=*|\
 		--xput-server-port=*|\
         --xput-server-enabled=*|\
 		--signature-verification-enabled=*|\
@@ -37,6 +39,7 @@ do
 		--bootstrap-ids=*|\
 		--db-enabled=*|\
 		--log-level=*|\
+		--benchlist-duration=*|\
 		--benchlist-fail-threshold=*|\
 		--version=*|\
 		--snow-avalanche-batch-size=*|\
@@ -46,8 +49,21 @@ do
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
 		--min-validator-stake=*|\
+		--max-stake-duration=*|\
+		--max-validator-stake=*|\
+		--snow-concurrent-repolls=*|\
+		--stake-minting-period=*|\
+		--creation-tx-fee=*|\
+		--max-non-staker-pending-msgs=*|\
+		--network-initial-timeout=*|\
+		--network-minimum-timeout=*|\
+		--network-maximum-timeout=*|\
+		--restart-on-disconnected=*|\
+		--disconnected-check-frequency=*|\
+		--disconnected-restart-timeout=*|\
         --p2p-tls-enabled=*|\
 		--staking-enabled=*|\
+		--staking-disabled-weight=*|\
 		--staking-tls-key-file=*|\
 		--staking-tls-cert-file=*)
             FLAGS+="${arg} "
@@ -64,6 +80,7 @@ do
         --ipcs-chain-ids=*|\
         --ipcs-path=*|\
         --log-display-level=*|\
+        --log-display-highlight=*|\
         --fd-limit=*|\
         --http-host=*|\
         --db-dir=*|\
