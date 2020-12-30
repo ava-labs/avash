@@ -102,6 +102,9 @@ type Flags struct {
 
 	// File Descriptor Limit
 	FDLimit int
+
+	// Benchlist
+	BenchlistFailThreshold int
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -157,6 +160,7 @@ type FlagsYAML struct {
 	IPCSChainIDs                 *string `yaml:"ipcs-chain-ids,omitempty"`
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
+	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -240,5 +244,6 @@ func DefaultFlags() Flags {
 		IPCSChainIDs:                 "",
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
+		BenchlistFailThreshold:       10,
 	}
 }
