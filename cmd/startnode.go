@@ -148,6 +148,7 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.SnowQuorumSize, "snow-quorum-size", flags.SnowQuorumSize, "Alpha value to use for required number positive results.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowVirtuousCommitThreshold, "snow-virtuous-commit-threshold", flags.SnowVirtuousCommitThreshold, "Beta value to use for virtuous transactions.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowRogueCommitThreshold, "snow-rogue-commit-threshold", flags.SnowRogueCommitThreshold, "Beta value to use for rogue transactions.")
+	StartnodeCmd.Flags().IntVar(&flags.MinDelegatorStake, "min-delegator-stake", flags.MinDelegatorStake, "The minimum stake, in nAVAX, that can be delegated to a validator of the Primary Network. Defaults to `25000000000` (25 AVAX) on Main Net. Defaults to `5000000` (.005 AVAX) on Test Net.")
 	StartnodeCmd.Flags().StringVar(&flags.ConsensusShutdownTimeout, "consensus-shutdown-timeout", flags.ConsensusShutdownTimeout, "Timeout before killing an unresponsive chain. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.ConsensusGossipFrequency, "consensus-gossip-frequency", flags.ConsensusGossipFrequency, "Time between gossiping accepted frontiers. Defaults to `10s`")
 	StartnodeCmd.Flags().IntVar(&flags.MinDelegationFee, "min-delegation-fee", flags.MinDelegationFee, "The minimum delegation fee that can be charged for delegation on the Primary Network, multiplied by `10,000` . Must be in the range `[0, 1000000]`. Defaults to `20000` (2%) on Main Net.")
