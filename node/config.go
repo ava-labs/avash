@@ -243,7 +243,7 @@ func DefaultFlags() Flags {
 		LogLevel:                     "info",
 		LogDir:                       "logs",
 		LogDisplayLevel:              "", // defaults to the value provided to --log-level
-		LogDisplayHighlight:          "",
+		LogDisplayHighlight:          "colors",
 		SnowAvalancheBatchSize:       30,
 		SnowAvalancheNumParents:      5,
 		SnowSampleSize:               2,
