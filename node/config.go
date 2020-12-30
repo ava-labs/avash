@@ -81,6 +81,7 @@ type Flags struct {
 
 	// Staking
 	StakingEnabled        bool
+	StakeMintingPeriod    string
 	StakingPort           uint
 	StakingDisabledWeight int
 	StakingTLSKeyFile     string
@@ -165,6 +166,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
+	StakeMintingPeriod           *string `yaml:"stake-minting-period,omitempty"`
 	CreationTxFee                *int    `yaml:"creation-tx-fee,omitempty"`
 	MaxNonStakerPendingMsgs      *int    `yaml:"max-non-staker-pending-msgs,omitempty"`
 	NetworkInitialTimeout        *string `yaml:"network-initial-timeout,omitempty"`
@@ -261,6 +263,7 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
+		StakeMintingPeriod:           "8760h",
 		CreationTxFee:                1000000,
 		MaxNonStakerPendingMsgs:      20,
 		NetworkInitialTimeout:        "5s",
