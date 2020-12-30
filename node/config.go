@@ -16,6 +16,9 @@ type Flags struct {
 	// Assertions
 	AssertionsEnabled bool
 
+	// Version
+	Version bool
+
 	// TX fees
 	TxFee uint
 
@@ -61,9 +64,10 @@ type Flags struct {
 	PluginDir string
 
 	// Logging
-	LogLevel        string
-	LogDir          string
-	LogDisplayLevel string
+	LogLevel            string
+	LogDir              string
+	LogDisplayLevel     string
+	LogDisplayHighlight string
 
 	// Consensus
 	SnowAvalancheBatchSize      int
@@ -72,6 +76,7 @@ type Flags struct {
 	SnowQuorumSize              int
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
+	CreationTxFee               int
 
 	// Staking
 	StakingEnabled     bool
@@ -100,6 +105,22 @@ type Flags struct {
 
 	// File Descriptor Limit
 	FDLimit int
+
+	// Benchlist
+	BenchlistFailThreshold int
+
+	// Message Handling
+	MaxNonStakerPendingMsgs int
+
+	// Network Timeout
+	NetworkInitialTimeout string
+	NetworkMinimumTimeout string
+	NetworkMaximumTimeout string
+
+	// Restart on Disconnect
+	RestartOnDisconnected      bool
+	DisconnectedCheckFrequency string
+	DisconnectedRestartTimeout string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -109,6 +130,7 @@ type FlagsYAML struct {
 	Meta                         *string `yaml:"-"`
 	DataDir                      *string `yaml:"-"`
 	AssertionsEnabled            *bool   `yaml:"assertions-enabled,omitempty"`
+	Version                      *bool   `yaml:"version,omitempty"`
 	TxFee                        *uint   `yaml:"tx-fee,omitempty"`
 	PublicIP                     *string `yaml:"public-ip,omitempty"`
 	DynamicPublicIP              *string `yaml:"dynamic-public-ip,omitempty"`
@@ -133,12 +155,18 @@ type FlagsYAML struct {
 	LogLevel                     *string `yaml:"log-level,omitempty"`
 	LogDir                       *string `yaml:"log-dir,omitempty"`
 	LogDisplayLevel              *string `yaml:"log-display-level,omitempty"`
+	LogDisplayHighlight          *string `yaml:"log-display-highlight,omitempty"`
 	SnowAvalancheBatchSize       *int    `yaml:"snow-avalanche-batch-size,omitempty"`
 	SnowAvalancheNumParents      *int    `yaml:"snow-avalanche-num-parents,omitempty"`
 	SnowSampleSize               *int    `yaml:"snow-sample-size,omitempty"`
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
+	CreationTxFee                *int    `yaml:"creation-tx-fee,omitempty"`
+	MaxNonStakerPendingMsgs      *int    `yaml:"max-non-staker-pending-msgs,omitempty"`
+	NetworkInitialTimeout        *string `yaml:"network-initial-timeout,omitempty"`
+	NetworkMinimumTimeout        *string `yaml:"network-minimum-timeout,omitempty"`
+	NetworkMaximumTimeout        *string `yaml:"network-maximum-timeout,omitempty"`
 	StakingEnabled               *bool   `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
@@ -155,6 +183,10 @@ type FlagsYAML struct {
 	IPCSChainIDs                 *string `yaml:"ipcs-chain-ids,omitempty"`
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
+	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
+	RestartOnDisconnected        *bool   `yaml:"restart-on-disconnected,omitempty"`
+	DisconnectedCheckFrequency   *string `yaml:"disconnected-check-frequency,omitempty"`
+	DisconnectedRestartTimeout   *string `yaml:"disconnected-restart-timeout,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -191,6 +223,7 @@ func DefaultFlags() Flags {
 		Meta:                         "",
 		DataDir:                      "",
 		AssertionsEnabled:            true,
+		Version:                      false,
 		TxFee:                        1000000,
 		PublicIP:                     "127.0.0.1",
 		DynamicPublicIP:              "",
@@ -215,12 +248,18 @@ func DefaultFlags() Flags {
 		LogLevel:                     "info",
 		LogDir:                       "logs",
 		LogDisplayLevel:              "", // defaults to the value provided to --log-level
+		LogDisplayHighlight:          "colors",
 		SnowAvalancheBatchSize:       30,
 		SnowAvalancheNumParents:      5,
 		SnowSampleSize:               2,
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
+		CreationTxFee:                1000000,
+		MaxNonStakerPendingMsgs:      20,
+		NetworkInitialTimeout:        "5s",
+		NetworkMinimumTimeout:        "5s",
+		NetworkMaximumTimeout:        "10s",
 		P2PTLSEnabled:                true,
 		StakingEnabled:               false,
 		StakingPort:                  9651,
@@ -238,5 +277,9 @@ func DefaultFlags() Flags {
 		IPCSChainIDs:                 "",
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
+		BenchlistFailThreshold:       10,
+		RestartOnDisconnected:        true,
+		DisconnectedCheckFrequency:   "10s",
+		DisconnectedRestartTimeout:   "1m",
 	}
 }
