@@ -78,6 +78,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-quorum-size=" + strconv.Itoa(flags.SnowQuorumSize),
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
+		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
 		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
 		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),

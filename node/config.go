@@ -107,6 +107,7 @@ type Flags struct {
 	BenchlistFailThreshold int
 
 	// Network Timeout
+	NetworkInitialTimeout string
 	NetworkMinimumTimeout string
 	NetworkMaximumTimeout string
 
@@ -153,6 +154,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
+	NetworkInitialTimeout        *string `yaml:"network-initial-timeout,omitempty"`
 	NetworkMinimumTimeout        *string `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout        *string `yaml:"network-maximum-timeout,omitempty"`
 	StakingEnabled               *bool   `yaml:"staking-enabled,omitempty"`
@@ -241,6 +243,7 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
+		NetworkInitialTimeout:        "5s",
 		NetworkMinimumTimeout:        "5s",
 		NetworkMaximumTimeout:        "10s",
 		P2PTLSEnabled:                true,
