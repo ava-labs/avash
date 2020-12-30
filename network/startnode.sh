@@ -46,6 +46,8 @@ do
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
 		--restart-on-disconnected=*|\
+		--disconnected-check-frequency=*|\
+		--disconnected-restart-timeout=*|\
         --p2p-tls-enabled=*|\
 		--staking-enabled=*|\
 		--staking-tls-key-file=*|\
