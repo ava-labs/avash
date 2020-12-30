@@ -16,6 +16,9 @@ type Flags struct {
 	// Assertions
 	AssertionsEnabled bool
 
+	// Version
+	Version bool
+
 	// TX fees
 	TxFee uint
 
@@ -108,6 +111,7 @@ type FlagsYAML struct {
 	Meta                         *string `yaml:"-"`
 	DataDir                      *string `yaml:"-"`
 	AssertionsEnabled            *bool   `yaml:"assertions-enabled,omitempty"`
+	Version                      *bool   `yaml:"version,omitempty"`
 	TxFee                        *uint   `yaml:"tx-fee,omitempty"`
 	PublicIP                     *string `yaml:"public-ip,omitempty"`
 	NetworkID                    *string `yaml:"network-id,omitempty"`
@@ -189,6 +193,7 @@ func DefaultFlags() Flags {
 		Meta:                         "",
 		DataDir:                      "",
 		AssertionsEnabled:            true,
+		Version:                      false,
 		TxFee:                        1000000,
 		PublicIP:                     "127.0.0.1",
 		NetworkID:                    "local",

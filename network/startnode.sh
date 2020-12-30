@@ -37,6 +37,7 @@ do
 		--bootstrap-ids=*|\
 		--db-enabled=*|\
 		--log-level=*|\
+		--version=*|\
 		--snow-avalanche-batch-size=*|\
 		--snow-avalanche-num-parents=*|\
 		--snow-sample-size=*|\
