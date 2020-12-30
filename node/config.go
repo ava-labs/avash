@@ -107,6 +107,7 @@ type Flags struct {
 	BenchlistFailThreshold int
 
 	// Restart on Disconnect
+	RestartOnDisconnected      bool
 	DisconnectedCheckFrequency string
 	DisconnectedRestartTimeout string
 }
@@ -165,6 +166,7 @@ type FlagsYAML struct {
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
+	RestartOnDisconnected        *bool   `yaml:"restart-on-disconnected,omitempty"`
 	DisconnectedCheckFrequency   *string `yaml:"disconnected-check-frequency,omitempty"`
 	DisconnectedRestartTimeout   *string `yaml:"disconnected-restart-timeout,omitempty"`
 }
@@ -251,6 +253,7 @@ func DefaultFlags() Flags {
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
 		BenchlistFailThreshold:       10,
+		RestartOnDisconnected:        true,
 		DisconnectedCheckFrequency:   "10s",
 		DisconnectedRestartTimeout:   "1m",
 	}
