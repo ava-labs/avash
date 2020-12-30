@@ -41,6 +41,7 @@ do
 		--log-level=*|\
 		--benchlist-duration=*|\
 		--benchlist-fail-threshold=*|\
+		--consensus-gossip-frequency=*|\
 		--benchlist-min-failing-duration=*|\
 		--benchlist-peer-summary-enabled=*|\
 		--version=*|\

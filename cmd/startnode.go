@@ -148,6 +148,7 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.SnowQuorumSize, "snow-quorum-size", flags.SnowQuorumSize, "Alpha value to use for required number positive results.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowVirtuousCommitThreshold, "snow-virtuous-commit-threshold", flags.SnowVirtuousCommitThreshold, "Beta value to use for virtuous transactions.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowRogueCommitThreshold, "snow-rogue-commit-threshold", flags.SnowRogueCommitThreshold, "Beta value to use for rogue transactions.")
+	StartnodeCmd.Flags().StringVar(&flags.ConsensusGossipFrequency, "consensus-gossip-frequency", flags.ConsensusGossipFrequency, "Time between gossiping accepted frontiers. Defaults to `10s`")
 	StartnodeCmd.Flags().IntVar(&flags.MinDelegationFee, "min-delegation-fee", flags.MinDelegationFee, "The minimum delegation fee that can be charged for delegation on the Primary Network, multiplied by `10,000` . Must be in the range `[0, 1000000]`. Defaults to `20000` (2%) on Main Net.")
 	StartnodeCmd.Flags().IntVar(&flags.MinValidatorStake, "min-validator-stake", flags.MinValidatorStake, "The minimum stake, in nAVAX, required to validate the Primary Network. Defaults to `2000000000000` (2,000 AVAX) on Main Net. Defaults to `5000000` (.005 AVAX) on Test Net.")
 	StartnodeCmd.Flags().StringVar(&flags.MaxStakeDuration, "max-stake-duration", flags.MaxStakeDuration, "The maximum staking duration, in seconds. Defaults to `8760h` (365 days) on Main Net.")

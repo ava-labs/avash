@@ -77,6 +77,7 @@ type Flags struct {
 	SnowQuorumSize              int
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
+	ConsensusGossipFrequency    string
 	MinDelegationFee            int
 	MinValidatorStake           int
 	MaxStakeDuration            string
@@ -173,6 +174,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
+	ConsensusGossipFrequency     *string `yaml:"consensus-gossip-frequency,omitempty"`
 	MinDelegationFee             *int    `yaml:"min-delegation-fee,omitempty"`
 	MinValidatorStake            *int    `yaml:"min-validator-stake,omitempty"`
 	MaxStakeDuration             *string `yaml:"max-stake-duration,omitempty"`
@@ -277,6 +279,7 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
+		ConsensusGossipFrequency:     "10s",
 		MinDelegationFee:             20000,
 		MinValidatorStake:            5000000,
 		MaxStakeDuration:             "8760h",
