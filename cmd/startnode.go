@@ -118,6 +118,7 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.APIInfoEnabled, "api-info-enabled", flags.APIInfoEnabled, "If set to `true`, this node will expose the Info API. Defaults to `true`")
 
 	StartnodeCmd.Flags().StringVar(&flags.PublicIP, "public-ip", flags.PublicIP, "Public IP of this node.")
+	StartnodeCmd.Flags().StringVar(&flags.DynamicPublicIP, "dynamic-public-ip", flags.DynamicPublicIP, "Valid values if param is present: `opendns`, `ifconfigco` or `ifconfigme`. This overrides `--public-ip`. If set, will poll the remote service every `--dynamic-update-duration` and update the node’s public IP address.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkID, "network-id", flags.NetworkID, "Network ID this node will connect to.")
 	StartnodeCmd.Flags().UintVar(&flags.XputServerPort, "xput-server-port", flags.XputServerPort, "Port of the deprecated throughput test server.")
 	StartnodeCmd.Flags().BoolVar(&flags.XputServerEnabled, "xput-server-enabled", flags.XputServerEnabled, "If true, throughput test server is created.")
