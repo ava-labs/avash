@@ -108,6 +108,16 @@ type Flags struct {
 
 	// Message Handling
 	MaxNonStakerPendingMsgs int
+
+	// Network Timeout
+	NetworkInitialTimeout string
+	NetworkMinimumTimeout string
+	NetworkMaximumTimeout string
+
+	// Restart on Disconnect
+	RestartOnDisconnected      bool
+	DisconnectedCheckFrequency string
+	DisconnectedRestartTimeout string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -148,6 +158,9 @@ type FlagsYAML struct {
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
 	MaxNonStakerPendingMsgs      *int    `yaml:"max-non-staker-pending-msgs,omitempty"`
+	NetworkInitialTimeout        *string `yaml:"network-initial-timeout,omitempty"`
+	NetworkMinimumTimeout        *string `yaml:"network-minimum-timeout,omitempty"`
+	NetworkMaximumTimeout        *string `yaml:"network-maximum-timeout,omitempty"`
 	StakingEnabled               *bool   `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
@@ -165,6 +178,9 @@ type FlagsYAML struct {
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
+	RestartOnDisconnected        *bool   `yaml:"restart-on-disconnected,omitempty"`
+	DisconnectedCheckFrequency   *string `yaml:"disconnected-check-frequency,omitempty"`
+	DisconnectedRestartTimeout   *string `yaml:"disconnected-restart-timeout,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -232,6 +248,9 @@ func DefaultFlags() Flags {
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
 		MaxNonStakerPendingMsgs:      20,
+		NetworkInitialTimeout:        "5s",
+		NetworkMinimumTimeout:        "5s",
+		NetworkMaximumTimeout:        "10s",
 		P2PTLSEnabled:                true,
 		StakingEnabled:               false,
 		StakingPort:                  9651,
@@ -250,5 +269,8 @@ func DefaultFlags() Flags {
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
 		BenchlistFailThreshold:       10,
+		RestartOnDisconnected:        true,
+		DisconnectedCheckFrequency:   "10s",
+		DisconnectedRestartTimeout:   "1m",
 	}
 }
