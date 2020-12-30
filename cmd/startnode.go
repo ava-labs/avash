@@ -105,6 +105,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DataDir, "data-dir", flags.DataDir, "Name of directory for the data stash.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.AssertionsEnabled, "assertions-enabled", flags.AssertionsEnabled, "Turn on assertion execution.")
+	StartnodeCmd.Flags().BoolVar(&flags.Version, "version", flags.Version, "If this is `true`, print the version and quit. Defaults to `false`")
 	StartnodeCmd.Flags().UintVar(&flags.TxFee, "tx-fee", flags.TxFee, "Transaction fee, in $nAVAX.")
 
 	StartnodeCmd.Flags().StringVar(&flags.PluginDir, "plugin-dir", flags.PluginDir, "Directory to search for plugins")
@@ -167,4 +168,16 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.IPCSPath, "ipcs-path", flags.IPCSPath, "The directory (Unix) or named pipe prefix (Windows) for IPC sockets. Defaults to /tmp.")
 
 	StartnodeCmd.Flags().IntVar(&flags.FDLimit, "fd-limit", flags.FDLimit, "Attempts to raise the process file descriptor limit to at least this value. Defaults to `32768`")
+
+	StartnodeCmd.Flags().IntVar(&flags.BenchlistFailThreshold, "benchlist-fail-threshold", flags.BenchlistFailThreshold, "Number of consecutive failed queries to a node before benching it (assuming all queries to it will fail). Defaults to `10`")
+
+	StartnodeCmd.Flags().IntVar(&flags.MaxNonStakerPendingMsgs, "max-non-staker-pending-msgs", flags.MaxNonStakerPendingMsgs, "Maximum number of messages a non-staker is allowed to have pending. Defaults to `20`")
+
+	StartnodeCmd.Flags().StringVar(&flags.NetworkInitialTimeout, "network-initial-timeout", flags.NetworkInitialTimeout, "Initial timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkMinimumTimeout, "network-minimum-timeout", flags.NetworkMinimumTimeout, "Minimum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkMaximumTimeout, "network-maximum-timeout", flags.NetworkMaximumTimeout, "Maximum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `10s`")
+
+	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
+	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
+	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
 }

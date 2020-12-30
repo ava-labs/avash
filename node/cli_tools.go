@@ -48,6 +48,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 
 	args := []string{
 		"--assertions-enabled=" + strconv.FormatBool(flags.AssertionsEnabled),
+		"--version=" + strconv.FormatBool(flags.Version),
 		"--tx-fee=" + strconv.FormatUint(uint64(flags.TxFee), 10),
 		"--public-ip=" + flags.PublicIP,
 		"--network-id=" + flags.NetworkID,
@@ -78,6 +79,10 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-quorum-size=" + strconv.Itoa(flags.SnowQuorumSize),
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
+		"--max-non-staker-pending-msgs=" + strconv.Itoa(flags.MaxNonStakerPendingMsgs),
+		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
+		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
+		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
@@ -95,6 +100,10 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--ipcs-chain-ids=" + flags.IPCSChainIDs,
 		"--ipcs-path=" + flags.IPCSPath,
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
+		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
+		"--restart-on-disconnected=" + strconv.FormatBool(flags.RestartOnDisconnected),
+		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
+		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
