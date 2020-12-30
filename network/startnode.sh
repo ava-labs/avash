@@ -45,6 +45,7 @@ do
 		--snow-quorum-size=*|\
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
+		--creation-tx-fee=*|\
 		--max-non-staker-pending-msgs=*|\
 		--network-initial-timeout=*|\
 		--network-minimum-timeout=*|\
