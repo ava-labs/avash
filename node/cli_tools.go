@@ -81,6 +81,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-quorum-size=" + strconv.Itoa(flags.SnowQuorumSize),
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
+		"--max-validator-stake=" + strconv.Itoa(flags.MaxValidatorStake),
 		"--snow-concurrent-repolls=" + strconv.Itoa(flags.SnowConcurrentRepolls),
 		"--stake-minting-period=" + flags.StakeMintingPeriod,
 		"--creation-tx-fee=" + strconv.Itoa(flags.CreationTxFee),

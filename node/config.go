@@ -77,6 +77,7 @@ type Flags struct {
 	SnowQuorumSize              int
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
+	MaxValidatorStake           int
 	SnowConcurrentRepolls       int
 	CreationTxFee               int
 
@@ -167,6 +168,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
+	MaxValidatorStake            *int    `yaml:"max-stake-duration,omitempty"`
 	SnowConcurrentRepolls        *int    `yaml:"snow-concurrent-repolls,omitempty"`
 	StakeMintingPeriod           *string `yaml:"stake-minting-period,omitempty"`
 	CreationTxFee                *int    `yaml:"creation-tx-fee,omitempty"`
@@ -265,6 +267,7 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
+		MaxValidatorStake:            3000000000000000,
 		SnowConcurrentRepolls:        4,
 		StakeMintingPeriod:           "8760h",
 		CreationTxFee:                1000000,
