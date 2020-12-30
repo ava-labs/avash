@@ -48,6 +48,7 @@ do
 		--snow-quorum-size=*|\
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
+		--min-delegation-fee=*|\
 		--min-validator-stake=*|\
 		--max-stake-duration=*|\
 		--max-validator-stake=*|\
