@@ -48,9 +48,11 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 
 	args := []string{
 		"--assertions-enabled=" + strconv.FormatBool(flags.AssertionsEnabled),
+		"--version=" + strconv.FormatBool(flags.Version),
 		"--tx-fee=" + strconv.FormatUint(uint64(flags.TxFee), 10),
 		"--public-ip=" + flags.PublicIP,
 		"--dynamic-update-duration=" + flags.DynamicUpdateDuration,
+		"--dynamic-public-ip=" + flags.DynamicPublicIP,
 		"--network-id=" + flags.NetworkID,
 		"--xput-server-port=" + strconv.FormatUint(uint64(flags.XputServerPort), 10),
 		"--xput-server-enabled=" + strconv.FormatBool(flags.XputServerEnabled),
@@ -72,12 +74,18 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--log-level=" + flags.LogLevel,
 		"--log-dir=" + logPath,
 		"--log-display-level=" + flags.LogDisplayLevel,
+		"--log-display-highlight=" + flags.LogDisplayHighlight,
 		"--snow-avalanche-batch-size=" + strconv.Itoa(flags.SnowAvalancheBatchSize),
 		"--snow-avalanche-num-parents=" + strconv.Itoa(flags.SnowAvalancheNumParents),
 		"--snow-sample-size=" + strconv.Itoa(flags.SnowSampleSize),
 		"--snow-quorum-size=" + strconv.Itoa(flags.SnowQuorumSize),
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
+		"--creation-tx-fee=" + strconv.Itoa(flags.CreationTxFee),
+		"--max-non-staker-pending-msgs=" + strconv.Itoa(flags.MaxNonStakerPendingMsgs),
+		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
+		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
+		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
@@ -95,6 +103,10 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--ipcs-chain-ids=" + flags.IPCSChainIDs,
 		"--ipcs-path=" + flags.IPCSPath,
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
+		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
+		"--restart-on-disconnected=" + strconv.FormatBool(flags.RestartOnDisconnected),
+		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
+		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
