@@ -48,6 +48,7 @@ do
 		--snow-quorum-size=*|\
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
+		--snow-concurrent-repolls=*|\
 		--stake-minting-period=*|\
 		--creation-tx-fee=*|\
 		--max-non-staker-pending-msgs=*|\
