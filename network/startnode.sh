@@ -46,6 +46,13 @@ do
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
 		--creation-tx-fee=*|\
+		--max-non-staker-pending-msgs=*|\
+		--network-initial-timeout=*|\
+		--network-minimum-timeout=*|\
+		--network-maximum-timeout=*|\
+		--restart-on-disconnected=*|\
+		--disconnected-check-frequency=*|\
+		--disconnected-restart-timeout=*|\
         --p2p-tls-enabled=*|\
 		--staking-enabled=*|\
 		--staking-tls-key-file=*|\
@@ -64,6 +71,7 @@ do
         --ipcs-chain-ids=*|\
         --ipcs-path=*|\
         --log-display-level=*|\
+        --log-display-highlight=*|\
         --fd-limit=*|\
         --http-host=*|\
         --db-dir=*|\

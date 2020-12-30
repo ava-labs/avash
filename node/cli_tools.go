@@ -72,6 +72,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--log-level=" + flags.LogLevel,
 		"--log-dir=" + logPath,
 		"--log-display-level=" + flags.LogDisplayLevel,
+		"--log-display-highlight=" + flags.LogDisplayHighlight,
 		"--snow-avalanche-batch-size=" + strconv.Itoa(flags.SnowAvalancheBatchSize),
 		"--snow-avalanche-num-parents=" + strconv.Itoa(flags.SnowAvalancheNumParents),
 		"--snow-sample-size=" + strconv.Itoa(flags.SnowSampleSize),
@@ -79,6 +80,10 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
 		"--creation-tx-fee=" + strconv.Itoa(flags.CreationTxFee),
+		"--max-non-staker-pending-msgs=" + strconv.Itoa(flags.MaxNonStakerPendingMsgs),
+		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
+		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
+		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
@@ -97,6 +102,9 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--ipcs-path=" + flags.IPCSPath,
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
 		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
+		"--restart-on-disconnected=" + strconv.FormatBool(flags.RestartOnDisconnected),
+		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
+		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
