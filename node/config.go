@@ -135,7 +135,9 @@ type FlagsYAML struct {
 	TxFee                        *uint   `yaml:"tx-fee,omitempty"`
 	PublicIP                     *string `yaml:"public-ip,omitempty"`
 	DynamicPublicIP              *string `yaml:"dynamic-public-ip,omitempty"`
+	NetworkID                    *string `yaml:"network-id,omitempty"`
 	XputServerPort               *uint   `yaml:"xput-server-port,omitempty"`
+	XputServerEnabled            *bool   `yaml:"xput-server-enabled,omitempty"`
 	SignatureVerificationEnabled *bool   `yaml:"signature-verification-enabled,omitempty"`
 	APIAdminEnabled              *bool   `yaml:"api-admin-enabled,omitempty"`
 	APIIPCsEnabled               *bool   `yaml:"api-ipcs-enabled,omitempty"`
