@@ -23,6 +23,7 @@ do
 		--tx-fee=*|\
 		--network-id=*|\
         --public-ip=*|\
+        --dynamic-update-duration=*|\
         --dynamic-public-ip=*|\
 		--xput-server-port=*|\
         --xput-server-enabled=*|\

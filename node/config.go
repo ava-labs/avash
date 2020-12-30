@@ -23,8 +23,9 @@ type Flags struct {
 	TxFee uint
 
 	// IP
-	PublicIP        string
-	DynamicPublicIP string
+	PublicIP              string
+	DynamicUpdateDuration string
+	DynamicPublicIP       string
 
 	// Network ID
 	NetworkID string
@@ -226,6 +227,7 @@ func DefaultFlags() Flags {
 		Version:                      false,
 		TxFee:                        1000000,
 		PublicIP:                     "127.0.0.1",
+		DynamicUpdateDuration:        "5m",
 		DynamicPublicIP:              "",
 		NetworkID:                    "local",
 		XputServerPort:               9652,
