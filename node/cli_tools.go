@@ -97,6 +97,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
 		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
 		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
+		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

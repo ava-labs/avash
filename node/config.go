@@ -108,6 +108,7 @@ type Flags struct {
 
 	// Restart on Disconnect
 	DisconnectedCheckFrequency string
+	DisconnectedRestartTimeout string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -165,6 +166,7 @@ type FlagsYAML struct {
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
 	DisconnectedCheckFrequency   *string `yaml:"disconnected-check-frequency,omitempty"`
+	DisconnectedRestartTimeout   *string `yaml:"disconnected-restart-timeout,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -250,5 +252,6 @@ func DefaultFlags() Flags {
 		FDLimit:                      32768,
 		BenchlistFailThreshold:       10,
 		DisconnectedCheckFrequency:   "10s",
+		DisconnectedRestartTimeout:   "1m",
 	}
 }
