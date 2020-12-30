@@ -46,6 +46,7 @@ do
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
         --p2p-tls-enabled=*|\
+        --snow-epoch-first-transition=*|\
 		--staking-enabled=*|\
 		--staking-tls-key-file=*|\
 		--staking-tls-cert-file=*)
