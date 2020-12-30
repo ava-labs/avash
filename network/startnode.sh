@@ -41,6 +41,7 @@ do
 		--log-level=*|\
 		--benchlist-duration=*|\
 		--benchlist-fail-threshold=*|\
+		--benchlist-peer-summary-enabled=*|\
 		--version=*|\
 		--snow-avalanche-batch-size=*|\
 		--snow-avalanche-num-parents=*|\
