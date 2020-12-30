@@ -173,6 +173,7 @@ func init() {
 
 	StartnodeCmd.Flags().IntVar(&flags.FDLimit, "fd-limit", flags.FDLimit, "Attempts to raise the process file descriptor limit to at least this value. Defaults to `32768`")
 
+	StartnodeCmd.Flags().StringVar(&flags.BenchlistDuration, "benchlist-duration", flags.BenchlistDuration, "Amount of time a peer is benchlisted after surpassing `--benchlist-fail-threshold`. Defaults to `1h`")
 	StartnodeCmd.Flags().IntVar(&flags.BenchlistFailThreshold, "benchlist-fail-threshold", flags.BenchlistFailThreshold, "Number of consecutive failed queries to a node before benching it (assuming all queries to it will fail). Defaults to `10`")
 
 	StartnodeCmd.Flags().IntVar(&flags.MaxNonStakerPendingMsgs, "max-non-staker-pending-msgs", flags.MaxNonStakerPendingMsgs, "Maximum number of messages a non-staker is allowed to have pending. Defaults to `20`")

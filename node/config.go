@@ -109,6 +109,7 @@ type Flags struct {
 	FDLimit int
 
 	// Benchlist
+	BenchlistDuration      string
 	BenchlistFailThreshold int
 
 	// Message Handling
@@ -186,6 +187,7 @@ type FlagsYAML struct {
 	IPCSChainIDs                 *string `yaml:"ipcs-chain-ids,omitempty"`
 	IPCSPath                     *string `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
+	BenchlistDuration            *string `yaml:"benchlist-duration,omitempty"`
 	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
 	RestartOnDisconnected        *bool   `yaml:"restart-on-disconnected,omitempty"`
 	DisconnectedCheckFrequency   *string `yaml:"disconnected-check-frequency,omitempty"`
@@ -272,7 +274,7 @@ func DefaultFlags() Flags {
 		StakingTLSCertFile:           "",
 		APIAuthRequired:              false,
 		APIAuthPassword:              "",
-		MinStakeDuration:             "",
+		MinStakeDuration:             "336h",
 		APIHealthEnabled:             true,
 		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
@@ -282,6 +284,7 @@ func DefaultFlags() Flags {
 		IPCSChainIDs:                 "",
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
+		BenchlistDuration:            "1h",
 		BenchlistFailThreshold:       10,
 		RestartOnDisconnected:        true,
 		DisconnectedCheckFrequency:   "10s",

@@ -104,6 +104,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--ipcs-chain-ids=" + flags.IPCSChainIDs,
 		"--ipcs-path=" + flags.IPCSPath,
 		"--fd-limit=" + strconv.Itoa(flags.FDLimit),
+		"--benchlist-duration=" + flags.BenchlistDuration,
 		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
 		"--restart-on-disconnected=" + strconv.FormatBool(flags.RestartOnDisconnected),
 		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,

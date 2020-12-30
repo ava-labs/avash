@@ -39,6 +39,7 @@ do
 		--bootstrap-ids=*|\
 		--db-enabled=*|\
 		--log-level=*|\
+		--benchlist-duration=*|\
 		--benchlist-fail-threshold=*|\
 		--version=*|\
 		--snow-avalanche-batch-size=*|\
