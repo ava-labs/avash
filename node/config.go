@@ -116,6 +116,7 @@ type Flags struct {
 
 	// Benchlist
 	BenchlistFailThreshold      int
+	BenchlistMinFailingDuration string
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
 
@@ -202,6 +203,7 @@ type FlagsYAML struct {
 	FDLimit                      *int    `yaml:"fd-limit,omitempty"`
 	BenchlistDuration            *string `yaml:"benchlist-duration,omitempty"`
 	BenchlistFailThreshold       *int    `yaml:"benchlist-fail-threshold,omitempty"`
+	BenchlistMinFailingDuration  *string `yaml:"benchlist-min-failing-duration,omitempty"`
 	BenchlistPeerSummaryEnabled  *bool   `yaml:"benchlist-peer-summary-enabled,omitempty"`
 	RestartOnDisconnected        *bool   `yaml:"restart-on-disconnected,omitempty"`
 	DisconnectedCheckFrequency   *string `yaml:"disconnected-check-frequency,omitempty"`
@@ -306,6 +308,7 @@ func DefaultFlags() Flags {
 		FDLimit:                      32768,
 		BenchlistDuration:            "1h",
 		BenchlistFailThreshold:       10,
+		BenchlistMinFailingDuration:  "5m",
 		BenchlistPeerSummaryEnabled:  false,
 		RestartOnDisconnected:        true,
 		DisconnectedCheckFrequency:   "10s",
