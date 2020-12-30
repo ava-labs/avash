@@ -80,10 +80,11 @@ type Flags struct {
 	CreationTxFee               int
 
 	// Staking
-	StakingEnabled     bool
-	StakingPort        uint
-	StakingTLSKeyFile  string
-	StakingTLSCertFile string
+	StakingEnabled        bool
+	StakingPort           uint
+	StakingDisabledWeight int
+	StakingTLSKeyFile     string
+	StakingTLSCertFile    string
 
 	// Auth
 	APIAuthRequired  bool
@@ -170,6 +171,7 @@ type FlagsYAML struct {
 	NetworkMaximumTimeout        *string `yaml:"network-maximum-timeout,omitempty"`
 	StakingEnabled               *bool   `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
+	StakingDisabledWeight        *int    `yaml:"staking-disabled-weight,omitempty"`
 	StakingTLSKeyFile            *string `yaml:"staking-tls-key-file,omitempty"`
 	StakingTLSCertFile           *string `yaml:"staking-tls-cert-file,omitempty"`
 	APIAuthRequired              *bool   `yaml:"api-auth-required,omitempty"`
@@ -265,6 +267,7 @@ func DefaultFlags() Flags {
 		P2PTLSEnabled:                true,
 		StakingEnabled:               false,
 		StakingPort:                  9651,
+		StakingDisabledWeight:        1,
 		StakingTLSKeyFile:            "",
 		StakingTLSCertFile:           "",
 		APIAuthRequired:              false,

@@ -89,6 +89,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
+		"--staking-disabled-weight=" + strconv.Itoa(flags.StakingDisabledWeight),
 		"--staking-tls-key-file=" + stakerKeyFile,
 		"--staking-tls-cert-file=" + stakerCertFile,
 		"--api-auth-required=" + strconv.FormatBool(flags.APIAuthRequired),

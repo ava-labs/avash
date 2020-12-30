@@ -57,6 +57,7 @@ do
 		--disconnected-restart-timeout=*|\
         --p2p-tls-enabled=*|\
 		--staking-enabled=*|\
+		--staking-disabled-weight=*|\
 		--staking-tls-key-file=*|\
 		--staking-tls-cert-file=*)
             FLAGS+="${arg} "
