@@ -45,6 +45,7 @@ do
 		--snow-quorum-size=*|\
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
+		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
 		--restart-on-disconnected=*|\
 		--disconnected-check-frequency=*|\
