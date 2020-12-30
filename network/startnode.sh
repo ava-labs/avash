@@ -48,6 +48,7 @@ do
 		--snow-quorum-size=*|\
 		--snow-virtuous-commit-threshold=*|\
 		--snow-rogue-commit-threshold=*|\
+		--min-validator-stake=*|\
 		--max-stake-duration=*|\
 		--max-validator-stake=*|\
 		--snow-concurrent-repolls=*|\
