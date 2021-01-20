@@ -189,7 +189,7 @@ func init() {
 
 	StartnodeCmd.Flags().IntVar(&flags.MaxNonStakerPendingMsgs, "max-non-staker-pending-msgs", flags.MaxNonStakerPendingMsgs, "Maximum number of messages a non-staker is allowed to have pending. Defaults to `20`")
 
-	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutReduction, "network-timeout-reduction", flags.NetworkTimeoutReduction, "Reduction of the timeout after a successful request, in nanoseconds. Defaults to `1`")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutReduction, "network-timeout-reduction", flags.NetworkTimeoutReduction, "Reduction of the timeout after a successful request, in nanoseconds. Defaults to `12s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkInitialTimeout, "network-initial-timeout", flags.NetworkInitialTimeout, "Initial timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMinimumTimeout, "network-minimum-timeout", flags.NetworkMinimumTimeout, "Minimum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMaximumTimeout, "network-maximum-timeout", flags.NetworkMaximumTimeout, "Maximum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `10s`")
