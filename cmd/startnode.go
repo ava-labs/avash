@@ -189,6 +189,7 @@ func init() {
 
 	StartnodeCmd.Flags().IntVar(&flags.MaxNonStakerPendingMsgs, "max-non-staker-pending-msgs", flags.MaxNonStakerPendingMsgs, "Maximum number of messages a non-staker is allowed to have pending. Defaults to `20`")
 
+	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutReduction, "network-timeout-reduction", flags.NetworkTimeoutReduction, "Reduction duration of the timeout after a successful request. Defaults to `12ms`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkInitialTimeout, "network-initial-timeout", flags.NetworkInitialTimeout, "Initial timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMinimumTimeout, "network-minimum-timeout", flags.NetworkMinimumTimeout, "Minimum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMaximumTimeout, "network-maximum-timeout", flags.NetworkMaximumTimeout, "Maximum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `10s`")
@@ -196,4 +197,6 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
+
+	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
 }
