@@ -118,16 +118,13 @@ type Flags struct {
 	FDLimit int
 
 	// Benchlist
-<<<<<<< HEAD
-	BenchlistFailThreshold int
-
-	// Network Timeout
-	NetworkTimeoutReduction string
-=======
 	BenchlistFailThreshold      int
 	BenchlistMinFailingDuration string
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
+
+	// Network Timeout
+	NetworkTimeoutReduction string
 
 	// Message Handling
 	MaxNonStakerPendingMsgs int
@@ -141,7 +138,6 @@ type Flags struct {
 	RestartOnDisconnected      bool
 	DisconnectedCheckFrequency string
 	DisconnectedRestartTimeout string
->>>>>>> master
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -183,9 +179,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
-<<<<<<< HEAD
 	NetworkTimeoutReduction      *string `yaml:"network-timeout-reduction,omitempty"`
-=======
 	MinDelegatorStake            *int    `yaml:"min-delegator-stake,omitempty"`
 	ConsensusShutdownTimeout     *string `yaml:"consensus-shutdown-timeout,omitempty"`
 	ConsensusGossipFrequency     *string `yaml:"consensus-gossip-frequency,omitempty"`
@@ -200,7 +194,6 @@ type FlagsYAML struct {
 	NetworkInitialTimeout        *string `yaml:"network-initial-timeout,omitempty"`
 	NetworkMinimumTimeout        *string `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout        *string `yaml:"network-maximum-timeout,omitempty"`
->>>>>>> master
 	StakingEnabled               *bool   `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint   `yaml:"staking-port,omitempty"`
 	StakingDisabledWeight        *int    `yaml:"staking-disabled-weight,omitempty"`
