@@ -23,7 +23,9 @@ type Flags struct {
 	TxFee uint
 
 	// IP
-	PublicIP string
+	PublicIP              string
+	DynamicUpdateDuration string
+	DynamicPublicIP       string
 
 	// Network ID
 	NetworkID string
@@ -63,9 +65,10 @@ type Flags struct {
 	PluginDir string
 
 	// Logging
-	LogLevel        string
-	LogDir          string
-	LogDisplayLevel string
+	LogLevel            string
+	LogDir              string
+	LogDisplayLevel     string
+	LogDisplayHighlight string
 
 	// Consensus
 	SnowAvalancheBatchSize      int
@@ -75,12 +78,23 @@ type Flags struct {
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
 	UptimeRequirement           float64
+	MinDelegatorStake           int
+	ConsensusShutdownTimeout    string
+	ConsensusGossipFrequency    string
+	MinDelegationFee            int
+	MinValidatorStake           int
+	MaxStakeDuration            string
+	MaxValidatorStake           int
+	SnowConcurrentRepolls       int
+	CreationTxFee               int
 
 	// Staking
-	StakingEnabled     bool
-	StakingPort        uint
-	StakingTLSKeyFile  string
-	StakingTLSCertFile string
+	StakingEnabled        bool
+	StakeMintingPeriod    string
+	StakingPort           uint
+	StakingDisabledWeight int
+	StakingTLSKeyFile     string
+	StakingTLSCertFile    string
 
 	// Auth
 	APIAuthRequired  bool
@@ -105,7 +119,23 @@ type Flags struct {
 	FDLimit int
 
 	// Benchlist
-	BenchlistFailThreshold int
+	BenchlistFailThreshold      int
+	BenchlistMinFailingDuration string
+	BenchlistPeerSummaryEnabled bool
+	BenchlistDuration           string
+
+	// Message Handling
+	MaxNonStakerPendingMsgs int
+
+	// Network Timeout
+	NetworkInitialTimeout string
+	NetworkMinimumTimeout string
+	NetworkMaximumTimeout string
+
+	// Restart on Disconnect
+	RestartOnDisconnected      bool
+	DisconnectedCheckFrequency string
+	DisconnectedRestartTimeout string
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -145,7 +175,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int     `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int     `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int     `yaml:"snow-rogue-commit-threshold,omitempty"`
-	UptimeRequirement            *float64 `yaml:"uptimte-requirement,omitempty"`
+	UptimeRequirement            *float64 `yaml:"uptime-requirement,omitempty"`
 	StakingEnabled               *bool    `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint    `yaml:"staking-port,omitempty"`
 	StakingTLSKeyFile            *string  `yaml:"staking-tls-key-file,omitempty"`
@@ -202,6 +232,8 @@ func DefaultFlags() Flags {
 		Version:                      false,
 		TxFee:                        1000000,
 		PublicIP:                     "127.0.0.1",
+		DynamicUpdateDuration:        "5m",
+		DynamicPublicIP:              "",
 		NetworkID:                    "local",
 		XputServerPort:               9652,
 		XputServerEnabled:            false,
@@ -223,6 +255,7 @@ func DefaultFlags() Flags {
 		LogLevel:                     "info",
 		LogDir:                       "logs",
 		LogDisplayLevel:              "", // defaults to the value provided to --log-level
+		LogDisplayHighlight:          "colors",
 		SnowAvalancheBatchSize:       30,
 		SnowAvalancheNumParents:      5,
 		SnowSampleSize:               2,
@@ -230,14 +263,29 @@ func DefaultFlags() Flags {
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
 		UptimeRequirement:            0.6,
+		MinDelegatorStake:            5000000,
+		ConsensusShutdownTimeout:     "5s",
+		ConsensusGossipFrequency:     "10s",
+		MinDelegationFee:             20000,
+		MinValidatorStake:            5000000,
+		MaxStakeDuration:             "8760h",
+		MaxValidatorStake:            3000000000000000,
+		SnowConcurrentRepolls:        4,
+		StakeMintingPeriod:           "8760h",
+		CreationTxFee:                1000000,
+		MaxNonStakerPendingMsgs:      20,
+		NetworkInitialTimeout:        "5s",
+		NetworkMinimumTimeout:        "5s",
+		NetworkMaximumTimeout:        "10s",
 		P2PTLSEnabled:                true,
 		StakingEnabled:               false,
 		StakingPort:                  9651,
+		StakingDisabledWeight:        1,
 		StakingTLSKeyFile:            "",
 		StakingTLSCertFile:           "",
 		APIAuthRequired:              false,
 		APIAuthPassword:              "",
-		MinStakeDuration:             "",
+		MinStakeDuration:             "336h",
 		APIHealthEnabled:             true,
 		ConfigFile:                   "",
 		WhitelistedSubnets:           "",
@@ -247,6 +295,12 @@ func DefaultFlags() Flags {
 		IPCSChainIDs:                 "",
 		IPCSPath:                     "/tmp",
 		FDLimit:                      32768,
+		BenchlistDuration:            "1h",
 		BenchlistFailThreshold:       10,
+		BenchlistMinFailingDuration:  "5m",
+		BenchlistPeerSummaryEnabled:  false,
+		RestartOnDisconnected:        true,
+		DisconnectedCheckFrequency:   "10s",
+		DisconnectedRestartTimeout:   "1m",
 	}
 }
