@@ -104,6 +104,7 @@ func (sh *Shell) ShellLoop() {
 
 // AvalancheShell is the shell for our little client
 var AvalancheShell *Shell
+var RootCmd *cobra.Command
 
 func init() {
 	AvalancheShell = new(Shell)
@@ -111,6 +112,17 @@ func init() {
 	var cfgpath string
 	pflag.StringVar(&cfgpath, "config", cfg.DefaultCfgName, "Config file path")
 	pflag.Parse()
+
+	RootCmd = &cobra.Command{
+		Use:   "avash",
+		Short: "A shell environment for one or more Avalanche nodes",
+		Long:  "A shell environment for launching and interacting with multiple Avalanche nodes.",
+		Args:  cobra.NoArgs,
+		Run: func(cmd *cobra.Command, args []string) {
+			AvalancheShell.ShellLoop()
+		},
+		SilenceUsage: true,
+	}
 
 	cfg.InitConfig(cfgpath)
 	RootCmd.AddCommand(AVAXWalletCmd)
@@ -123,19 +135,9 @@ func init() {
 	RootCmd.AddCommand(StartnodeCmd)
 	RootCmd.AddCommand(VarStoreCmd)
 	RootCmd.SetUsageTemplate(usageTmpl)
-}
 
-// RootCmd represents the root command
-var RootCmd = &cobra.Command{
-	Use:   "avash",
-	Short: "A shell environment for one more more Avalanche nodes",
-	Long:  "A shell environment for launching and interacting with multiple Avalanche nodes.",
-	Args:  cobra.NoArgs,
-	Run: func(cmd *cobra.Command, args []string) {
-		AvalancheShell.root = cmd
-		AvalancheShell.ShellLoop()
-	},
-	SilenceUsage: true,
+	AvalancheShell.root = RootCmd
+
 }
 
 // Execute runs the root command for avash
