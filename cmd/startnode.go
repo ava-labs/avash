@@ -184,7 +184,6 @@ func init() {
 
 	StartnodeCmd.Flags().StringVar(&flags.BenchlistDuration, "benchlist-duration", flags.BenchlistDuration, "Amount of time a peer is benchlisted after surpassing `--benchlist-fail-threshold`. Defaults to `1h`")
 	StartnodeCmd.Flags().IntVar(&flags.BenchlistFailThreshold, "benchlist-fail-threshold", flags.BenchlistFailThreshold, "Number of consecutive failed queries to a node before benching it (assuming all queries to it will fail). Defaults to `10`")
-
 	StartnodeCmd.Flags().StringVar(&flags.BenchlistMinFailingDuration, "benchlist-min-failing-duration", flags.BenchlistMinFailingDuration, "Minimum amount of time messages to a peer must be failing before the peer is benched. Defaults to `5m`")
 	StartnodeCmd.Flags().BoolVar(&flags.BenchlistPeerSummaryEnabled, "benchlist-peer-summary-enabled", flags.BenchlistPeerSummaryEnabled, "Enables peer specific query latency metrics. Defaults to `false`")
 
