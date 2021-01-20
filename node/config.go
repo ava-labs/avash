@@ -287,7 +287,7 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
-		NetworkTimeoutReduction:      "12s",
+		NetworkTimeoutReduction:      "12ms",
 		MinDelegatorStake:            5000000,
 		ConsensusShutdownTimeout:     "5s",
 		ConsensusGossipFrequency:     "10s",
