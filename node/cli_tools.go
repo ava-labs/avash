@@ -120,6 +120,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--restart-on-disconnected=" + strconv.FormatBool(flags.RestartOnDisconnected),
 		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
 		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
+		"--uptime-requirement=" + strconv.FormatFloat(flags.UptimeRequirement, 'e', 10, 10),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
