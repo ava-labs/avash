@@ -74,7 +74,6 @@ type Flags struct {
 	SnowQuorumSize              int
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
-	UptimeRequirement           float64
 	MinDelegatorStake           int
 	ConsensusShutdownTimeout    string
 	ConsensusGossipFrequency    string
@@ -133,6 +132,9 @@ type Flags struct {
 	RestartOnDisconnected      bool
 	DisconnectedCheckFrequency string
 	DisconnectedRestartTimeout string
+
+	// Uptime Requirement
+	UptimeRequirement float64
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -144,6 +146,7 @@ type FlagsYAML struct {
 	AssertionsEnabled            *bool    `yaml:"assertions-enabled,omitempty"`
 	TxFee                        *uint    `yaml:"tx-fee,omitempty"`
 	PublicIP                     *string  `yaml:"public-ip,omitempty"`
+	DynamicPublicIP              *string  `yaml:"dynamic-public-ip,omitempty"`
 	NetworkID                    *string  `yaml:"network-id,omitempty"`
 	XputServerPort               *uint    `yaml:"xput-server-port,omitempty"`
 	XputServerEnabled            *bool    `yaml:"xput-server-enabled,omitempty"`
@@ -165,15 +168,30 @@ type FlagsYAML struct {
 	LogLevel                     *string  `yaml:"log-level,omitempty"`
 	LogDir                       *string  `yaml:"log-dir,omitempty"`
 	LogDisplayLevel              *string  `yaml:"log-display-level,omitempty"`
+	LogDisplayHighlight          *string  `yaml:"log-display-highlight,omitempty"`
 	SnowAvalancheBatchSize       *int     `yaml:"snow-avalanche-batch-size,omitempty"`
 	SnowAvalancheNumParents      *int     `yaml:"snow-avalanche-num-parents,omitempty"`
 	SnowSampleSize               *int     `yaml:"snow-sample-size,omitempty"`
 	SnowQuorumSize               *int     `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int     `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int     `yaml:"snow-rogue-commit-threshold,omitempty"`
-	UptimeRequirement            *float64 `yaml:"uptime-requirement,omitempty"`
+	MinDelegatorStake            *int     `yaml:"min-delegator-stake,omitempty"`
+	ConsensusShutdownTimeout     *string  `yaml:"consensus-shutdown-timeout,omitempty"`
+	ConsensusGossipFrequency     *string  `yaml:"consensus-gossip-frequency,omitempty"`
+	MinDelegationFee             *int     `yaml:"min-delegation-fee,omitempty"`
+	MinValidatorStake            *int     `yaml:"min-validator-stake,omitempty"`
+	MaxStakeDuration             *string  `yaml:"max-stake-duration,omitempty"`
+	MaxValidatorStake            *int     `yaml:"max-stake-duration,omitempty"`
+	SnowConcurrentRepolls        *int     `yaml:"snow-concurrent-repolls,omitempty"`
+	StakeMintingPeriod           *string  `yaml:"stake-minting-period,omitempty"`
+	CreationTxFee                *int     `yaml:"creation-tx-fee,omitempty"`
+	MaxNonStakerPendingMsgs      *int     `yaml:"max-non-staker-pending-msgs,omitempty"`
+	NetworkInitialTimeout        *string  `yaml:"network-initial-timeout,omitempty"`
+	NetworkMinimumTimeout        *string  `yaml:"network-minimum-timeout,omitempty"`
+	NetworkMaximumTimeout        *string  `yaml:"network-maximum-timeout,omitempty"`
 	StakingEnabled               *bool    `yaml:"staking-enabled,omitempty"`
 	StakingPort                  *uint    `yaml:"staking-port,omitempty"`
+	StakingDisabledWeight        *int     `yaml:"staking-disabled-weight,omitempty"`
 	StakingTLSKeyFile            *string  `yaml:"staking-tls-key-file,omitempty"`
 	StakingTLSCertFile           *string  `yaml:"staking-tls-cert-file,omitempty"`
 	APIAuthRequired              *bool    `yaml:"api-auth-required,omitempty"`
@@ -188,7 +206,14 @@ type FlagsYAML struct {
 	IPCSChainIDs                 *string  `yaml:"ipcs-chain-ids,omitempty"`
 	IPCSPath                     *string  `yaml:"ipcs-path,omitempty"`
 	FDLimit                      *int     `yaml:"fd-limit,omitempty"`
+	BenchlistDuration            *string  `yaml:"benchlist-duration,omitempty"`
 	BenchlistFailThreshold       *int     `yaml:"benchlist-fail-threshold,omitempty"`
+	BenchlistMinFailingDuration  *string  `yaml:"benchlist-min-failing-duration,omitempty"`
+	BenchlistPeerSummaryEnabled  *bool    `yaml:"benchlist-peer-summary-enabled,omitempty"`
+	RestartOnDisconnected        *bool    `yaml:"restart-on-disconnected,omitempty"`
+	DisconnectedCheckFrequency   *string  `yaml:"disconnected-check-frequency,omitempty"`
+	DisconnectedRestartTimeout   *string  `yaml:"disconnected-restart-timeout,omitempty"`
+	UptimeRequirement            *float64 `yaml:"uptime-requirement,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -257,7 +282,6 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
-		UptimeRequirement:            0.6,
 		MinDelegatorStake:            5000000,
 		ConsensusShutdownTimeout:     "5s",
 		ConsensusGossipFrequency:     "10s",
@@ -297,5 +321,6 @@ func DefaultFlags() Flags {
 		RestartOnDisconnected:        true,
 		DisconnectedCheckFrequency:   "10s",
 		DisconnectedRestartTimeout:   "1m",
+		UptimeRequirement:            0.6,
 	}
 }
