@@ -44,7 +44,6 @@ do
 		--consensus-gossip-frequency=*|\
 		--benchlist-min-failing-duration=*|\
 		--benchlist-peer-summary-enabled=*|\
-		--version=*|\
 		--snow-avalanche-batch-size=*|\
 		--snow-avalanche-num-parents=*|\
 		--snow-sample-size=*|\
