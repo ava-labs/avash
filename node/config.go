@@ -123,6 +123,9 @@ type Flags struct {
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
 
+	// Network Timeout
+	NetworkTimeoutReduction string
+
 	// Message Handling
 	MaxNonStakerPendingMsgs int
 
@@ -176,6 +179,7 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int    `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int    `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int    `yaml:"snow-rogue-commit-threshold,omitempty"`
+	NetworkTimeoutReduction      *string `yaml:"network-timeout-reduction,omitempty"`
 	MinDelegatorStake            *int    `yaml:"min-delegator-stake,omitempty"`
 	ConsensusShutdownTimeout     *string `yaml:"consensus-shutdown-timeout,omitempty"`
 	ConsensusGossipFrequency     *string `yaml:"consensus-gossip-frequency,omitempty"`
@@ -283,6 +287,7 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:               2,
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
+		NetworkTimeoutReduction:      "12ms",
 		MinDelegatorStake:            5000000,
 		ConsensusShutdownTimeout:     "5s",
 		ConsensusGossipFrequency:     "10s",
