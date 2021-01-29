@@ -82,6 +82,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
 		"--snow-epoch-first-transition=" + strconv.Itoa(flags.SnowEpochFirstTransition),
+		"--snow-epoch-duration=" + flags.SnowEpochDuration,
 		"--network-timeout-reduction=" + flags.NetworkTimeoutReduction,
 		"--min-delegator-stake=" + strconv.Itoa(flags.MinDelegatorStake),
 		"--consensus-shutdown-timeout=" + flags.ConsensusShutdownTimeout,

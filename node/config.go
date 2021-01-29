@@ -78,6 +78,7 @@ type Flags struct {
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
 	SnowEpochFirstTransition    int
+	SnowEpochDuration           string
 	MinDelegatorStake           int
 	ConsensusShutdownTimeout    string
 	ConsensusGossipFrequency    string
@@ -184,6 +185,7 @@ type FlagsYAML struct {
 	SnowVirtuousCommitThreshold  *int     `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int     `yaml:"snow-rogue-commit-threshold,omitempty"`
 	SnowEpochFirstTransition     *int     `yaml:"snow-epoch-first-transition,omitempty"`
+	SnowEpochDuration            *string  `yaml:"snow-epoch-duration,omitempty"`
 	NetworkTimeoutReduction      *string  `yaml:"network-timeout-reduction,omitempty"`
 	MinDelegatorStake            *int     `yaml:"min-delegator-stake,omitempty"`
 	ConsensusShutdownTimeout     *string  `yaml:"consensus-shutdown-timeout,omitempty"`
@@ -294,6 +296,7 @@ func DefaultFlags() Flags {
 		SnowVirtuousCommitThreshold:  5,
 		SnowRogueCommitThreshold:     10,
 		SnowEpochFirstTransition:     1609873200,
+		SnowEpochDuration:            "6h",
 		NetworkTimeoutReduction:      "12ms",
 		MinDelegatorStake:            5000000,
 		ConsensusShutdownTimeout:     "5s",
