@@ -74,5 +74,3 @@ The functions available to Lua are:
  * Track expected results and compare them with real nodes
  
  Example Lua scripts are in the `./scripts` folder.
-
-
