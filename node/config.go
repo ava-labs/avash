@@ -182,7 +182,6 @@ type FlagsYAML struct {
 	SnowQuorumSize               *int     `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold  *int     `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold     *int     `yaml:"snow-rogue-commit-threshold,omitempty"`
-	NetworkTimeoutReduction      *string  `yaml:"network-timeout-reduction,omitempty"`
 	MinDelegatorStake            *int     `yaml:"min-delegator-stake,omitempty"`
 	ConsensusShutdownTimeout     *string  `yaml:"consensus-shutdown-timeout,omitempty"`
 	ConsensusGossipFrequency     *string  `yaml:"consensus-gossip-frequency,omitempty"`
