@@ -65,6 +65,7 @@ do
 		--network-initial-timeout=*|\
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
+		--network-timeout-coefficient=*|\
 		--restart-on-disconnected=*|\
 		--disconnected-check-frequency=*|\
 		--disconnected-restart-timeout=*|\
