@@ -95,6 +95,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
 		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
 		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,
+		fmt.Sprintf("--network-health-max-send-fail-rate=%f", flags.NetworkHealthMaxSendFailRateKey),
 		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
