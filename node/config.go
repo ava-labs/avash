@@ -134,6 +134,9 @@ type Flags struct {
 	NetworkMinimumTimeout string
 	NetworkMaximumTimeout string
 
+	// Router
+	RouterHealthMaxDropRateKey float64
+
 	// Restart on Disconnect
 	RestartOnDisconnected      bool
 	DisconnectedCheckFrequency string
@@ -221,6 +224,7 @@ type FlagsYAML struct {
 	DisconnectedCheckFrequency   *string  `yaml:"disconnected-check-frequency,omitempty"`
 	DisconnectedRestartTimeout   *string  `yaml:"disconnected-restart-timeout,omitempty"`
 	UptimeRequirement            *float64 `yaml:"uptime-requirement,omitempty"`
+	routerHealthMaxDropRateKey   *float64 `yaml:"router-health-max-drop-rate,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -331,5 +335,6 @@ func DefaultFlags() Flags {
 		DisconnectedCheckFrequency:   "10s",
 		DisconnectedRestartTimeout:   "1m",
 		UptimeRequirement:            0.6,
+		RouterHealthMaxDropRateKey:   1,
 	}
 }
