@@ -198,4 +198,6 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
 
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
+
+	StartnodeCmd.Flags().StringVar(&flags.HealthCheckAveragerHalflifeKey, "health-check-averager-halflife", flags.HealthCheckAveragerHalflifeKey, "Halflife of averager when calculating a running average in a health check")
 }
