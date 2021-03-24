@@ -121,6 +121,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
 		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
 		fmt.Sprintf("--uptime-requirement=%f", flags.UptimeRequirement),
+		"--bootstrap-retry-enabled=" + strconv.FormatBool(flags.RetryBootstrap),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

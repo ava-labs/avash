@@ -198,4 +198,6 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
 
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
+
+	StartnodeCmd.Flags().BoolVar(&flags.RetryBootstrap, "bootstrap-retry-enabled", flags.RetryBootstrap, "Specifies whether bootstrap should be retried")
 }
