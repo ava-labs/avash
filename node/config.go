@@ -141,6 +141,8 @@ type Flags struct {
 
 	// Uptime Requirement
 	UptimeRequirement float64
+
+	RetryBootstrapMaxAttempts int
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -221,6 +223,7 @@ type FlagsYAML struct {
 	DisconnectedCheckFrequency   *string  `yaml:"disconnected-check-frequency,omitempty"`
 	DisconnectedRestartTimeout   *string  `yaml:"disconnected-restart-timeout,omitempty"`
 	UptimeRequirement            *float64 `yaml:"uptime-requirement,omitempty"`
+	RetryBootstrapMaxAttempts    *uint    `yaml:"bootstrap-retry-max-attempts,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -331,5 +334,6 @@ func DefaultFlags() Flags {
 		DisconnectedCheckFrequency:   "10s",
 		DisconnectedRestartTimeout:   "1m",
 		UptimeRequirement:            0.6,
+		RetryBootstrapMaxAttempts:    50,
 	}
 }
