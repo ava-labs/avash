@@ -65,6 +65,9 @@ do
 		--network-initial-timeout=*|\
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
+		--bootstrap-retry-max-attempts=*|\
+		--bootstrap-retry-enabled=*|\
+		--health-check-averager-halflife=*|\
 		--health-check-frequency=*|\
 		--restart-on-disconnected=*|\
 		--disconnected-check-frequency=*|\

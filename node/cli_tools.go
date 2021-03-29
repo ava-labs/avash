@@ -121,6 +121,9 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
 		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
 		fmt.Sprintf("--uptime-requirement=%f", flags.UptimeRequirement),
+		"--bootstrap-retry-max-attempts=" + strconv.Itoa(flags.RetryBootstrapMaxAttempts),
+		"--bootstrap-retry-enabled=" + strconv.FormatBool(flags.RetryBootstrap),
+		"--health-check-averager-halflife=" + flags.HealthCheckAveragerHalflifeKey,
 		"--health-check-frequency=" + flags.HealthCheckFreqKey,
 	}
 	if sepBase {
