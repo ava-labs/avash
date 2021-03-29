@@ -110,6 +110,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--staking-tls-key-file=" + stakerKeyFile,
 		"--staking-tls-cert-file=" + stakerCertFile,
 		"--api-auth-required=" + strconv.FormatBool(flags.APIAuthRequired),
+		"--api-auth-password-file=" + flags.APIAuthPasswordFileKey,
 		"--min-stake-duration=" + flags.MinStakeDuration,
 		"--whitelisted-subnets=" + flags.WhitelistedSubnets,
 		"--api-health-enabled=" + strconv.FormatBool(flags.APIHealthEnabled),

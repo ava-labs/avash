@@ -96,8 +96,9 @@ type Flags struct {
 	StakingTLSCertFile    string
 
 	// Auth
-	APIAuthRequired  bool
-	MinStakeDuration string
+	APIAuthRequired        bool
+	APIAuthPasswordFileKey string
+	MinStakeDuration       string
 
 	// Whitelisted Subnets
 	WhitelistedSubnets string
@@ -229,6 +230,7 @@ type FlagsYAML struct {
 	StakingTLSKeyFile                       *string  `yaml:"staking-tls-key-file,omitempty"`
 	StakingTLSCertFile                      *string  `yaml:"staking-tls-cert-file,omitempty"`
 	APIAuthRequired                         *bool    `yaml:"api-auth-required,omitempty"`
+	APIAuthPasswordFileKey                  *string  `yaml:"api-auth-password-file,omitempty"`
 	MinStakeDuration                        *string  `yaml:"min-stake-duration,omitempty"`
 	WhitelistedSubnets                      *string  `yaml:"whitelisted-subnets,omitempty"`
 	APIHealthEnabled                        *bool    `yaml:"api-health-enabled,omitempty"`
@@ -352,6 +354,7 @@ func DefaultFlags() Flags {
 		StakingTLSKeyFile:                       "",
 		StakingTLSCertFile:                      "",
 		APIAuthRequired:                         false,
+		APIAuthPasswordFileKey:                  "",
 		MinStakeDuration:                        "336h",
 		APIHealthEnabled:                        true,
 		ConfigFile:                              "",

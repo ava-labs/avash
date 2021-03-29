@@ -90,6 +90,7 @@ do
             FLAGS+="${arg} "
             ;;
 		--api-auth-required=*|\
+		--api-auth-password-file=*|\
         --min-stake-duration=*|\
         --whitelisted-subnets=*|\
         --api-health-enabled=*|\
