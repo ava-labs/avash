@@ -133,7 +133,7 @@ type Flags struct {
 	NetworkInitialTimeout                   string
 	NetworkMinimumTimeout                   string
 	NetworkMaximumTimeout                   string
-	networkHealthMaxTimeSinceMsgReceivedKey string
+	NetworkHealthMaxTimeSinceMsgReceivedKey string
 
 	// Restart on Disconnect
 	RestartOnDisconnected      bool
@@ -197,7 +197,7 @@ type FlagsYAML struct {
 	NetworkInitialTimeout                   *string  `yaml:"network-initial-timeout,omitempty"`
 	NetworkMinimumTimeout                   *string  `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout                   *string  `yaml:"network-maximum-timeout,omitempty"`
-	networkHealthMaxTimeSinceMsgReceivedKey *string  `yaml:"network-health-max-time-since-msg-received,omitempty"`
+	NetworkHealthMaxTimeSinceMsgReceivedKey *string  `yaml:"network-health-max-time-since-msg-received,omitempty"`
 	StakingEnabled                          *bool    `yaml:"staking-enabled,omitempty"`
 	StakingPort                             *uint    `yaml:"staking-port,omitempty"`
 	StakingDisabledWeight                   *int     `yaml:"staking-disabled-weight,omitempty"`
@@ -307,7 +307,7 @@ func DefaultFlags() Flags {
 		NetworkInitialTimeout:                   "5s",
 		NetworkMinimumTimeout:                   "5s",
 		NetworkMaximumTimeout:                   "10s",
-		networkHealthMaxTimeSinceMsgReceivedKey: "1m",
+		NetworkHealthMaxTimeSinceMsgReceivedKey: "1m",
 		P2PTLSEnabled:                           true,
 		StakingEnabled:                          false,
 		StakingPort:                             9651,

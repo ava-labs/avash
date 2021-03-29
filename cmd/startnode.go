@@ -192,7 +192,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.NetworkInitialTimeout, "network-initial-timeout", flags.NetworkInitialTimeout, "Initial timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMinimumTimeout, "network-minimum-timeout", flags.NetworkMinimumTimeout, "Minimum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMaximumTimeout, "network-maximum-timeout", flags.NetworkMaximumTimeout, "Maximum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `10s`")
-	StartnodeCmd.Flags().StringVar(&flags.networkHealthMaxTimeSinceMsgReceivedKey, "network-health-max-time-since-msg-received", flags.networkHealthMaxTimeSinceMsgReceivedKey, "Network layer returns unhealthy if haven't received a message for at least this much time")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkHealthMaxTimeSinceMsgReceivedKey, "network-health-max-time-since-msg-received", flags.NetworkHealthMaxTimeSinceMsgReceivedKey, "Network layer returns unhealthy if haven't received a message for at least this much time")
 
 	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
