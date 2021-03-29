@@ -134,6 +134,7 @@ type Flags struct {
 	NetworkMinimumTimeout              string
 	NetworkMaximumTimeout              string
 	NetworkHealthMaxTimeSinceNoReqsKey string
+	NetworkHealthMaxSendFailRateKey    float64
 
 	// Restart on Disconnect
 	RestartOnDisconnected      bool
@@ -210,6 +211,7 @@ type FlagsYAML struct {
 	NetworkMinimumTimeout                 *string  `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout                 *string  `yaml:"network-maximum-timeout,omitempty"`
 	NetworkHealthMaxTimeSinceNoReqsKey    *string  `yaml:"network-health-max-time-since-no-requests,omitempty"`
+	NetworkHealthMaxSendFailRateKey       *float64 `yaml:"network-health-max-send-fail-rate,omitempty"`
 	StakingEnabled                        *bool    `yaml:"staking-enabled,omitempty"`
 	StakingPort                           *uint    `yaml:"staking-port,omitempty"`
 	StakingDisabledWeight                 *int     `yaml:"staking-disabled-weight,omitempty"`
@@ -326,6 +328,7 @@ func DefaultFlags() Flags {
 		NetworkMinimumTimeout:                 "5s",
 		NetworkMaximumTimeout:                 "10s",
 		NetworkHealthMaxTimeSinceNoReqsKey:    "5m",
+		NetworkHealthMaxSendFailRateKey:       0.9,
 		P2PTLSEnabled:                         true,
 		StakingEnabled:                        false,
 		StakingPort:                           9651,

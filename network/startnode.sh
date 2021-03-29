@@ -66,6 +66,7 @@ do
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
 		--network-health-max-time-since-no-requests=*|\
+		--network-health-max-send-fail-rate=*|\
 		--bootstrap-retry-max-attempts=*|\
 		--bootstrap-retry-enabled=*|\
 		--health-check-averager-halflife=*|\
