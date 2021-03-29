@@ -142,7 +142,9 @@ type Flags struct {
 	// Uptime Requirement
 	UptimeRequirement float64
 
+	// Retry
 	RetryBootstrapMaxAttempts int
+	RetryBootstrap            bool
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -224,6 +226,7 @@ type FlagsYAML struct {
 	DisconnectedRestartTimeout   *string  `yaml:"disconnected-restart-timeout,omitempty"`
 	UptimeRequirement            *float64 `yaml:"uptime-requirement,omitempty"`
 	RetryBootstrapMaxAttempts    *uint    `yaml:"bootstrap-retry-max-attempts,omitempty"`
+	RetryBootstrap               *bool    `yaml:"bootstrap-retry-enabled,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -335,5 +338,6 @@ func DefaultFlags() Flags {
 		DisconnectedRestartTimeout:   "1m",
 		UptimeRequirement:            0.6,
 		RetryBootstrapMaxAttempts:    50,
+		RetryBootstrap:               true,
 	}
 }
