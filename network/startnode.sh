@@ -69,6 +69,7 @@ do
 		--network-health-max-send-fail-rate=*|\
 		--network-health-max-portion-send-queue-full=*|\
 		--network-health-max-time-since-msg-sent=*|\
+		--network-health-max-time-since-msg-received=*|\
 		--bootstrap-retry-max-attempts=*|\
 		--bootstrap-retry-enabled=*|\
 		--health-check-averager-halflife=*|\
