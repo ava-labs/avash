@@ -201,4 +201,5 @@ func init() {
 
 	StartnodeCmd.Flags().IntVar(&flags.RetryBootstrapMaxAttempts, "bootstrap-retry-max-attempts", flags.RetryBootstrapMaxAttempts, "Specifies how many times bootstrap should be retried")
 	StartnodeCmd.Flags().BoolVar(&flags.RetryBootstrap, "bootstrap-retry-enabled", flags.RetryBootstrap, "Specifies whether bootstrap should be retried")
+	StartnodeCmd.Flags().StringVar(&flags.HealthCheckAveragerHalflifeKey, "health-check-averager-halflife", flags.HealthCheckAveragerHalflifeKey, "Halflife of averager when calculating a running average in a health check")
 }

@@ -123,6 +123,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		fmt.Sprintf("--uptime-requirement=%f", flags.UptimeRequirement),
 		"--bootstrap-retry-max-attempts=" + strconv.Itoa(flags.RetryBootstrapMaxAttempts),
 		"--bootstrap-retry-enabled=" + strconv.FormatBool(flags.RetryBootstrap),
+		"--health-check-averager-halflife=" + flags.HealthCheckAveragerHalflifeKey,
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
