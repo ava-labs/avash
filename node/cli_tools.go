@@ -125,6 +125,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--bootstrap-retry-enabled=" + strconv.FormatBool(flags.RetryBootstrap),
 		"--health-check-averager-halflife=" + flags.HealthCheckAveragerHalflifeKey,
 		"--health-check-frequency=" + flags.HealthCheckFreqKey,
+		"--router-health-max-outstanding-requests=" + strconv.Itoa(flags.RouterHealthMaxOutstandingRequestsKey),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

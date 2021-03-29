@@ -69,6 +69,7 @@ do
 		--bootstrap-retry-enabled=*|\
 		--health-check-averager-halflife=*|\
 		--health-check-frequency=*|\
+		--router-health-max-outstanding-requests=*|\
 		--restart-on-disconnected=*|\
 		--disconnected-check-frequency=*|\
 		--disconnected-restart-timeout=*|\
