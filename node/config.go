@@ -140,6 +140,7 @@ type Flags struct {
 	NetworkHealthMaxTimeSinceMsgReceivedKey string
 	NetworkHealthMinConnPeers               int
 	NetworkTimeoutCoefficient               int
+	NetworkTimeoutHalflife                  string
 
 	// Restart on Disconnect
 	RestartOnDisconnected      bool
@@ -222,6 +223,7 @@ type FlagsYAML struct {
 	NetworkHealthMaxTimeSinceMsgReceivedKey *string  `yaml:"network-health-max-time-since-msg-received,omitempty"`
 	NetworkHealthMinConnPeers               *int     `yaml:"network-health-min-conn-peers,omitempty"`
 	NetworkTimeoutCoefficient               *int     `yaml:"network-timeout-coefficient,omitempty"`
+	NetworkTimeoutHalflife                  *string  `yaml:"network-timeout-halflife,omitempty"`
 	StakingEnabled                          *bool    `yaml:"staking-enabled,omitempty"`
 	StakingPort                             *uint    `yaml:"staking-port,omitempty"`
 	StakingDisabledWeight                   *int     `yaml:"staking-disabled-weight,omitempty"`
@@ -344,6 +346,7 @@ func DefaultFlags() Flags {
 		NetworkHealthMaxTimeSinceMsgReceivedKey: "1m",
 		NetworkHealthMinConnPeers:               1,
 		NetworkTimeoutCoefficient:               2,
+		NetworkTimeoutHalflife:                  "5m",
 		P2PTLSEnabled:                           true,
 		StakingEnabled:                          false,
 		StakingPort:                             9651,
