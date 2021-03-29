@@ -70,6 +70,7 @@ do
 		--network-health-max-portion-send-queue-full=*|\
 		--network-health-max-time-since-msg-sent=*|\
 		--network-health-max-time-since-msg-received=*|\
+		--network-health-min-conn-peers=*|\
 		--bootstrap-retry-max-attempts=*|\
 		--bootstrap-retry-enabled=*|\
 		--health-check-averager-halflife=*|\
