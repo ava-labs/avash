@@ -65,6 +65,20 @@ do
 		--network-initial-timeout=*|\
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
+		--network-health-max-time-since-no-requests=*|\
+		--network-health-max-send-fail-rate=*|\
+		--network-health-max-portion-send-queue-full=*|\
+		--network-health-max-time-since-msg-sent=*|\
+		--network-health-max-time-since-msg-received=*|\
+		--network-health-min-conn-peers=*|\
+		--network-timeout-coefficient=*|\
+		--network-timeout-halflife=*|\
+		--bootstrap-retry-max-attempts=*|\
+		--bootstrap-retry-enabled=*|\
+		--health-check-averager-halflife=*|\
+		--health-check-frequency=*|\
+		--router-health-max-outstanding-requests=*|\
+		--router-health-max-drop-rate=*|\
 		--restart-on-disconnected=*|\
 		--disconnected-check-frequency=*|\
 		--disconnected-restart-timeout=*|\
@@ -76,7 +90,7 @@ do
             FLAGS+="${arg} "
             ;;
 		--api-auth-required=*|\
-		--api-auth-password=*|\
+		--api-auth-password-file=*|\
         --min-stake-duration=*|\
         --whitelisted-subnets=*|\
         --api-health-enabled=*|\
