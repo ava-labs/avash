@@ -133,7 +133,7 @@ type Flags struct {
 	NetworkInitialTimeout                   string
 	NetworkMinimumTimeout                   string
 	NetworkMaximumTimeout                   string
-	networkHealthMaxPortionSendQueueFillKey float64
+	NetworkHealthMaxPortionSendQueueFillKey float64
 
 	// Restart on Disconnect
 	RestartOnDisconnected      bool
@@ -197,7 +197,7 @@ type FlagsYAML struct {
 	NetworkInitialTimeout                   *string  `yaml:"network-initial-timeout,omitempty"`
 	NetworkMinimumTimeout                   *string  `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout                   *string  `yaml:"network-maximum-timeout,omitempty"`
-	networkHealthMaxPortionSendQueueFillKey *float64 `yaml:"network-health-max-portion-send-queue-full"`
+	NetworkHealthMaxPortionSendQueueFillKey *float64 `yaml:"network-health-max-portion-send-queue-full"`
 	StakingEnabled                          *bool    `yaml:"staking-enabled,omitempty"`
 	StakingPort                             *uint    `yaml:"staking-port,omitempty"`
 	StakingDisabledWeight                   *int     `yaml:"staking-disabled-weight,omitempty"`
@@ -307,7 +307,7 @@ func DefaultFlags() Flags {
 		NetworkInitialTimeout:                   "5s",
 		NetworkMinimumTimeout:                   "5s",
 		NetworkMaximumTimeout:                   "10s",
-		networkHealthMaxPortionSendQueueFillKey: 0.9,
+		NetworkHealthMaxPortionSendQueueFillKey: 0.9,
 		P2PTLSEnabled:                           true,
 		StakingEnabled:                          false,
 		StakingPort:                             9651,

@@ -192,7 +192,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.NetworkInitialTimeout, "network-initial-timeout", flags.NetworkInitialTimeout, "Initial timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMinimumTimeout, "network-minimum-timeout", flags.NetworkMinimumTimeout, "Minimum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMaximumTimeout, "network-maximum-timeout", flags.NetworkMaximumTimeout, "Maximum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `10s`")
-	StartnodeCmd.Flags().StringVar(&flags.networkHealthMaxPortionSendQueueFillKey, "network-health-max-portion-send-queue-full", flags.networkHealthMaxPortionSendQueueFillKey, "Network layer returns unhealthy if more than this portion of the pending send queue is full")
+	StartnodeCmd.Flags().Float64Var(&flags.NetworkHealthMaxPortionSendQueueFillKey, "network-health-max-portion-send-queue-full", flags.NetworkHealthMaxPortionSendQueueFillKey, "Network layer returns unhealthy if more than this portion of the pending send queue is full")
 
 	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
