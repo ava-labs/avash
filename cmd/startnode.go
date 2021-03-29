@@ -195,6 +195,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.NetworkHealthMaxTimeSinceNoReqsKey, "network-health-max-time-since-no-requests", flags.NetworkHealthMaxTimeSinceNoReqsKey, "Node reports unhealthy if there is at least 1 outstanding request continuously for this duration")
 	StartnodeCmd.Flags().Float64Var(&flags.NetworkHealthMaxSendFailRateKey, "network-health-max-send-fail-rate", flags.NetworkHealthMaxSendFailRateKey, "Network layer reports unhealthy if more than this portion of attempted message sends fail")
 	StartnodeCmd.Flags().Float64Var(&flags.NetworkHealthMaxPortionSendQueueFillKey, "network-health-max-portion-send-queue-full", flags.NetworkHealthMaxPortionSendQueueFillKey, "Network layer returns unhealthy if more than this portion of the pending send queue is full")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkHealthMaxTimeSinceMsgSentKey, "network-health-max-time-since-msg-sent", flags.NetworkHealthMaxTimeSinceMsgSentKey, "Network layer returns unhealthy if haven't sent a message for at least this much time")
 
 	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
