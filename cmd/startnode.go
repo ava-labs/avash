@@ -198,6 +198,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.NetworkHealthMaxTimeSinceMsgSentKey, "network-health-max-time-since-msg-sent", flags.NetworkHealthMaxTimeSinceMsgSentKey, "Network layer returns unhealthy if haven't sent a message for at least this much time")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkHealthMaxTimeSinceMsgReceivedKey, "network-health-max-time-since-msg-received", flags.NetworkHealthMaxTimeSinceMsgReceivedKey, "Network layer returns unhealthy if haven't received a message for at least this much time")
 	StartnodeCmd.Flags().IntVar(&flags.NetworkHealthMinConnPeers, "network-health-min-conn-peers", flags.NetworkHealthMinConnPeers, "Network layer returns unhealthy if connected to less than this many peers")
+	StartnodeCmd.Flags().IntVar(&flags.NetworkTimeoutCoefficient, "network-timeout-coefficient", flags.NetworkTimeoutCoefficient, "Multiplied by average network response time to get the network timeout. Must be >= 1.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")

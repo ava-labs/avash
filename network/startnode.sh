@@ -71,6 +71,7 @@ do
 		--network-health-max-time-since-msg-sent=*|\
 		--network-health-max-time-since-msg-received=*|\
 		--network-health-min-conn-peers=*|\
+		--network-timeout-coefficient=*|\
 		--bootstrap-retry-max-attempts=*|\
 		--bootstrap-retry-enabled=*|\
 		--health-check-averager-halflife=*|\
