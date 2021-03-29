@@ -70,6 +70,7 @@ do
 		--health-check-averager-halflife=*|\
 		--health-check-frequency=*|\
 		--router-health-max-outstanding-requests=*|\
+		--router-health-max-drop-rate=*|\
 		--restart-on-disconnected=*|\
 		--disconnected-check-frequency=*|\
 		--disconnected-restart-timeout=*|\

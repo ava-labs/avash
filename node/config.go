@@ -152,6 +152,7 @@ type Flags struct {
 
 	// Router
 	RouterHealthMaxOutstandingRequestsKey int
+	RouterHealthMaxDropRateKey            float64
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -237,6 +238,7 @@ type FlagsYAML struct {
 	HealthCheckAveragerHalflifeKey        *string  `yaml:"health-check-averager-halflife,omitempty"`
 	HealthCheckFreqKey                    *string  `yaml:"health-check-frequency,omitempty"`
 	RouterHealthMaxOutstandingRequestsKey *int     `yaml:"router-health-max-outstanding-requests,omitempty"`
+	RouterHealthMaxDropRateKey            *float64 `yaml:"router-health-max-drop-rate,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -352,5 +354,6 @@ func DefaultFlags() Flags {
 		HealthCheckAveragerHalflifeKey:        "10s",
 		HealthCheckFreqKey:                    "30s",
 		RouterHealthMaxOutstandingRequestsKey: 1024,
+		RouterHealthMaxDropRateKey:            1,
 	}
 }
