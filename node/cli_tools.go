@@ -95,7 +95,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
 		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
 		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,
-		"--network-health-max-time-since-no-requests=" + flags.NetworkHealthMaxTimeSinceNoReqsKey,
 		fmt.Sprintf("--network-health-max-send-fail-rate=%f", flags.NetworkHealthMaxSendFailRateKey),
 		fmt.Sprintf("--network-health-max-portion-send-queue-full=%f", flags.NetworkHealthMaxPortionSendQueueFillKey),
 		"--network-health-max-time-since-msg-sent=" + flags.NetworkHealthMaxTimeSinceMsgSentKey,
