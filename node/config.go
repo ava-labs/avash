@@ -133,7 +133,6 @@ type Flags struct {
 	NetworkInitialTimeout                   string
 	NetworkMinimumTimeout                   string
 	NetworkMaximumTimeout                   string
-	NetworkHealthMaxTimeSinceNoReqsKey      string
 	NetworkHealthMaxSendFailRateKey         float64
 	NetworkHealthMaxPortionSendQueueFillKey float64
 	NetworkHealthMaxTimeSinceMsgSentKey     string
@@ -216,7 +215,6 @@ type FlagsYAML struct {
 	NetworkInitialTimeout                   *string  `yaml:"network-initial-timeout,omitempty"`
 	NetworkMinimumTimeout                   *string  `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout                   *string  `yaml:"network-maximum-timeout,omitempty"`
-	NetworkHealthMaxTimeSinceNoReqsKey      *string  `yaml:"network-health-max-time-since-no-requests,omitempty"`
 	NetworkHealthMaxSendFailRateKey         *float64 `yaml:"network-health-max-send-fail-rate,omitempty"`
 	NetworkHealthMaxPortionSendQueueFillKey *float64 `yaml:"network-health-max-portion-send-queue-full"`
 	NetworkHealthMaxTimeSinceMsgSentKey     *string  `yaml:"network-health-max-time-since-msg-sent,omitempty"`
@@ -339,7 +337,6 @@ func DefaultFlags() Flags {
 		NetworkInitialTimeout:                   "5s",
 		NetworkMinimumTimeout:                   "5s",
 		NetworkMaximumTimeout:                   "10s",
-		NetworkHealthMaxTimeSinceNoReqsKey:      "5m",
 		NetworkHealthMaxSendFailRateKey:         0.9,
 		NetworkHealthMaxPortionSendQueueFillKey: 0.9,
 		NetworkHealthMaxTimeSinceMsgSentKey:     "1m",
