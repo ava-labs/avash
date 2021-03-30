@@ -65,7 +65,6 @@ do
 		--network-initial-timeout=*|\
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
-		--network-health-max-time-since-no-requests=*|\
 		--network-health-max-send-fail-rate=*|\
 		--network-health-max-portion-send-queue-full=*|\
 		--network-health-max-time-since-msg-sent=*|\
