@@ -214,4 +214,6 @@ func init() {
 
 	StartnodeCmd.Flags().IntVar(&flags.RouterHealthMaxOutstandingRequestsKey, "router-health-max-outstanding-requests", flags.RouterHealthMaxOutstandingRequestsKey, "Node reports unhealthy if there are more than this many outstanding consensus requests (Get, PullQuery, etc.) over all chains")
 	StartnodeCmd.Flags().Float64Var(&flags.RouterHealthMaxDropRateKey, "router-health-max-drop-rate", flags.RouterHealthMaxDropRateKey, "Node reports unhealthy if the router drops more than this portion of messages.")
+
+	StartnodeCmd.Flags().BoolVar(&flags.IndexEnabled, "index-enabled", flags.IndexEnabled, "If true, index all accepted containers and transactions and expose them via an API")
 }

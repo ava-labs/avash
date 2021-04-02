@@ -66,6 +66,7 @@ do
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
 		--network-health-max-send-fail-rate=*|\
+		--index-enabled=*|\
 		--network-health-max-portion-send-queue-full=*|\
 		--network-health-max-time-since-msg-sent=*|\
 		--network-health-max-time-since-msg-received=*|\
