@@ -125,9 +125,6 @@ type Flags struct {
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
 
-	// Network Timeout
-	NetworkTimeoutReduction string
-
 	// Message Handling
 	MaxNonStakerPendingMsgs int
 
@@ -332,7 +329,6 @@ func DefaultFlags() Flags {
 		SnowEpochFirstTransition:                1609873200,
 		SnowEpochDuration:                       "6h",
 		SnowConcurrentRepolls:                   4,
-		NetworkTimeoutReduction:                 "12ms",
 		MinDelegatorStake:                       5000000,
 		ConsensusShutdownTimeout:                "5s",
 		ConsensusGossipFrequency:                "10s",
