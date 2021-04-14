@@ -77,6 +77,9 @@ type Flags struct {
 	SnowQuorumSize              int
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
+	SnowEpochFirstTransition    int
+	SnowEpochDuration           string
+	SnowConcurrentRepolls       int
 	MinDelegatorStake           int
 	ConsensusShutdownTimeout    string
 	ConsensusGossipFrequency    string
@@ -84,7 +87,6 @@ type Flags struct {
 	MinValidatorStake           int
 	MaxStakeDuration            string
 	MaxValidatorStake           int
-	SnowConcurrentRepolls       int
 	CreationTxFee               int
 
 	// Staking
@@ -122,9 +124,6 @@ type Flags struct {
 	BenchlistMinFailingDuration string
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
-
-	// Network Timeout
-	NetworkTimeoutReduction string
 
 	// Message Handling
 	MaxNonStakerPendingMsgs int
@@ -203,6 +202,9 @@ type FlagsYAML struct {
 	SnowQuorumSize                          *int     `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold             *int     `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold                *int     `yaml:"snow-rogue-commit-threshold,omitempty"`
+	SnowEpochFirstTransition                *int     `yaml:"snow-epoch-first-transition,omitempty"`
+	SnowEpochDuration                       *string  `yaml:"snow-epoch-duration,omitempty"`
+	SnowConcurrentRepolls                   *int     `yaml:"snow-concurrent-repolls,omitempty"`
 	MinDelegatorStake                       *int     `yaml:"min-delegator-stake,omitempty"`
 	ConsensusShutdownTimeout                *string  `yaml:"consensus-shutdown-timeout,omitempty"`
 	ConsensusGossipFrequency                *string  `yaml:"consensus-gossip-frequency,omitempty"`
@@ -210,7 +212,6 @@ type FlagsYAML struct {
 	MinValidatorStake                       *int     `yaml:"min-validator-stake,omitempty"`
 	MaxStakeDuration                        *string  `yaml:"max-stake-duration,omitempty"`
 	MaxValidatorStake                       *int     `yaml:"max-stake-duration,omitempty"`
-	SnowConcurrentRepolls                   *int     `yaml:"snow-concurrent-repolls,omitempty"`
 	StakeMintingPeriod                      *string  `yaml:"stake-minting-period,omitempty"`
 	CreationTxFee                           *int     `yaml:"creation-tx-fee,omitempty"`
 	MaxNonStakerPendingMsgs                 *int     `yaml:"max-non-staker-pending-msgs,omitempty"`
@@ -325,7 +326,9 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:                          2,
 		SnowVirtuousCommitThreshold:             5,
 		SnowRogueCommitThreshold:                10,
-		NetworkTimeoutReduction:                 "12ms",
+		SnowEpochFirstTransition:                1609873200,
+		SnowEpochDuration:                       "6h",
+		SnowConcurrentRepolls:                   4,
 		MinDelegatorStake:                       5000000,
 		ConsensusShutdownTimeout:                "5s",
 		ConsensusGossipFrequency:                "10s",
@@ -333,7 +336,6 @@ func DefaultFlags() Flags {
 		MinValidatorStake:                       5000000,
 		MaxStakeDuration:                        "8760h",
 		MaxValidatorStake:                       3000000000000000,
-		SnowConcurrentRepolls:                   4,
 		StakeMintingPeriod:                      "8760h",
 		CreationTxFee:                           1000000,
 		MaxNonStakerPendingMsgs:                 20,

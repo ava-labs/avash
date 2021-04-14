@@ -83,6 +83,8 @@ do
 		--disconnected-check-frequency=*|\
 		--disconnected-restart-timeout=*|\
         --p2p-tls-enabled=*|\
+        --snow-epoch-first-transition=*|\
+        --snow-epoch-duration=*|\
 		--staking-enabled=*|\
 		--staking-disabled-weight=*|\
 		--staking-tls-key-file=*|\
