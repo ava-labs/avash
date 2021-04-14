@@ -30,10 +30,6 @@ type Flags struct {
 	// Network ID
 	NetworkID string
 
-	// Throughput
-	XputServerPort    uint
-	XputServerEnabled bool
-
 	// Crypto
 	SignatureVerificationEnabled bool
 	P2PTLSEnabled                bool
@@ -175,8 +171,6 @@ type FlagsYAML struct {
 	PublicIP                                *string  `yaml:"public-ip,omitempty"`
 	DynamicPublicIP                         *string  `yaml:"dynamic-public-ip,omitempty"`
 	NetworkID                               *string  `yaml:"network-id,omitempty"`
-	XputServerPort                          *uint    `yaml:"xput-server-port,omitempty"`
-	XputServerEnabled                       *bool    `yaml:"xput-server-enabled,omitempty"`
 	SignatureVerificationEnabled            *bool    `yaml:"signature-verification-enabled,omitempty"`
 	APIAdminEnabled                         *bool    `yaml:"api-admin-enabled,omitempty"`
 	APIIPCsEnabled                          *bool    `yaml:"api-ipcs-enabled,omitempty"`
@@ -299,8 +293,6 @@ func DefaultFlags() Flags {
 		DynamicUpdateDuration:                   "5m",
 		DynamicPublicIP:                         "",
 		NetworkID:                               "local",
-		XputServerPort:                          9652,
-		XputServerEnabled:                       false,
 		SignatureVerificationEnabled:            true,
 		APIAdminEnabled:                         true,
 		APIIPCsEnabled:                          true,

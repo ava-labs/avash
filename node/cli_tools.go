@@ -54,8 +54,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--dynamic-update-duration=" + flags.DynamicUpdateDuration,
 		"--dynamic-public-ip=" + flags.DynamicPublicIP,
 		"--network-id=" + flags.NetworkID,
-		"--xput-server-port=" + strconv.FormatUint(uint64(flags.XputServerPort), 10),
-		"--xput-server-enabled=" + strconv.FormatBool(flags.XputServerEnabled),
 		"--signature-verification-enabled=" + strconv.FormatBool(flags.SignatureVerificationEnabled),
 		"--api-admin-enabled=" + strconv.FormatBool(flags.APIAdminEnabled),
 		"--api-ipcs-enabled=" + strconv.FormatBool(flags.APIIPCsEnabled),

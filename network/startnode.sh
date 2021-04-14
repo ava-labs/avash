@@ -25,8 +25,6 @@ do
         --public-ip=*|\
         --dynamic-update-duration=*|\
         --dynamic-public-ip=*|\
-		--xput-server-port=*|\
-        --xput-server-enabled=*|\
 		--signature-verification-enabled=*|\
         --api-admin-enabled=*|\
 		--api-ipcs-enabled=*|\
