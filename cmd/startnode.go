@@ -165,7 +165,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.StakingTLSKeyFile, "staking-tls-key-file", flags.StakingTLSKeyFile, "TLS private key file for staking connections. Relative to the avash binary if doesn't start with '/'. Ex: certs/keys1/staker.key")
 
 	StartnodeCmd.Flags().BoolVar(&flags.APIAuthRequired, "api-auth-required", flags.APIAuthRequired, "If set to true, API calls require an authorization token. Defaults to `false`")
-	StartnodeCmd.Flags().StringVar(&flags.APIAuthPassword, "api-auth-password", flags.APIAuthPassword, "The password needed to create/revoke authorization tokens. If `--api-auth-required=true`, must be specified; otherwise ignored.")
+	StartnodeCmd.Flags().StringVar(&flags.APIAuthPasswordFileKey, "api-auth-password-file", flags.APIAuthPasswordFileKey, "Password file used to initially create/validate API authorization tokens. Can be changed via API call.")
 	StartnodeCmd.Flags().StringVar(&flags.MinStakeDuration, "min-stake-duration", flags.MinStakeDuration, "Set the minimum staking duration. Ex: --min-stake-duration=5m")
 
 	StartnodeCmd.Flags().StringVar(&flags.WhitelistedSubnets, "whitelisted-subnets", flags.WhitelistedSubnets, "Comma separated list of subnets that this node would validate if added to. Defaults to empty (will only validate the Primary Network)")
@@ -190,10 +190,28 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.NetworkInitialTimeout, "network-initial-timeout", flags.NetworkInitialTimeout, "Initial timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMinimumTimeout, "network-minimum-timeout", flags.NetworkMinimumTimeout, "Minimum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMaximumTimeout, "network-maximum-timeout", flags.NetworkMaximumTimeout, "Maximum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `10s`")
+	StartnodeCmd.Flags().Float64Var(&flags.NetworkHealthMaxSendFailRateKey, "network-health-max-send-fail-rate", flags.NetworkHealthMaxSendFailRateKey, "Network layer reports unhealthy if more than this portion of attempted message sends fail")
+	StartnodeCmd.Flags().Float64Var(&flags.NetworkHealthMaxPortionSendQueueFillKey, "network-health-max-portion-send-queue-full", flags.NetworkHealthMaxPortionSendQueueFillKey, "Network layer returns unhealthy if more than this portion of the pending send queue is full")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkHealthMaxTimeSinceMsgSentKey, "network-health-max-time-since-msg-sent", flags.NetworkHealthMaxTimeSinceMsgSentKey, "Network layer returns unhealthy if haven't sent a message for at least this much time")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkHealthMaxTimeSinceMsgReceivedKey, "network-health-max-time-since-msg-received", flags.NetworkHealthMaxTimeSinceMsgReceivedKey, "Network layer returns unhealthy if haven't received a message for at least this much time")
+	StartnodeCmd.Flags().IntVar(&flags.NetworkHealthMinConnPeers, "network-health-min-conn-peers", flags.NetworkHealthMinConnPeers, "Network layer returns unhealthy if connected to less than this many peers")
+	StartnodeCmd.Flags().IntVar(&flags.NetworkTimeoutCoefficient, "network-timeout-coefficient", flags.NetworkTimeoutCoefficient, "Multiplied by average network response time to get the network timeout. Must be >= 1.")
+	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutHalflife, "network-timeout-halflife", flags.NetworkTimeoutHalflife, "Halflife of average network response time. Higher value --> network timeout is less volatile. Can't be 0.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
 	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
 
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
+
+	StartnodeCmd.Flags().IntVar(&flags.RetryBootstrapMaxAttempts, "bootstrap-retry-max-attempts", flags.RetryBootstrapMaxAttempts, "Specifies how many times bootstrap should be retried")
+	StartnodeCmd.Flags().BoolVar(&flags.RetryBootstrap, "bootstrap-retry-enabled", flags.RetryBootstrap, "Specifies whether bootstrap should be retried")
+
+	StartnodeCmd.Flags().StringVar(&flags.HealthCheckFreqKey, "health-check-frequency", flags.HealthCheckFreqKey, "Time between health checks")
+	StartnodeCmd.Flags().StringVar(&flags.HealthCheckAveragerHalflifeKey, "health-check-averager-halflife", flags.HealthCheckAveragerHalflifeKey, "Halflife of averager when calculating a running average in a health check")
+
+	StartnodeCmd.Flags().IntVar(&flags.RouterHealthMaxOutstandingRequestsKey, "router-health-max-outstanding-requests", flags.RouterHealthMaxOutstandingRequestsKey, "Node reports unhealthy if there are more than this many outstanding consensus requests (Get, PullQuery, etc.) over all chains")
+	StartnodeCmd.Flags().Float64Var(&flags.RouterHealthMaxDropRateKey, "router-health-max-drop-rate", flags.RouterHealthMaxDropRateKey, "Node reports unhealthy if the router drops more than this portion of messages.")
+
+	StartnodeCmd.Flags().BoolVar(&flags.IndexEnabled, "index-enabled", flags.IndexEnabled, "If true, index all accepted containers and transactions and expose them via an API")
 }
