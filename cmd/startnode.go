@@ -121,8 +121,6 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DynamicUpdateDuration, "dynamic-update-duration", flags.DynamicUpdateDuration, "The time between poll events for `--dynamic-public-ip` or NAT traversal. The recommended minimum is 1 minute. Defaults to `5m`")
 	StartnodeCmd.Flags().StringVar(&flags.DynamicPublicIP, "dynamic-public-ip", flags.DynamicPublicIP, "Valid values if param is present: `opendns`, `ifconfigco` or `ifconfigme`. This overrides `--public-ip`. If set, will poll the remote service every `--dynamic-update-duration` and update the node’s public IP address.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkID, "network-id", flags.NetworkID, "Network ID this node will connect to.")
-	StartnodeCmd.Flags().UintVar(&flags.XputServerPort, "xput-server-port", flags.XputServerPort, "Port of the deprecated throughput test server.")
-	StartnodeCmd.Flags().BoolVar(&flags.XputServerEnabled, "xput-server-enabled", flags.XputServerEnabled, "If true, throughput test server is created.")
 	StartnodeCmd.Flags().BoolVar(&flags.SignatureVerificationEnabled, "signature-verification-enabled", flags.SignatureVerificationEnabled, "Turn on signature verification.")
 
 	StartnodeCmd.Flags().StringVar(&flags.HTTPHost, "http-host", flags.HTTPHost, "The address that HTTP APIs listen on.")
@@ -148,6 +146,9 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.SnowQuorumSize, "snow-quorum-size", flags.SnowQuorumSize, "Alpha value to use for required number positive results.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowVirtuousCommitThreshold, "snow-virtuous-commit-threshold", flags.SnowVirtuousCommitThreshold, "Beta value to use for virtuous transactions.")
 	StartnodeCmd.Flags().IntVar(&flags.SnowRogueCommitThreshold, "snow-rogue-commit-threshold", flags.SnowRogueCommitThreshold, "Beta value to use for rogue transactions.")
+	StartnodeCmd.Flags().IntVar(&flags.SnowEpochFirstTransition, "snow-epoch-first-transition", flags.SnowEpochFirstTransition, "Unix timestamp of the transition from epoch 0 to epoch 1. Defaults to 1609873200 which is 1/5/2021 @ 7:00pm (UTC)")
+	StartnodeCmd.Flags().StringVar(&flags.SnowEpochDuration, "snow-epoch-duration", flags.SnowEpochDuration, "Duration of each epoch. Defaults to `6h`")
+	StartnodeCmd.Flags().IntVar(&flags.SnowConcurrentRepolls, "snow-concurrent-repolls", flags.SnowConcurrentRepolls, "Snow consensus requires repolling transactions that are issued during low time of network usage. This parameter lets one define how aggressive the client will be in finalizing these pending transactions. This should only be changed after careful consideration of the tradeoffs of Snow consensus. The value must be at least `1` and at most `--snow-rogue-commit-threshold`. Defaults to `4`")
 	StartnodeCmd.Flags().IntVar(&flags.MinDelegatorStake, "min-delegator-stake", flags.MinDelegatorStake, "The minimum stake, in nAVAX, that can be delegated to a validator of the Primary Network. Defaults to `25000000000` (25 AVAX) on Main Net. Defaults to `5000000` (.005 AVAX) on Test Net.")
 	StartnodeCmd.Flags().StringVar(&flags.ConsensusShutdownTimeout, "consensus-shutdown-timeout", flags.ConsensusShutdownTimeout, "Timeout before killing an unresponsive chain. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.ConsensusGossipFrequency, "consensus-gossip-frequency", flags.ConsensusGossipFrequency, "Time between gossiping accepted frontiers. Defaults to `10s`")
@@ -155,7 +156,6 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.MinValidatorStake, "min-validator-stake", flags.MinValidatorStake, "The minimum stake, in nAVAX, required to validate the Primary Network. Defaults to `2000000000000` (2,000 AVAX) on Main Net. Defaults to `5000000` (.005 AVAX) on Test Net.")
 	StartnodeCmd.Flags().StringVar(&flags.MaxStakeDuration, "max-stake-duration", flags.MaxStakeDuration, "The maximum staking duration, in seconds. Defaults to `8760h` (365 days) on Main Net.")
 	StartnodeCmd.Flags().IntVar(&flags.MaxValidatorStake, "max-validator-stake", flags.MaxValidatorStake, "The maximum stake, in nAVAX, that can be placed on a validator on the primary network. Defaults to `3000000000000000` (3,000,000 AVAX) on Main Net. This includes stake provided by both the validator and by delegators to the validator.")
-	StartnodeCmd.Flags().IntVar(&flags.SnowConcurrentRepolls, "snow-concurrent-repolls", flags.SnowConcurrentRepolls, "Snow consensus requires repolling transactions that are issued during low time of network usage. This parameter lets one define how aggressive the client will be in finalizing these pending transactions. This should only be changed after careful consideration of the tradeoffs of Snow consensus. The value must be at least `1` and at most `--snow-rogue-commit-threshold`. Defaults to `4`")
 	StartnodeCmd.Flags().StringVar(&flags.StakeMintingPeriod, "stake-minting-period", flags.StakeMintingPeriod, "Consumption period of the staking function, in seconds. The Default on Main Net is `8760h` (365 days).")
 	StartnodeCmd.Flags().IntVar(&flags.CreationTxFee, "creation-tx-fee", flags.CreationTxFee, "Transaction fee, in nAVAX, for transactions that create new state. Defaults to `1000000` nAVAX (.001 AVAX) per transaction.")
 
@@ -214,4 +214,6 @@ func init() {
 
 	StartnodeCmd.Flags().IntVar(&flags.RouterHealthMaxOutstandingRequestsKey, "router-health-max-outstanding-requests", flags.RouterHealthMaxOutstandingRequestsKey, "Node reports unhealthy if there are more than this many outstanding consensus requests (Get, PullQuery, etc.) over all chains")
 	StartnodeCmd.Flags().Float64Var(&flags.RouterHealthMaxDropRateKey, "router-health-max-drop-rate", flags.RouterHealthMaxDropRateKey, "Node reports unhealthy if the router drops more than this portion of messages.")
+
+	StartnodeCmd.Flags().BoolVar(&flags.IndexEnabled, "index-enabled", flags.IndexEnabled, "If true, index all accepted containers and transactions and expose them via an API")
 }

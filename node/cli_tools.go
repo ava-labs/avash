@@ -54,8 +54,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--dynamic-update-duration=" + flags.DynamicUpdateDuration,
 		"--dynamic-public-ip=" + flags.DynamicPublicIP,
 		"--network-id=" + flags.NetworkID,
-		"--xput-server-port=" + strconv.FormatUint(uint64(flags.XputServerPort), 10),
-		"--xput-server-enabled=" + strconv.FormatBool(flags.XputServerEnabled),
 		"--signature-verification-enabled=" + strconv.FormatBool(flags.SignatureVerificationEnabled),
 		"--api-admin-enabled=" + strconv.FormatBool(flags.APIAdminEnabled),
 		"--api-ipcs-enabled=" + strconv.FormatBool(flags.APIIPCsEnabled),
@@ -81,6 +79,8 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-quorum-size=" + strconv.Itoa(flags.SnowQuorumSize),
 		"--snow-virtuous-commit-threshold=" + strconv.Itoa(flags.SnowVirtuousCommitThreshold),
 		"--snow-rogue-commit-threshold=" + strconv.Itoa(flags.SnowRogueCommitThreshold),
+		"--snow-epoch-first-transition=" + strconv.Itoa(flags.SnowEpochFirstTransition),
+		"--snow-epoch-duration=" + flags.SnowEpochDuration,
 		"--min-delegator-stake=" + strconv.Itoa(flags.MinDelegatorStake),
 		"--consensus-shutdown-timeout=" + flags.ConsensusShutdownTimeout,
 		"--consensus-gossip-frequency=" + flags.ConsensusGossipFrequency,
@@ -134,6 +134,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--health-check-frequency=" + flags.HealthCheckFreqKey,
 		"--router-health-max-outstanding-requests=" + strconv.Itoa(flags.RouterHealthMaxOutstandingRequestsKey),
 		fmt.Sprintf("--router-health-max-drop-rate=%f", flags.RouterHealthMaxDropRateKey),
+		"--index-enabled=" + strconv.FormatBool(flags.IndexEnabled),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

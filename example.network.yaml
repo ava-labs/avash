@@ -24,7 +24,6 @@ deploys:
         flags:
           http-port: 9660
           staking-port: 9661
-          xput-server-port: 9662
   - host: host-2
     nodes:
       - name: stake-node

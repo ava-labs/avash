@@ -30,10 +30,6 @@ type Flags struct {
 	// Network ID
 	NetworkID string
 
-	// Throughput
-	XputServerPort    uint
-	XputServerEnabled bool
-
 	// Crypto
 	SignatureVerificationEnabled bool
 	P2PTLSEnabled                bool
@@ -77,6 +73,9 @@ type Flags struct {
 	SnowQuorumSize              int
 	SnowVirtuousCommitThreshold int
 	SnowRogueCommitThreshold    int
+	SnowEpochFirstTransition    int
+	SnowEpochDuration           string
+	SnowConcurrentRepolls       int
 	MinDelegatorStake           int
 	ConsensusShutdownTimeout    string
 	ConsensusGossipFrequency    string
@@ -84,7 +83,6 @@ type Flags struct {
 	MinValidatorStake           int
 	MaxStakeDuration            string
 	MaxValidatorStake           int
-	SnowConcurrentRepolls       int
 	CreationTxFee               int
 
 	// Staking
@@ -123,9 +121,6 @@ type Flags struct {
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
 
-	// Network Timeout
-	NetworkTimeoutReduction string
-
 	// Message Handling
 	MaxNonStakerPendingMsgs int
 
@@ -160,6 +155,8 @@ type Flags struct {
 	// Router
 	RouterHealthMaxOutstandingRequestsKey int
 	RouterHealthMaxDropRateKey            float64
+
+	IndexEnabled bool
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -174,8 +171,6 @@ type FlagsYAML struct {
 	PublicIP                                *string  `yaml:"public-ip,omitempty"`
 	DynamicPublicIP                         *string  `yaml:"dynamic-public-ip,omitempty"`
 	NetworkID                               *string  `yaml:"network-id,omitempty"`
-	XputServerPort                          *uint    `yaml:"xput-server-port,omitempty"`
-	XputServerEnabled                       *bool    `yaml:"xput-server-enabled,omitempty"`
 	SignatureVerificationEnabled            *bool    `yaml:"signature-verification-enabled,omitempty"`
 	APIAdminEnabled                         *bool    `yaml:"api-admin-enabled,omitempty"`
 	APIIPCsEnabled                          *bool    `yaml:"api-ipcs-enabled,omitempty"`
@@ -201,6 +196,9 @@ type FlagsYAML struct {
 	SnowQuorumSize                          *int     `yaml:"snow-quorum-size,omitempty"`
 	SnowVirtuousCommitThreshold             *int     `yaml:"snow-virtuous-commit-threshold,omitempty"`
 	SnowRogueCommitThreshold                *int     `yaml:"snow-rogue-commit-threshold,omitempty"`
+	SnowEpochFirstTransition                *int     `yaml:"snow-epoch-first-transition,omitempty"`
+	SnowEpochDuration                       *string  `yaml:"snow-epoch-duration,omitempty"`
+	SnowConcurrentRepolls                   *int     `yaml:"snow-concurrent-repolls,omitempty"`
 	MinDelegatorStake                       *int     `yaml:"min-delegator-stake,omitempty"`
 	ConsensusShutdownTimeout                *string  `yaml:"consensus-shutdown-timeout,omitempty"`
 	ConsensusGossipFrequency                *string  `yaml:"consensus-gossip-frequency,omitempty"`
@@ -208,7 +206,6 @@ type FlagsYAML struct {
 	MinValidatorStake                       *int     `yaml:"min-validator-stake,omitempty"`
 	MaxStakeDuration                        *string  `yaml:"max-stake-duration,omitempty"`
 	MaxValidatorStake                       *int     `yaml:"max-stake-duration,omitempty"`
-	SnowConcurrentRepolls                   *int     `yaml:"snow-concurrent-repolls,omitempty"`
 	StakeMintingPeriod                      *string  `yaml:"stake-minting-period,omitempty"`
 	CreationTxFee                           *int     `yaml:"creation-tx-fee,omitempty"`
 	MaxNonStakerPendingMsgs                 *int     `yaml:"max-non-staker-pending-msgs,omitempty"`
@@ -253,6 +250,7 @@ type FlagsYAML struct {
 	HealthCheckFreqKey                      *string  `yaml:"health-check-frequency,omitempty"`
 	RouterHealthMaxOutstandingRequestsKey   *int     `yaml:"router-health-max-outstanding-requests,omitempty"`
 	RouterHealthMaxDropRateKey              *float64 `yaml:"router-health-max-drop-rate,omitempty"`
+	IndexEnabled                            *bool    `yaml:"index-enabled,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -295,8 +293,6 @@ func DefaultFlags() Flags {
 		DynamicUpdateDuration:                   "5m",
 		DynamicPublicIP:                         "",
 		NetworkID:                               "local",
-		XputServerPort:                          9652,
-		XputServerEnabled:                       false,
 		SignatureVerificationEnabled:            true,
 		APIAdminEnabled:                         true,
 		APIIPCsEnabled:                          true,
@@ -322,7 +318,9 @@ func DefaultFlags() Flags {
 		SnowQuorumSize:                          2,
 		SnowVirtuousCommitThreshold:             5,
 		SnowRogueCommitThreshold:                10,
-		NetworkTimeoutReduction:                 "12ms",
+		SnowEpochFirstTransition:                1609873200,
+		SnowEpochDuration:                       "6h",
+		SnowConcurrentRepolls:                   4,
 		MinDelegatorStake:                       5000000,
 		ConsensusShutdownTimeout:                "5s",
 		ConsensusGossipFrequency:                "10s",
@@ -330,7 +328,6 @@ func DefaultFlags() Flags {
 		MinValidatorStake:                       5000000,
 		MaxStakeDuration:                        "8760h",
 		MaxValidatorStake:                       3000000000000000,
-		SnowConcurrentRepolls:                   4,
 		StakeMintingPeriod:                      "8760h",
 		CreationTxFee:                           1000000,
 		MaxNonStakerPendingMsgs:                 20,
@@ -376,5 +373,6 @@ func DefaultFlags() Flags {
 		HealthCheckFreqKey:                      "30s",
 		RouterHealthMaxOutstandingRequestsKey:   1024,
 		RouterHealthMaxDropRateKey:              1,
+		IndexEnabled:                            false,
 	}
 }

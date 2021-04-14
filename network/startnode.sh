@@ -25,8 +25,6 @@ do
         --public-ip=*|\
         --dynamic-update-duration=*|\
         --dynamic-public-ip=*|\
-		--xput-server-port=*|\
-        --xput-server-enabled=*|\
 		--signature-verification-enabled=*|\
         --api-admin-enabled=*|\
 		--api-ipcs-enabled=*|\
@@ -66,6 +64,7 @@ do
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
 		--network-health-max-send-fail-rate=*|\
+		--index-enabled=*|\
 		--network-health-max-portion-send-queue-full=*|\
 		--network-health-max-time-since-msg-sent=*|\
 		--network-health-max-time-since-msg-received=*|\
@@ -82,6 +81,8 @@ do
 		--disconnected-check-frequency=*|\
 		--disconnected-restart-timeout=*|\
         --p2p-tls-enabled=*|\
+        --snow-epoch-first-transition=*|\
+        --snow-epoch-duration=*|\
 		--staking-enabled=*|\
 		--staking-disabled-weight=*|\
 		--staking-tls-key-file=*|\
