@@ -5,6 +5,7 @@ Copyright © 2019 AVA Labs <collin@avalabs.org>
 package cfg
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -23,6 +24,94 @@ type RPCService struct {
 	host       string
 	port       string
 	endpoints  map[string]interface{}
+}
+
+type ServiceOption func(*RPCService) error
+
+func WithURLPath(urlpath string) ServiceOption {
+	return func(s *RPCService) error {
+		s.urlpath = urlpath
+		return nil
+	}
+}
+
+func WithHost(host string) ServiceOption {
+	return func(s *RPCService) error {
+		if host != "" {
+			s.host = host
+		}
+		return nil
+	}
+}
+
+func WithPort(port int) ServiceOption {
+	return func(s *RPCService) error {
+		// empty - return an error ?
+		if port > 0 {
+			s.port = fmt.Sprintf("%d", port)
+		}
+
+		return nil
+	}
+}
+
+func WithRPCServer(server *rpc.Server) ServiceOption {
+	return func(s *RPCService) error {
+		if server == nil {
+			return fmt.Errorf("server can't be nil")
+		}
+
+		s.RPCServer = server
+		return nil
+	}
+}
+
+func WithHTTPRouter(httpRouter *mux.Router) ServiceOption {
+	return func(s *RPCService) error {
+		if httpRouter == nil {
+			return fmt.Errorf("router can't be nil")
+		}
+
+		s.HTTPRouter = httpRouter
+		return nil
+	}
+}
+
+// functions helps for unit testing.
+var rpcServer = func() *rpc.Server { return rpc.NewServer() }
+var httpRouter = func() *mux.Router { return mux.NewRouter() }
+
+// NewRPCService create new RPC serice instance.
+func NewRPCService(opts ...ServiceOption) (*RPCService, error) {
+	s := &RPCService{
+		urlpath:    "/rpc",
+		host:       "localhost",
+		port:       "9020",
+		RPCServer:  rpcServer(),
+		HTTPRouter: httpRouter(),
+	}
+
+	for _, o := range opts {
+		if err := o(s); err != nil {
+			return nil, err
+		}
+	}
+
+	return s, nil
+}
+
+func (rs *RPCService) Init() {
+	rs.RPCServer.RegisterCodec(json.NewCodec(), "application/json")
+	rs.RPCServer.RegisterCodec(json.NewCodec(), "application/json;charset=UTF-8")
+
+	rs.RPCServer.RegisterCodec(json.NewCodec(), "application/json")
+	rs.RPCServer.RegisterService(rs, "")
+
+	go func() {
+		if err := http.ListenAndServe(fmt.Sprintf("%s:%s", rs.host, rs.port), rs.HTTPRouter); err != nil {
+			// logger.
+		}
+	}()
 }
 
 // RegisterServer registers the adds the rpc and http servers to the plugins service
