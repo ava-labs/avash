@@ -125,7 +125,7 @@ func init() {
 	}
 
 	cfg.InitConfig(cfgpath)
-	RootCmd.AddCommand(AVAXWalletCmd)
+	RootCmd.AddCommand(avaxWalletCmd)
 	RootCmd.AddCommand(CallRPCCmd)
 	RootCmd.AddCommand(ExitCmd)
 	RootCmd.AddCommand(NetworkCommand)
