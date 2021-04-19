@@ -8,13 +8,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/ava-labs/avalanchego/utils/crypto"
 	"github.com/ava-labs/avalanchego/utils/formatting"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/node"
 	pmgr "github.com/ava-labs/avash/processmgr"
 	"github.com/spf13/cobra"
-
-	"github.com/ava-labs/avalanchego/utils/crypto"
 
 	"github.com/ybbus/jsonrpc"
 )
@@ -30,6 +29,10 @@ var AVAXWalletCmd = &cobra.Command{
 	},
 }
 
+const (
+	defaultEncoding = formatting.CB58
+)
+
 // AVAXWalletNewKeyCmd creates a new private key
 var AVAXWalletNewKeyCmd = &cobra.Command{
 	Use:   "newkey",
@@ -40,9 +43,11 @@ var AVAXWalletNewKeyCmd = &cobra.Command{
 		factory := crypto.FactorySECP256K1R{}
 		if skGen, err := factory.NewPrivateKey(); err == nil {
 			sk := skGen.(*crypto.PrivateKeySECP256K1R)
-			fb := formatting.CB58{}
-			fb.Bytes = sk.Bytes()
-			log.Info("PrivateKey: PrivateKey-%s", fb)
+			str, err := formatting.Encode(defaultEncoding, sk.Bytes())
+			if err != nil {
+				log.Error("could not encode private key")
+			}
+			log.Info("PrivateKey: PrivateKey-%s", str)
 		} else {
 			log.Error("could not create private key")
 		}
