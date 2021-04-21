@@ -136,11 +136,6 @@ type Flags struct {
 	NetworkTimeoutCoefficient               int
 	NetworkTimeoutHalflife                  string
 
-	// Restart on Disconnect
-	RestartOnDisconnected      bool
-	DisconnectedCheckFrequency string
-	DisconnectedRestartTimeout string
-
 	// Uptime Requirement
 	UptimeRequirement float64
 
@@ -240,9 +235,6 @@ type FlagsYAML struct {
 	BenchlistFailThreshold                  *int     `yaml:"benchlist-fail-threshold,omitempty"`
 	BenchlistMinFailingDuration             *string  `yaml:"benchlist-min-failing-duration,omitempty"`
 	BenchlistPeerSummaryEnabled             *bool    `yaml:"benchlist-peer-summary-enabled,omitempty"`
-	RestartOnDisconnected                   *bool    `yaml:"restart-on-disconnected,omitempty"`
-	DisconnectedCheckFrequency              *string  `yaml:"disconnected-check-frequency,omitempty"`
-	DisconnectedRestartTimeout              *string  `yaml:"disconnected-restart-timeout,omitempty"`
 	UptimeRequirement                       *float64 `yaml:"uptime-requirement,omitempty"`
 	RetryBootstrapMaxAttempts               *uint    `yaml:"bootstrap-retry-max-attempts,omitempty"`
 	RetryBootstrap                          *bool    `yaml:"bootstrap-retry-enabled,omitempty"`
@@ -363,9 +355,6 @@ func DefaultFlags() Flags {
 		BenchlistFailThreshold:                  10,
 		BenchlistMinFailingDuration:             "5m",
 		BenchlistPeerSummaryEnabled:             false,
-		RestartOnDisconnected:                   true,
-		DisconnectedCheckFrequency:              "10s",
-		DisconnectedRestartTimeout:              "1m",
 		UptimeRequirement:                       0.6,
 		RetryBootstrapMaxAttempts:               50,
 		RetryBootstrap:                          true,

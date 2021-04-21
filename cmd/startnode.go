@@ -200,10 +200,6 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.NetworkTimeoutCoefficient, "network-timeout-coefficient", flags.NetworkTimeoutCoefficient, "Multiplied by average network response time to get the network timeout. Must be >= 1.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutHalflife, "network-timeout-halflife", flags.NetworkTimeoutHalflife, "Halflife of average network response time. Higher value --> network timeout is less volatile. Can't be 0.")
 
-	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
-	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
-	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
-
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
 
 	StartnodeCmd.Flags().IntVar(&flags.RetryBootstrapMaxAttempts, "bootstrap-retry-max-attempts", flags.RetryBootstrapMaxAttempts, "Specifies how many times bootstrap should be retried")
