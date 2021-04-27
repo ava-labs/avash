@@ -138,11 +138,9 @@ func sendCmdRunE(cmd *cobra.Command, args []string) error {
 
 	id, err := avmClient(md.Serverhost, md.HTTPport, defaultAVMClientTimeout).IssueTx([]byte(args[1]))
 	if err != nil {
-		// TODO: require error wrap text or use direct error ?
 		return fmt.Errorf("failed to issue tx %s : %v", args[1], err)
 	}
 
-	// what needs to be printed ? id.String() - encoded version or string(id)
 	log.Info("TxID:%v", id.String())
 	return nil
 }
@@ -183,7 +181,6 @@ func getBalanceCmdRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("get balance of %s is nil", args[1])
 	}
 
-	// TODO: print UTXOIDs ?
 	log.Info("Balance: %s", b.Balance)
 	return nil
 }
