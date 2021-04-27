@@ -1,11 +1,14 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
+	"time"
 
+	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/snow/choices"
 	"github.com/ava-labs/avalanchego/utils/crypto"
 	"github.com/ava-labs/avalanchego/utils/formatting"
+	"github.com/ava-labs/avalanchego/vms/avm"
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/node"
 	"github.com/spf13/cobra"
@@ -14,23 +17,35 @@ import (
 	pmgr "github.com/ava-labs/avash/processmgr"
 )
 
+// Client is a wrapper interface for avm.Client
+type Client interface {
+	IssueTx(txBytes []byte) (ids.ID, error)
+	GetTxStatus(txID ids.ID) (choices.Status, error)
+	GetBalance(addr string, assetID string, includePartial bool) (*avm.GetBalanceReply, error)
+}
+
 // Register adds the a command to parent.
 // Used when root and commands are in different packages.
 func Register(parent *cobra.Command) {
 	parent.AddCommand(avaxWalletCmd)
 }
 
-var metadata = func(name string) (string, error) {
-	return pmgr.ProcManager.Metadata(name)
+var metadata = func(name string) (*node.Metadata, error) {
+	return pmgr.ProcManager.NodeMetadata(name)
 }
 
 const (
-	defaultEncoding = formatting.CB58
+	defaultEncoding         = formatting.CB58
+	defaultAVMClientTimeout = time.Minute
 )
 
 var avmRPCClient = func(host string, port string) jsonrpc.RPCClient {
 	url := fmt.Sprintf("http://%s:%s/ext/bc/avm", host, port)
 	return jsonrpc.NewClient(url)
+}
+
+var avmClient = func(host, port string, requestTimeout time.Duration) Client {
+	return avm.NewClient("", "avm", requestTimeout)
 }
 
 var avaxWalletCmd = &cobra.Command{
@@ -122,113 +137,60 @@ func newKeyCmdRunE(cmd *cobra.Command, args []string) error {
 
 func sendCmdRunE(cmd *cobra.Command, args []string) error {
 	log := cfg.Config.Log
-	meta, err := metadata(args[0])
+	md, err := metadata(args[0])
 	if err != nil {
-		return fmt.Errorf("node not found: %s", args[0])
+		return err
 	}
 
-	var md node.Metadata
-	if err := json.Unmarshal([]byte(meta), &md); err != nil {
-		return fmt.Errorf("failed to unmarshal metadata for node %s: %v", args[0], err)
-	}
-
-	rpcClient := avmRPCClient(md.Serverhost, md.HTTPport)
-	response, err := rpcClient.Call("avm.issueTx", struct {
-		Tx string
-	}{
-		Tx: args[1],
-	})
-	switch {
-	case err != nil:
+	id, err := avmClient(md.Serverhost, md.HTTPport, defaultAVMClientTimeout).IssueTx([]byte(args[1]))
+	if err != nil {
+		// TODO: require error wrap text or use direct error ?
 		return fmt.Errorf("failed to issue tx %s : %v", args[1], err)
-	case response.Error != nil:
-		return fmt.Errorf("failed to issue tx %s : %d, %s", args[1], response.Error.Code, response.Error.Message)
 	}
 
-	var s struct {
-		TxID string
-	}
-	if err = response.GetObject(&s); err != nil {
-		return fmt.Errorf("failed to unmarshal tx response: %v", err)
-	}
-
-	log.Info("TxID:%s", s.TxID)
+	// what needs to be printed ? id.String() - encoded version or string(id)
+	log.Info("TxID:%v", id.String())
 	return nil
 }
 
 func statusCmdRunE(cmd *cobra.Command, args []string) error {
 	log := cfg.Config.Log
-	meta, err := metadata(args[0])
+	md, err := metadata(args[0])
 	if err != nil {
-		return fmt.Errorf("node not found: %s", args[0])
+		return err
 	}
 
-	var md node.Metadata
-	if err := json.Unmarshal([]byte(meta), &md); err != nil {
-		return fmt.Errorf("failed to unmarshal metadata for node %s: %v", args[0], err)
+	id, err := ids.FromString(args[1])
+	if err != nil {
+		return err
 	}
 
-	rpcClient := avmRPCClient(md.Serverhost, md.HTTPport)
-	response, err := rpcClient.Call("avm.getTxStatus", struct {
-		TxID string
-	}{
-		TxID: args[1],
-	})
-
-	switch {
-	case err != nil:
-		return fmt.Errorf("failed to issue tx %s : %v", args[1], err)
-	case response.Error != nil:
-		return fmt.Errorf("failed to issue tx %s : %d, %s", args[1], response.Error.Code, response.Error.Message)
+	s, err := avmClient(md.Serverhost, md.HTTPport, defaultAVMClientTimeout).GetTxStatus(id)
+	if err != nil {
+		return fmt.Errorf("failed to get tx status %s : %v", args[1], err)
 	}
 
-	var s struct {
-		Status string
-	}
-	if err = response.GetObject(&s); err != nil {
-		return fmt.Errorf("failed to unmarshal status response: %v", err)
-	}
-
-	log.Info("Status:%s", s.Status)
+	log.Info("Status:%s", s.String())
 	return nil
 }
 
 func getBalanceCmdRunE(cmd *cobra.Command, args []string) error {
 	log := cfg.Config.Log
-	meta, err := metadata(args[0])
+	md, err := metadata(args[0])
 	if err != nil {
-		return fmt.Errorf("node not found: %s", args[0])
+		return err
 	}
 
-	var md node.Metadata
-	if err := json.Unmarshal([]byte(meta), &md); err == nil {
-		return fmt.Errorf("failed to unmarshal metadata for node %s: %v", args[0], err)
-	}
-
-	rpcClient := avmRPCClient(md.Serverhost, md.HTTPport)
-	response, err := rpcClient.Call("avm.getBalance", struct {
-		Address string
-		AssetID string
-	}{
-		Address: args[1],
-		AssetID: "AVAX",
-	})
-
+	b, err := avmClient(md.Serverhost, md.HTTPport, defaultAVMClientTimeout).GetBalance(args[1], "AVAX", false)
 	switch {
 	case err != nil:
-		return fmt.Errorf("failed to issue tx %s : %v", args[1], err)
-	case response.Error != nil:
-		return fmt.Errorf("failed to issue tx %s : %d, %s", args[1], response.Error.Code, response.Error.Message)
+		return fmt.Errorf("failed to get balance of %s : %v", args[1], err)
+	case b == nil:
+		return fmt.Errorf("get balance of %s is nil", args[1])
 	}
 
-	var s struct {
-		Balance string
-	}
-	if err = response.GetObject(&s); err != nil {
-		return fmt.Errorf("failed to unmarshal status response: %v", err)
-	}
-
-	log.Info("Balance: %s", s.Balance)
+	// TODO: print UTXOIDs ?
+	log.Info("Balance: %s", b.Balance)
 	return nil
 }
 

@@ -3,7 +3,12 @@ package cmd
 import (
 	"fmt"
 	"testing"
+	"time"
 
+	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/snow/choices"
+	"github.com/ava-labs/avalanchego/vms/avm"
+	"github.com/ava-labs/avash/node"
 	"github.com/spf13/cobra"
 	"github.com/ybbus/jsonrpc"
 )
@@ -52,68 +57,59 @@ func (f fakeRPCClient) CallBatchRaw(requests jsonrpc.RPCRequests) (jsonrpc.RPCRe
 	return nil, f.Err
 }
 
+type fakeAVMClient struct {
+	Err             error
+	ID              [32]byte
+	Status          choices.Status
+	GetBalanceReply *avm.GetBalanceReply
+}
+
+func (f *fakeAVMClient) IssueTx(txBytes []byte) (ids.ID, error) {
+	return f.ID, f.Err
+}
+func (f *fakeAVMClient) GetTxStatus(txID ids.ID) (choices.Status, error) {
+	return f.Status, f.Err
+}
+
+func (f *fakeAVMClient) GetBalance(addr string, assetID string, includePartial bool) (*avm.GetBalanceReply, error) {
+	if f.Err != nil {
+		return nil, f.Err
+	}
+
+	return f.GetBalanceReply, nil
+}
+
 func TestSendCmdRunE(t *testing.T) {
 	tests := []struct {
 		name      string
-		metadata  func(name string) (string, error)
-		rpcClient func(host string, port string) jsonrpc.RPCClient
+		metadata  func(name string) (*node.Metadata, error)
+		avmClient func(host, port string, requestTimeout time.Duration) Client
 		wantErr   bool
 	}{{
 		name: "success case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{RpcResponse: &jsonrpc.RPCResponse{}}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{ID: ids.Empty}
 		},
 		wantErr: false,
 	}, {
 		name: "metadata error case",
-		metadata: func(name string) (string, error) {
-			return "", fmt.Errorf("not found")
+		metadata: func(name string) (*node.Metadata, error) {
+			return nil, fmt.Errorf("not found")
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{RpcResponse: &jsonrpc.RPCResponse{}}
-		},
-		wantErr: true,
-	}, {
-		name: "rpc call error case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
-		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				Err: fmt.Errorf("fake error"),
-			}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{}
 		},
 		wantErr: true,
 	}, {
-		name: "issueTx error response case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
+		name: "avm client error case",
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				RpcResponse: &jsonrpc.RPCResponse{
-					Error: &jsonrpc.RPCError{
-						Code:    1,
-						Message: "fake error",
-					},
-				},
-			}
-		},
-		wantErr: true,
-	}, {
-		name: "issueTx response unmarshal error case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
-		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				RpcResponse: &jsonrpc.RPCResponse{
-					Result: `{"TxID":what?}`,
-				},
-			}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{Err: fmt.Errorf("error")}
 		},
 		wantErr: true,
 	}}
@@ -121,13 +117,13 @@ func TestSendCmdRunE(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			oldMetadata := metadata
-			oldrpcClient := avmRPCClient
+			oldAVMClient := avmClient
 
 			metadata = tt.metadata
-			avmRPCClient = tt.rpcClient
+			avmClient = tt.avmClient
 			defer func() {
 				metadata = oldMetadata
-				avmRPCClient = oldrpcClient
+				avmClient = oldAVMClient
 			}()
 
 			got := sendCmdRunE(&cobra.Command{}, []string{"test", "testingid"})
@@ -139,67 +135,51 @@ func TestSendCmdRunE(t *testing.T) {
 }
 
 func TestStatusCmdRunE(t *testing.T) {
+	validIDStr := ids.ID{'a', 'v', 'a', ' ', 'l', 'a', 'b', 's'}.String()
 	tests := []struct {
 		name      string
-		metadata  func(name string) (string, error)
-		rpcClient func(host string, port string) jsonrpc.RPCClient
+		id        string
+		metadata  func(name string) (*node.Metadata, error)
+		avmClient func(host, port string, requestTimeout time.Duration) Client
 		wantErr   bool
 	}{{
 		name: "success case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
+		id:   validIDStr,
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{RpcResponse: &jsonrpc.RPCResponse{}}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{ID: [32]byte{0}}
 		},
 		wantErr: false,
 	}, {
+		name: "invalid ID case",
+		id:   "incorrect",
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
+		},
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{ID: [32]byte{0}}
+		},
+		wantErr: true,
+	}, {
 		name: "metadata error case",
-		metadata: func(name string) (string, error) {
-			return "", fmt.Errorf("not found")
+		id:   validIDStr,
+		metadata: func(name string) (*node.Metadata, error) {
+			return nil, fmt.Errorf("not found")
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{RpcResponse: &jsonrpc.RPCResponse{}}
-		},
-		wantErr: true,
-	}, {
-		name: "rpc call error case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
-		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				Err: fmt.Errorf("fake error"),
-			}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{ID: ids.Empty}
 		},
 		wantErr: true,
 	}, {
-		name: "issueTx error response case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
+		name: "avm client error case",
+		id:   validIDStr,
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				RpcResponse: &jsonrpc.RPCResponse{
-					Error: &jsonrpc.RPCError{
-						Code:    1,
-						Message: "fake error",
-					},
-				},
-			}
-		},
-		wantErr: true,
-	}, {
-		name: "status response unmarshal error case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
-		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				RpcResponse: &jsonrpc.RPCResponse{
-					Result: `{"TxID":what?}`,
-				},
-			}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{Err: fmt.Errorf("error")}
 		},
 		wantErr: true,
 	}}
@@ -207,16 +187,15 @@ func TestStatusCmdRunE(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			oldMetadata := metadata
-			oldrpcClient := avmRPCClient
+			oldAVMClient := avmClient
 
 			metadata = tt.metadata
-			avmRPCClient = tt.rpcClient
+			avmClient = tt.avmClient
 			defer func() {
 				metadata = oldMetadata
-				avmRPCClient = oldrpcClient
+				avmClient = oldAVMClient
 			}()
-
-			got := statusCmdRunE(&cobra.Command{}, []string{"test", "testingid"})
+			got := statusCmdRunE(&cobra.Command{}, []string{"test", tt.id})
 			if tt.wantErr != (got != nil) {
 				t.Fatalf("sendCmdRunE() failed: got %v, wantErr %v", got, tt.wantErr)
 			}
@@ -227,65 +206,43 @@ func TestStatusCmdRunE(t *testing.T) {
 func TestGetBalanceCmdRunE(t *testing.T) {
 	tests := []struct {
 		name      string
-		metadata  func(name string) (string, error)
-		rpcClient func(host string, port string) jsonrpc.RPCClient
+		metadata  func(name string) (*node.Metadata, error)
+		avmClient func(host, port string, requestTimeout time.Duration) Client
 		wantErr   bool
 	}{{
 		name: "success case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{RpcResponse: &jsonrpc.RPCResponse{}}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{GetBalanceReply: &avm.GetBalanceReply{}}
 		},
 		wantErr: false,
 	}, {
 		name: "metadata error case",
-		metadata: func(name string) (string, error) {
-			return "", fmt.Errorf("not found")
+		metadata: func(name string) (*node.Metadata, error) {
+			return nil, fmt.Errorf("not found")
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{RpcResponse: &jsonrpc.RPCResponse{}}
-		},
-		wantErr: true,
-	}, {
-		name: "rpc call error case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
-		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				Err: fmt.Errorf("fake error"),
-			}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{GetBalanceReply: &avm.GetBalanceReply{}}
 		},
 		wantErr: true,
 	}, {
-		name: "issueTx error response case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
+		name: "avm client error case",
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				RpcResponse: &jsonrpc.RPCResponse{
-					Error: &jsonrpc.RPCError{
-						Code:    1,
-						Message: "fake error",
-					},
-				},
-			}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{Err: fmt.Errorf("error")}
 		},
 		wantErr: true,
 	}, {
-		name: "balance response unmarshal error case",
-		metadata: func(name string) (string, error) {
-			return `{"public-ip": "testip", "host-port": "8080"}`, nil
+		name: "nil GetBalanceReply case",
+		metadata: func(name string) (*node.Metadata, error) {
+			return &node.Metadata{Serverhost: "testip", HTTPport: "8080"}, nil
 		},
-		rpcClient: func(host string, port string) jsonrpc.RPCClient {
-			return &fakeRPCClient{
-				RpcResponse: &jsonrpc.RPCResponse{
-					Result: `{"TxID":what?}`,
-				},
-			}
+		avmClient: func(host, port string, requestTimeout time.Duration) Client {
+			return &fakeAVMClient{}
 		},
 		wantErr: true,
 	}}
@@ -293,18 +250,18 @@ func TestGetBalanceCmdRunE(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			oldMetadata := metadata
-			oldrpcClient := avmRPCClient
+			oldAVMClient := avmClient
 
 			metadata = tt.metadata
-			avmRPCClient = tt.rpcClient
+			avmClient = tt.avmClient
 			defer func() {
 				metadata = oldMetadata
-				avmRPCClient = oldrpcClient
+				avmClient = oldAVMClient
 			}()
 
-			got := statusCmdRunE(&cobra.Command{}, []string{"test", "testingid"})
+			got := getBalanceCmdRunE(&cobra.Command{}, []string{"test", "testingid"})
 			if tt.wantErr != (got != nil) {
-				t.Fatalf("sendCmdRunE() failed: got %v, wantErr %v", got, tt.wantErr)
+				t.Fatalf("getBalanceCmdRunE() failed: got %v, wantErr %v", got, tt.wantErr)
 			}
 		})
 	}

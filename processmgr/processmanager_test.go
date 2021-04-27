@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/ava-labs/avash/node"
 )
 
 func TestAddProcess(t *testing.T) {
 	pm := ProcessManager{
 		processes: make(map[string]*Process),
 	}
-	
+
 	cmd0 := "cmd0"
 	proctype0 := "type0"
 	args0 := []string{"arg0"}
@@ -211,4 +213,47 @@ func TestKillProcess(t *testing.T) {
 			t.Fatalf("PM.Processes does not contain %s", name0)
 		}
 	})
+}
+
+func TestNodeMetadata(t *testing.T) {
+	pm := NewProcessManager()
+	name0 := "test0"
+	name1 := "test1"
+	pm.AddProcess("cmd", "fake-cmd", []string{"arg"}, name0, `{"public-ip": "testip", "http-port": "8080"}`, nil, nil, nil)
+	// invalid metadata process
+	pm.AddProcess("cmd", "fake-cmd", []string{"arg"}, name1, `{"public-ip": "testip", "http-port": 8080}`, nil, nil, nil)
+
+	tests := []struct {
+		name        string
+		processName string
+		metadata    string
+		want        *node.Metadata
+		wantErr     bool
+	}{{
+		name:        "valid process name and metadata case",
+		processName: name0,
+		want:        &node.Metadata{Serverhost: "testip", HTTPport: "8080"},
+		wantErr:     false,
+	}, {
+		name:        "invalid process name case",
+		processName: "dummy",
+		wantErr:     true,
+	}, {
+		name:        "invalid metadata case",
+		processName: name1,
+		wantErr:     true,
+	}}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := pm.NodeMetadata(tt.processName)
+			if tt.wantErr != (err != nil) {
+				t.Fatalf("NodeMetadata(%s) failed: got %v, wantErr %v", tt.processName, got, tt.wantErr)
+			}
+
+			if !tt.wantErr && !reflect.DeepEqual(got, tt.want) {
+				t.Fatalf("NodeMetadata(%s) failed: got %+v, want %+v", tt.processName, got, tt.want)
+			}
+		})
+	}
 }
