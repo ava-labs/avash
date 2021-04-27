@@ -10,7 +10,6 @@ import (
 	"github.com/ava-labs/avalanchego/vms/avm"
 	"github.com/ava-labs/avash/node"
 	"github.com/spf13/cobra"
-	"github.com/ybbus/jsonrpc"
 )
 
 func TestNewKeyCmdRunE(t *testing.T) {
@@ -30,31 +29,6 @@ func TestNewKeyCmdRunE(t *testing.T) {
 			}
 		})
 	}
-}
-
-type fakeRPCClient struct {
-	Err         error
-	RpcResponse *jsonrpc.RPCResponse
-}
-
-func (f fakeRPCClient) Call(method string, params ...interface{}) (*jsonrpc.RPCResponse, error) {
-	return f.RpcResponse, f.Err
-}
-
-func (f fakeRPCClient) CallRaw(request *jsonrpc.RPCRequest) (*jsonrpc.RPCResponse, error) {
-	return f.RpcResponse, f.Err
-}
-
-func (f fakeRPCClient) CallFor(out interface{}, method string, params ...interface{}) error {
-	return f.Err
-}
-
-func (f fakeRPCClient) CallBatch(requests jsonrpc.RPCRequests) (jsonrpc.RPCResponses, error) {
-	return nil, f.Err
-}
-
-func (f fakeRPCClient) CallBatchRaw(requests jsonrpc.RPCRequests) (jsonrpc.RPCResponses, error) {
-	return nil, f.Err
 }
 
 type fakeAVMClient struct {

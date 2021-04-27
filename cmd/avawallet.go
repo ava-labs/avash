@@ -12,7 +12,6 @@ import (
 	"github.com/ava-labs/avash/cfg"
 	"github.com/ava-labs/avash/node"
 	"github.com/spf13/cobra"
-	"github.com/ybbus/jsonrpc"
 
 	pmgr "github.com/ava-labs/avash/processmgr"
 )
@@ -38,11 +37,6 @@ const (
 	defaultEncoding         = formatting.CB58
 	defaultAVMClientTimeout = time.Minute
 )
-
-var avmRPCClient = func(host string, port string) jsonrpc.RPCClient {
-	url := fmt.Sprintf("http://%s:%s/ext/bc/avm", host, port)
-	return jsonrpc.NewClient(url)
-}
 
 var avmClient = func(host, port string, requestTimeout time.Duration) Client {
 	return avm.NewClient("", "avm", requestTimeout)
