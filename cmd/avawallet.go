@@ -14,7 +14,6 @@ import (
 	pmgr "github.com/ava-labs/avash/processmgr"
 )
 
-
 // Register adds the a command to parent.
 // Used when root and commands are in different packages.
 func Register(parent *cobra.Command) {
@@ -24,6 +23,10 @@ func Register(parent *cobra.Command) {
 var metadata = func(name string) (string, error) {
 	return pmgr.ProcManager.Metadata(name)
 }
+
+const (
+	defaultEncoding = formatting.CB58
+)
 
 var avmRPCClient = func(host string, port string) jsonrpc.RPCClient {
 	url := fmt.Sprintf("http://%s:%s/ext/bc/avm", host, port)
@@ -108,8 +111,12 @@ func newKeyCmdRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to create private key")
 	}
 
-	fb := formatting.CB58{Bytes: sk.Bytes()}
-	log.Info("PrivateKey: PrivateKey-%s", fb)
+	str, err := formatting.Encode(defaultEncoding, sk.Bytes())
+	if err != nil {
+		return fmt.Errorf("failed to encode private key")
+	}
+
+	log.Info("PrivateKey: PrivateKey-%s", str)
 	return nil
 }
 
