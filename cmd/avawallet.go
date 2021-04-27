@@ -39,7 +39,7 @@ const (
 )
 
 var avmClient = func(host, port string, requestTimeout time.Duration) Client {
-	return avm.NewClient("", "avm", requestTimeout)
+	return avm.NewClient(fmt.Sprintf("http://%s:%s", host, port), "avm", requestTimeout)
 }
 
 var avaxWalletCmd = &cobra.Command{
