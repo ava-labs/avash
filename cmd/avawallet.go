@@ -141,7 +141,7 @@ func sendCmdRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to issue tx %s : %v", args[1], err)
 	}
 
-	log.Info("TxID:%s", id)
+	log.Info("TxID: %s", id)
 	return nil
 }
 
@@ -162,7 +162,7 @@ func statusCmdRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to get tx status %s : %v", args[1], err)
 	}
 
-	log.Info("Status:%s", s.String())
+	log.Info("Status: %s", s.String())
 	return nil
 }
 
