@@ -131,6 +131,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--router-health-max-outstanding-requests=" + strconv.Itoa(flags.RouterHealthMaxOutstandingRequestsKey),
 		fmt.Sprintf("--router-health-max-drop-rate=%f", flags.RouterHealthMaxDropRateKey),
 		"--index-enabled=" + strconv.FormatBool(flags.IndexEnabled),
+		"--plugin-mode-enabled=" + strconv.FormatBool(flags.PluginModeEnabled),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

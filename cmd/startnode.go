@@ -211,4 +211,5 @@ func init() {
 	StartnodeCmd.Flags().Float64Var(&flags.RouterHealthMaxDropRateKey, "router-health-max-drop-rate", flags.RouterHealthMaxDropRateKey, "Node reports unhealthy if the router drops more than this portion of messages.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.IndexEnabled, "index-enabled", flags.IndexEnabled, "If true, index all accepted containers and transactions and expose them via an API")
+	StartnodeCmd.Flags().BoolVar(&flags.PluginModeEnabled, "plugin-mode-enabled", flags.PluginModeEnabled, "Whether the app should run as a plugin. Defaults to false.")
 }
