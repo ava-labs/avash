@@ -146,7 +146,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		Datadir:        dataPath,
 		Logsdir:        logPath,
 		Loglevel:       flags.LogLevel,
-		P2PTLSEnabled:  flags.P2PTLSEnabled,
 		StakingEnabled: flags.StakingEnabled,
 		StakerCertPath: stakerCertFile,
 		StakerKeyPath:  stakerKeyFile,

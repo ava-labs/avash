@@ -32,7 +32,6 @@ type Flags struct {
 
 	// Crypto
 	SignatureVerificationEnabled bool
-	P2PTLSEnabled                bool
 
 	// APIs
 	APIAdminEnabled    bool
@@ -135,11 +134,6 @@ type Flags struct {
 	NetworkHealthMinConnPeers               int
 	NetworkTimeoutCoefficient               int
 	NetworkTimeoutHalflife                  string
-
-	// Restart on Disconnect
-	RestartOnDisconnected      bool
-	DisconnectedCheckFrequency string
-	DisconnectedRestartTimeout string
 
 	// Uptime Requirement
 	UptimeRequirement float64
@@ -341,7 +335,6 @@ func DefaultFlags() Flags {
 		NetworkHealthMinConnPeers:               1,
 		NetworkTimeoutCoefficient:               2,
 		NetworkTimeoutHalflife:                  "5m",
-		P2PTLSEnabled:                           true,
 		StakingEnabled:                          false,
 		StakingPort:                             9651,
 		StakingDisabledWeight:                   1,
@@ -363,9 +356,6 @@ func DefaultFlags() Flags {
 		BenchlistFailThreshold:                  10,
 		BenchlistMinFailingDuration:             "5m",
 		BenchlistPeerSummaryEnabled:             false,
-		RestartOnDisconnected:                   true,
-		DisconnectedCheckFrequency:              "10s",
-		DisconnectedRestartTimeout:              "1m",
 		UptimeRequirement:                       0.6,
 		RetryBootstrapMaxAttempts:               50,
 		RetryBootstrap:                          true,
