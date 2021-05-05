@@ -10,7 +10,6 @@ type Metadata struct {
 	Datadir        string `json:"data-dir"`
 	Logsdir        string `json:"log-dir"`
 	Loglevel       string `json:"log-level"`
-	P2PTLSEnabled  bool   `json:"p2p-tls-enabled"`
 	StakingEnabled bool   `json:"staking-enabled"`
 	StakerCertPath string `json:"staking-tls-cert-file"`
 	StakerKeyPath  string `json:"staking-tls-key-file"`

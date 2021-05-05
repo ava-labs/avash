@@ -32,7 +32,6 @@ type Flags struct {
 
 	// Crypto
 	SignatureVerificationEnabled bool
-	P2PTLSEnabled                bool
 
 	// APIs
 	APIAdminEnabled    bool
@@ -136,11 +135,6 @@ type Flags struct {
 	NetworkTimeoutCoefficient               int
 	NetworkTimeoutHalflife                  string
 
-	// Restart on Disconnect
-	RestartOnDisconnected      bool
-	DisconnectedCheckFrequency string
-	DisconnectedRestartTimeout string
-
 	// Uptime Requirement
 	UptimeRequirement float64
 
@@ -157,6 +151,8 @@ type Flags struct {
 	RouterHealthMaxDropRateKey            float64
 
 	IndexEnabled bool
+
+	PluginModeEnabled bool
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -240,9 +236,6 @@ type FlagsYAML struct {
 	BenchlistFailThreshold                  *int     `yaml:"benchlist-fail-threshold,omitempty"`
 	BenchlistMinFailingDuration             *string  `yaml:"benchlist-min-failing-duration,omitempty"`
 	BenchlistPeerSummaryEnabled             *bool    `yaml:"benchlist-peer-summary-enabled,omitempty"`
-	RestartOnDisconnected                   *bool    `yaml:"restart-on-disconnected,omitempty"`
-	DisconnectedCheckFrequency              *string  `yaml:"disconnected-check-frequency,omitempty"`
-	DisconnectedRestartTimeout              *string  `yaml:"disconnected-restart-timeout,omitempty"`
 	UptimeRequirement                       *float64 `yaml:"uptime-requirement,omitempty"`
 	RetryBootstrapMaxAttempts               *uint    `yaml:"bootstrap-retry-max-attempts,omitempty"`
 	RetryBootstrap                          *bool    `yaml:"bootstrap-retry-enabled,omitempty"`
@@ -251,6 +244,7 @@ type FlagsYAML struct {
 	RouterHealthMaxOutstandingRequestsKey   *int     `yaml:"router-health-max-outstanding-requests,omitempty"`
 	RouterHealthMaxDropRateKey              *float64 `yaml:"router-health-max-drop-rate,omitempty"`
 	IndexEnabled                            *bool    `yaml:"index-enabled,omitempty"`
+	PluginModeEnabled                       *bool    `yaml:"plugin-mode-enabled,omitempty"`
 }
 
 // SetDefaults sets any zero-value field to its default value
@@ -341,7 +335,6 @@ func DefaultFlags() Flags {
 		NetworkHealthMinConnPeers:               1,
 		NetworkTimeoutCoefficient:               2,
 		NetworkTimeoutHalflife:                  "5m",
-		P2PTLSEnabled:                           true,
 		StakingEnabled:                          false,
 		StakingPort:                             9651,
 		StakingDisabledWeight:                   1,
@@ -363,9 +356,6 @@ func DefaultFlags() Flags {
 		BenchlistFailThreshold:                  10,
 		BenchlistMinFailingDuration:             "5m",
 		BenchlistPeerSummaryEnabled:             false,
-		RestartOnDisconnected:                   true,
-		DisconnectedCheckFrequency:              "10s",
-		DisconnectedRestartTimeout:              "1m",
 		UptimeRequirement:                       0.6,
 		RetryBootstrapMaxAttempts:               50,
 		RetryBootstrap:                          true,
@@ -374,5 +364,6 @@ func DefaultFlags() Flags {
 		RouterHealthMaxOutstandingRequestsKey:   1024,
 		RouterHealthMaxDropRateKey:              1,
 		IndexEnabled:                            false,
+		PluginModeEnabled:                       false,
 	}
 }
