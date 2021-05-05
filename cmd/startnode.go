@@ -159,7 +159,6 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.StakeMintingPeriod, "stake-minting-period", flags.StakeMintingPeriod, "Consumption period of the staking function, in seconds. The Default on Main Net is `8760h` (365 days).")
 	StartnodeCmd.Flags().IntVar(&flags.CreationTxFee, "creation-tx-fee", flags.CreationTxFee, "Transaction fee, in nAVAX, for transactions that create new state. Defaults to `1000000` nAVAX (.001 AVAX) per transaction.")
 
-	StartnodeCmd.Flags().BoolVar(&flags.P2PTLSEnabled, "p2p-tls-enabled", flags.P2PTLSEnabled, "Require TLS to authenticate network communications")
 	StartnodeCmd.Flags().BoolVar(&flags.StakingEnabled, "staking-enabled", flags.StakingEnabled, "Enable staking. If enabled, Network TLS is required.")
 	StartnodeCmd.Flags().UintVar(&flags.StakingPort, "staking-port", flags.StakingPort, "Port of the consensus server.")
 	StartnodeCmd.Flags().IntVar(&flags.StakingDisabledWeight, "staking-disabled-weight", flags.StakingDisabledWeight, "Weight to provide to each peer when staking is disabled. Defaults to `1`")
@@ -200,10 +199,6 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.NetworkTimeoutCoefficient, "network-timeout-coefficient", flags.NetworkTimeoutCoefficient, "Multiplied by average network response time to get the network timeout. Must be >= 1.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutHalflife, "network-timeout-halflife", flags.NetworkTimeoutHalflife, "Halflife of average network response time. Higher value --> network timeout is less volatile. Can't be 0.")
 
-	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
-	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
-	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
-
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
 
 	StartnodeCmd.Flags().IntVar(&flags.RetryBootstrapMaxAttempts, "bootstrap-retry-max-attempts", flags.RetryBootstrapMaxAttempts, "Specifies how many times bootstrap should be retried")
@@ -216,4 +211,5 @@ func init() {
 	StartnodeCmd.Flags().Float64Var(&flags.RouterHealthMaxDropRateKey, "router-health-max-drop-rate", flags.RouterHealthMaxDropRateKey, "Node reports unhealthy if the router drops more than this portion of messages.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.IndexEnabled, "index-enabled", flags.IndexEnabled, "If true, index all accepted containers and transactions and expose them via an API")
+	StartnodeCmd.Flags().BoolVar(&flags.PluginModeEnabled, "plugin-mode-enabled", flags.PluginModeEnabled, "Whether the app should run as a plugin. Defaults to false.")
 }

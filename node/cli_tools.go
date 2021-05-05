@@ -102,7 +102,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--network-health-min-conn-peers=" + strconv.Itoa(flags.NetworkHealthMinConnPeers),
 		"--network-timeout-coefficient=" + strconv.Itoa(flags.NetworkTimeoutCoefficient),
 		"--network-timeout-halflife=" + flags.NetworkTimeoutHalflife,
-		"--p2p-tls-enabled=" + strconv.FormatBool(flags.P2PTLSEnabled),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
 		"--staking-port=" + stakingPortString,
 		"--staking-disabled-weight=" + strconv.Itoa(flags.StakingDisabledWeight),
@@ -124,9 +123,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--benchlist-fail-threshold=" + strconv.Itoa(flags.BenchlistFailThreshold),
 		"--benchlist-min-failing-duration=" + flags.BenchlistMinFailingDuration,
 		"--benchlist-peer-summary-enabled=" + strconv.FormatBool(flags.BenchlistPeerSummaryEnabled),
-		"--restart-on-disconnected=" + strconv.FormatBool(flags.RestartOnDisconnected),
-		"--disconnected-check-frequency=" + flags.DisconnectedCheckFrequency,
-		"--disconnected-restart-timeout=" + flags.DisconnectedRestartTimeout,
 		fmt.Sprintf("--uptime-requirement=%f", flags.UptimeRequirement),
 		"--bootstrap-retry-max-attempts=" + strconv.Itoa(flags.RetryBootstrapMaxAttempts),
 		"--bootstrap-retry-enabled=" + strconv.FormatBool(flags.RetryBootstrap),
@@ -135,6 +131,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--router-health-max-outstanding-requests=" + strconv.Itoa(flags.RouterHealthMaxOutstandingRequestsKey),
 		fmt.Sprintf("--router-health-max-drop-rate=%f", flags.RouterHealthMaxDropRateKey),
 		"--index-enabled=" + strconv.FormatBool(flags.IndexEnabled),
+		"--plugin-mode-enabled=" + strconv.FormatBool(flags.PluginModeEnabled),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)
@@ -150,7 +147,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		Datadir:        dataPath,
 		Logsdir:        logPath,
 		Loglevel:       flags.LogLevel,
-		P2PTLSEnabled:  flags.P2PTLSEnabled,
 		StakingEnabled: flags.StakingEnabled,
 		StakerCertPath: stakerCertFile,
 		StakerKeyPath:  stakerKeyFile,
