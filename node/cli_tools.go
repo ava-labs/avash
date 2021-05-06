@@ -66,6 +66,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--http-tls-key-file=" + httpKeyFile,
 		"--bootstrap-ips=" + flags.BootstrapIPs,
 		"--bootstrap-ids=" + flags.BootstrapIDs,
+		"--bootstrap-beacon-connection-timeout=" + flags.BootstrapBeaconConnectionTimeout,
 		"--db-enabled=" + strconv.FormatBool(flags.DBEnabled),
 		"--db-dir=" + dbPath,
 		"--plugin-dir=" + flags.PluginDir,
