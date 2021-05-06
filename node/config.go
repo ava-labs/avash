@@ -136,6 +136,11 @@ type Flags struct {
 	NetworkTimeoutCoefficient               int
 	NetworkTimeoutHalflife                  string
 
+	// Peer List Gossiping
+	NetworkPeerListGossipFrequency string
+	NetworkPeerListGossipSize      int
+	NetworkPeerListSize            int
+
 	// Uptime Requirement
 	UptimeRequirement float64
 
@@ -217,6 +222,9 @@ type FlagsYAML struct {
 	NetworkHealthMinConnPeers               *int     `yaml:"network-health-min-conn-peers,omitempty"`
 	NetworkTimeoutCoefficient               *int     `yaml:"network-timeout-coefficient,omitempty"`
 	NetworkTimeoutHalflife                  *string  `yaml:"network-timeout-halflife,omitempty"`
+	NetworkPeerListGossipFrequency          *string  `yaml:"network-peer-list-gossip-frequency,omitempty"`
+	NetworkPeerListGossipSize               *int     `yaml:"network-peer-list-gossip-size,omitempty"`
+	NetworkPeerListSize                     *int     `yaml:"network-peer-list-size,omitempty"`
 	StakingEnabled                          *bool    `yaml:"staking-enabled,omitempty"`
 	StakingPort                             *uint    `yaml:"staking-port,omitempty"`
 	StakingDisabledWeight                   *int     `yaml:"staking-disabled-weight,omitempty"`
@@ -338,6 +346,9 @@ func DefaultFlags() Flags {
 		NetworkHealthMinConnPeers:               1,
 		NetworkTimeoutCoefficient:               2,
 		NetworkTimeoutHalflife:                  "5m",
+		NetworkPeerListGossipFrequency:          "1m",
+		NetworkPeerListGossipSize:               50,
+		NetworkPeerListSize:                     20,
 		StakingEnabled:                          false,
 		StakingPort:                             9651,
 		StakingDisabledWeight:                   1,
