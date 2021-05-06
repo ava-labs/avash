@@ -35,6 +35,7 @@ do
 		--http-tls-key-file=*|\
 		--bootstrap-ips=*|\
 		--bootstrap-ids=*|\
+        --bootstrap-beacon-connection-timeout=*|\
 		--db-enabled=*|\
 		--log-level=*|\
 		--benchlist-duration=*|\
