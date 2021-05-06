@@ -103,7 +103,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--network-health-min-conn-peers=" + strconv.Itoa(flags.NetworkHealthMinConnPeers),
 		"--network-timeout-coefficient=" + strconv.Itoa(flags.NetworkTimeoutCoefficient),
 		"--network-timeout-halflife=" + flags.NetworkTimeoutHalflife,
-		"--network-peer-list-gossip-frequency=" + flags.NetworkTimeoutHalflife,
+		"--network-peer-list-gossip-frequency=" + flags.NetworkPeerListGossipFrequency,
 		"--network-peer-list-gossip-size=" + strconv.Itoa(flags.NetworkPeerListGossipSize),
 		"--network-peer-list-size=" + strconv.Itoa(flags.NetworkPeerListSize),
 		"--staking-enabled=" + strconv.FormatBool(flags.StakingEnabled),
