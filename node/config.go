@@ -49,8 +49,9 @@ type Flags struct {
 	HTTPTLSKeyFile  string
 
 	// Bootstrapping
-	BootstrapIPs string
-	BootstrapIDs string
+	BootstrapIPs                     string
+	BootstrapIDs                     string
+	BootstrapBeaconConnectionTimeout string
 
 	// Database
 	DBEnabled bool
@@ -179,6 +180,7 @@ type FlagsYAML struct {
 	HTTPTLSKeyFile                          *string  `yaml:"http-tls-key-file,omitempty"`
 	BootstrapIPs                            *string  `yaml:"bootstrap-ips,omitempty"`
 	BootstrapIDs                            *string  `yaml:"bootstrap-ids,omitempty"`
+	BootstrapBeaconConnectionTimeout        *string  `yaml:"bootstrap-beacon-connection-timeout,omitempty"`
 	DBEnabled                               *bool    `yaml:"db-enabled,omitempty"`
 	DBDir                                   *string  `yaml:"db-dir,omitempty"`
 	PluginDir                               *string  `yaml:"plugin-dir,omitempty"`
@@ -299,6 +301,7 @@ func DefaultFlags() Flags {
 		HTTPTLSKeyFile:                          "",
 		BootstrapIPs:                            "",
 		BootstrapIDs:                            "",
+		BootstrapBeaconConnectionTimeout:        "60s",
 		DBEnabled:                               true,
 		DBDir:                                   "db",
 		PluginDir:                               path.Join(os.Getenv("GOPATH"), "src", "github.com", "ava-labs", "avalanchego", "build", "plugins"),
