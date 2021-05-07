@@ -6,10 +6,12 @@ Copyright © 2019 AVA Labs <collin@avalabs.org>
 package processmgr
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/ava-labs/avash/cfg"
+	"github.com/ava-labs/avash/node"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -18,6 +20,11 @@ type ProcessManager struct {
 	// Key: Process name
 	// Value: The corresponding process
 	processes map[string]*Process
+}
+
+// NewProcessManager creates instance of ProcessManager.
+func NewProcessManager() *ProcessManager {
+	return &ProcessManager{processes: map[string]*Process{}}
 }
 
 // AddProcess places a process into the process manager with an associated name
@@ -202,6 +209,21 @@ func (pm *ProcessManager) Metadata(name string) (string, error) {
 		return p.metadata, nil
 	}
 	return "", fmt.Errorf("Process does not exist, cannot get metadata: %s", name)
+}
+
+// Metadata returns the node metadata given the process name
+func (pm *ProcessManager) NodeMetadata(name string) (*node.Metadata, error) {
+	meta, err := pm.Metadata(name)
+	if err != nil {
+		return nil, err
+	}
+
+	var md node.Metadata
+	if err := json.Unmarshal([]byte(meta), &md); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal metadata for node %s: %v", name, err)
+	}
+
+	return &md, nil
 }
 
 // HasRunning returns true if there exists a running process, otherwise false
