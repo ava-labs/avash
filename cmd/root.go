@@ -1,7 +1,5 @@
-/*
-Copyright © 2021 AVA Labs, Inc.
-All rights reserved.
-*/
+// Copyright © 2021 AVA Labs, Inc.
+// All rights reserved.
 
 // Package cmd implements cobra commander
 package cmd

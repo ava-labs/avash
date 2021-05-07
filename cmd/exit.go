@@ -1,8 +1,5 @@
-/*
-Copyright © 2021 AVA Labs, Inc.
-All rights reserved.
-*/
-
+// Copyright © 2021 AVA Labs, Inc.
+// All rights reserved.
 package cmd
 
 import (
