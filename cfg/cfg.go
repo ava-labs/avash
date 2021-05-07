@@ -98,7 +98,7 @@ func InitConfig(cfgpath string) {
 		config.AvalancheLocation = path.Join(gopath, "src", "github.com", "ava-labs", "avalanchego", "build", "avalanchego")
 	}
 	if _, err := os.Stat(config.AvalancheLocation); err != nil {
-		fmt.Printf("Invalid ava binary location: %s\n", config.AvalancheLocation)
+		fmt.Printf("Invalid AvalancheGo binary location: %s\n", config.AvalancheLocation)
 		fmt.Println("Make sure your $GOPATH is set or provide a configuration file with a valid `avalancheLocation` value. See README.md for more details.")
 		os.Exit(1)
 	}
