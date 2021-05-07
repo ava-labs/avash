@@ -1,5 +1,6 @@
 /*
-Copyright © 2019 AVA Labs <collin@avalabs.org>
+Copyright © 2021 AVA Labs, Inc.
+All rights reserved.
 */
 
 // Package cfg manages the configuration file for avash
@@ -98,7 +99,7 @@ func InitConfig(cfgpath string) {
 		config.AvalancheLocation = path.Join(gopath, "src", "github.com", "ava-labs", "avalanchego", "build", "avalanchego")
 	}
 	if _, err := os.Stat(config.AvalancheLocation); err != nil {
-		fmt.Printf("Invalid AvalancheGo binary location: %s\n", config.AvalancheLocation)
+		fmt.Printf("Invalid avalanchego binary location: %s\n", config.AvalancheLocation)
 		fmt.Println("Make sure your $GOPATH is set or provide a configuration file with a valid `avalancheLocation` value. See README.md for more details.")
 		os.Exit(1)
 	}
