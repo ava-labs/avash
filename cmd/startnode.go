@@ -7,6 +7,7 @@ package cmd
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/kennygrant/sanitize"
@@ -199,6 +200,15 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.NetworkHealthMinConnPeers, "network-health-min-conn-peers", flags.NetworkHealthMinConnPeers, "Network layer returns unhealthy if connected to less than this many peers")
 	StartnodeCmd.Flags().IntVar(&flags.NetworkTimeoutCoefficient, "network-timeout-coefficient", flags.NetworkTimeoutCoefficient, "Multiplied by average network response time to get the network timeout. Must be >= 1.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutHalflife, "network-timeout-halflife", flags.NetworkTimeoutHalflife, "Halflife of average network response time. Higher value --> network timeout is less volatile. Can't be 0.")
+	gossipHelpMsg := fmt.Sprintf(
+		"Gossip [%s] peers to [%s] peers every [%s]",
+		"network-peer-list-size",
+		"network-peer-list-gossip-size",
+		"network-peer-list-gossip-frequency",
+	)
+	StartnodeCmd.Flags().StringVar(&flags.NetworkPeerListGossipFrequency, "network-peer-list-gossip-frequency", flags.NetworkPeerListGossipFrequency, gossipHelpMsg)
+	StartnodeCmd.Flags().IntVar(&flags.NetworkPeerListGossipSize, "network-peer-list-gossip-size", flags.NetworkPeerListGossipSize, gossipHelpMsg)
+	StartnodeCmd.Flags().IntVar(&flags.NetworkPeerListSize, "network-peer-list-size", flags.NetworkPeerListSize, gossipHelpMsg)
 
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
 
