@@ -10,7 +10,7 @@ Avash provides the ability to run Lua scripts which can execute a sequence of sh
 
 ### Requirements
 
- * Golang 1.13+
+ * Golang 1.15.5+
  * An Avalanche Client Implementing Avalanche Standard CLI Flags
 
 ### Quick Setup
