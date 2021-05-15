@@ -87,4 +87,4 @@ The functions available to Lua are:
 * Compare the values of two nodes UTXO sets
 * Track expected results and compare them with real nodes
 
-Example Lua scripts are in [the `./scripts` directory]('./scripts/).
+Example Lua scripts are in [the `./scripts` directory](./scripts/).
