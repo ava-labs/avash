@@ -55,16 +55,16 @@ help procmanager start
 
 ### Commands
 
-* avaxwallet - Tools for interacting with Avalanche Payments over the network.
-* callrpc - Issues an RPC call to a node.
-* exit - Exit the shell.
-* help - Help about any command.
-* network - Tools for interacting with remote hosts.
-* procmanager - Access the process manager for the avash client.
-* runscript - Runs the provided script.
-* setoutput - Sets shell log output.
-* startnode - Starts a node process and gives it a name.
-* varstore - Tools for creating variable stores and printing variables within them.
+* `avaxwallet` - Tools for interacting with Avalanche Payments over the network.
+* `callrpc` - Issues an RPC call to a node.
+* `exit` - Exit the shell.
+* `help` - Help about any command.
+* `network` - Tools for interacting with remote hosts.
+* `procmanager` - Access the process manager for the avash client.
+* `runscript` - Runs the provided script.
+* `setoutput` - Sets shell log output.
+* `startnode` - Starts a node process and gives it a name.
+* `varstore` - Tools for creating variable stores and printing variables within them.
 
 ### Writing Scripts
 
