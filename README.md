@@ -40,9 +40,11 @@ For full documentation of Avash configuration and commands, please see the offic
 
 ### Opening a shell
 
+Super easy, just type `./avash` and it will open a shell environment.
+
 #### Configuration
 
-Super easy, just type `./avash` and it will open a shell environement. By default Avash will look for a configuration file named either `.avash.yaml` or `.avash.yml` located in the following paths.
+By default Avash will look for a configuration file named either `.avash.yaml` or `.avash.yml` located in the following paths.
 
 * `$HOME/`
 * `.`
