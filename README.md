@@ -40,9 +40,48 @@ For full documentation of Avash configuration and commands, please see the offic
 
 ### Opening a shell
 
-Super easy, just type `./avash` and it will open a shell environement.
+#### Configuration
 
-For your first command, type `help` in Avash to see the commands available. 
+Super easy, just type `./avash` and it will open a shell environement. By default Avash will look for a configuration file named either `.avash.yaml` or `.avash.yml` located in the following paths.
+
+* `$HOME/`
+* `.`
+* `/etc/avash/`
+
+If no config file is found then Avash will create one at `$HOME/.avash.yaml`.
+
+```zsh
+./avash
+Config file not found: .avash.yaml
+Created empty config file: /Users/username/.avash.yaml
+```
+
+Alternatively you can pass in a `--config` flag with a path to your config file. **NOTE** you must put the full path. `~/` **will not** resolve to `$HOME/`.
+
+```zsh
+ ./avash --config=/Users/username/path/to/config/my-config-file.yaml
+Config file set: /Users/username/path/to/config/my-config-file.yaml
+Avash successfully configured.
+```
+
+If no config file is found at the path which was passed to `--config` then Avash will create one at `$HOME/`. Avash will use the filename which was passed to `--config`.
+
+```zsh
+./avash --config=/Users/username/path/to/config/my-config-file.yaml
+Config file not found: /Users/username/path/to/config/my-config-file.yaml
+Created empty config file: /Users/username/my-config-file.yaml
+```
+
+If you have multiple config files Avash will load the values from a single file in decreasing preference:
+
+* `--config`
+* `$HOME/`
+* `.`
+* `/etc/avash/`
+
+#### Help
+
+For your first command, type `help` in Avash to see the commands available.
 
 You can also type `help [command]` to see the list of options available for that command.
 
