@@ -1,10 +1,10 @@
 module github.com/ava-labs/avash
 
-go 1.14
+go 1.16
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.2.9
-	github.com/ava-labs/avalanchego v1.4.4
+	github.com/ava-labs/avalanchego v1.4.5
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/rpc v1.2.0
