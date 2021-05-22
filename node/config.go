@@ -1,8 +1,6 @@
 package node
 
 import (
-	"os"
-	"path"
 	"reflect"
 )
 
@@ -56,6 +54,12 @@ type Flags struct {
 	// Database
 	DBEnabled bool
 	DBDir     string
+
+	// Fetch
+	FetchOnly bool
+
+	// Build
+	BuildDir     string
 
 	// Plugins
 	PluginDir string
@@ -188,6 +192,8 @@ type FlagsYAML struct {
 	BootstrapBeaconConnectionTimeout        *string  `yaml:"bootstrap-beacon-connection-timeout,omitempty"`
 	DBEnabled                               *bool    `yaml:"db-enabled,omitempty"`
 	DBDir                                   *string  `yaml:"db-dir,omitempty"`
+	FetchOnly                               *bool    `yaml:"fetch-only,omitempty"`
+	BuildDir                                *string  `yaml:"build-dir,omitempty"`
 	PluginDir                               *string  `yaml:"plugin-dir,omitempty"`
 	LogLevel                                *string  `yaml:"log-level,omitempty"`
 	LogDir                                  *string  `yaml:"log-dir,omitempty"`
@@ -312,7 +318,9 @@ func DefaultFlags() Flags {
 		BootstrapBeaconConnectionTimeout:        "60s",
 		DBEnabled:                               true,
 		DBDir:                                   "db",
-		PluginDir:                               path.Join(os.Getenv("GOPATH"), "src", "github.com", "ava-labs", "avalanchego", "build", "plugins"),
+		FetchOnly:                               false,
+		BuildDir:                                "",
+		PluginDir:                               "",
 		LogLevel:                                "info",
 		LogDir:                                  "logs",
 		LogDisplayLevel:                         "", // defaults to the value provided to --log-level
