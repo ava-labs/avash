@@ -136,6 +136,8 @@ func init() {
 	StartnodeCmd.Flags().BoolVar(&flags.DBEnabled, "db-enabled", flags.DBEnabled, "Turn on persistent storage.")
 	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Avalanche state.")
 
+	StartnodeCmd.Flags().StringVar(&flags.BuildDir, "build-dir", flags.BuildDir, "Path to the build directory.")
+
 	StartnodeCmd.Flags().StringVar(&flags.LogLevel, "log-level", flags.LogLevel, "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().StringVar(&flags.LogDir, "log-dir", flags.LogDir, "Name of directory for the node's logging.")
 	StartnodeCmd.Flags().StringVar(&flags.LogDisplayLevel, "log-display-level", flags.LogDisplayLevel, "{Off, Fatal, Error, Warn, Info, Debug, Verbo}. The log level determines which events to display to the screen. If left blank, will default to the value provided to `--log-level`")
@@ -159,6 +161,8 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.MaxValidatorStake, "max-validator-stake", flags.MaxValidatorStake, "The maximum stake, in nAVAX, that can be placed on a validator on the primary network. Defaults to `3000000000000000` (3,000,000 AVAX) on Main Net. This includes stake provided by both the validator and by delegators to the validator.")
 	StartnodeCmd.Flags().StringVar(&flags.StakeMintingPeriod, "stake-minting-period", flags.StakeMintingPeriod, "Consumption period of the staking function, in seconds. The Default on Main Net is `8760h` (365 days).")
 	StartnodeCmd.Flags().IntVar(&flags.CreationTxFee, "creation-tx-fee", flags.CreationTxFee, "Transaction fee, in nAVAX, for transactions that create new state. Defaults to `1000000` nAVAX (.001 AVAX) per transaction.")
+
+	StartnodeCmd.Flags().BoolVar(&flags.FetchOnly, "fetch-only", flags.FetchOnly, "If true, bootstrap the current database version then stop. Defaults to false")
 
 	StartnodeCmd.Flags().BoolVar(&flags.StakingEnabled, "staking-enabled", flags.StakingEnabled, "Enable staking. If enabled, Network TLS is required.")
 	StartnodeCmd.Flags().UintVar(&flags.StakingPort, "staking-port", flags.StakingPort, "Port of the consensus server.")
