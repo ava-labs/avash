@@ -214,7 +214,7 @@ type FlagsYAML struct {
 	MinDelegationFee                        *int     `yaml:"min-delegation-fee,omitempty"`
 	MinValidatorStake                       *int     `yaml:"min-validator-stake,omitempty"`
 	MaxStakeDuration                        *string  `yaml:"max-stake-duration,omitempty"`
-	MaxValidatorStake                       *int     `yaml:"max-stake-duration,omitempty"`
+	MaxValidatorStake                       *int     `yaml:"max-validator-stake,omitempty"`
 	StakeMintingPeriod                      *string  `yaml:"stake-minting-period,omitempty"`
 	CreationTxFee                           *int     `yaml:"creation-tx-fee,omitempty"`
 	MaxNonStakerPendingMsgs                 *int     `yaml:"max-non-staker-pending-msgs,omitempty"`
