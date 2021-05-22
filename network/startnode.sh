@@ -102,7 +102,8 @@ do
         --fd-limit=*|\
         --http-host=*|\
         --db-dir=*|\
-        --log-dir=*)
+        --log-dir=*|\
+        --plugin-dir=*)
             FLAGS+="${arg%=*}=$CTNR_DIR/${arg#*=} "
             ;;
         --data-dir=*)
