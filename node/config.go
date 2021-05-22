@@ -1,8 +1,6 @@
 package node
 
 import (
-	"os"
-	"path"
 	"reflect"
 )
 
@@ -312,7 +310,7 @@ func DefaultFlags() Flags {
 		BootstrapBeaconConnectionTimeout:        "60s",
 		DBEnabled:                               true,
 		DBDir:                                   "db",
-		PluginDir:                               path.Join(os.Getenv("GOPATH"), "src", "github.com", "ava-labs", "avalanchego", "build", "plugins"),
+		PluginDir:                               "",
 		LogLevel:                                "info",
 		LogDir:                                  "logs",
 		LogDisplayLevel:                         "", // defaults to the value provided to --log-level
