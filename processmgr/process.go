@@ -1,6 +1,5 @@
-/*
-Copyright © 2019 AVA Labs <collin@avalabs.org>
-*/
+// Copyright © 2021 AVA Labs, Inc.
+// All rights reserved.
 
 package processmgr
 

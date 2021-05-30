@@ -1,6 +1,5 @@
-/*
-Copyright © 2019 AVA Labs <collin@avalabs.org>
-*/
+// Copyright © 2021 AVA Labs, Inc.
+// All rights reserved.
 
 // Package processmgr manages processes launched by avash
 package processmgr

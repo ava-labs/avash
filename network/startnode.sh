@@ -35,6 +35,7 @@ do
 		--http-tls-key-file=*|\
 		--bootstrap-ips=*|\
 		--bootstrap-ids=*|\
+        --bootstrap-beacon-connection-timeout=*|\
 		--db-enabled=*|\
 		--log-level=*|\
 		--benchlist-duration=*|\
@@ -77,10 +78,6 @@ do
 		--health-check-frequency=*|\
 		--router-health-max-outstanding-requests=*|\
 		--router-health-max-drop-rate=*|\
-		--restart-on-disconnected=*|\
-		--disconnected-check-frequency=*|\
-		--disconnected-restart-timeout=*|\
-        --p2p-tls-enabled=*|\
         --snow-epoch-first-transition=*|\
         --snow-epoch-duration=*|\
 		--staking-enabled=*|\
@@ -105,6 +102,8 @@ do
         --fd-limit=*|\
         --http-host=*|\
         --db-dir=*|\
+        --fetch-only=*|\
+        --build-dir=*|\
         --log-dir=*|\
         --plugin-dir=*)
             FLAGS+="${arg%=*}=$CTNR_DIR/${arg#*=} "

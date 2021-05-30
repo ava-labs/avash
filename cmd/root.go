@@ -1,6 +1,5 @@
-/*
-Copyright © 2019 AVA Labs <collin@avalabs.org>
-*/
+// Copyright © 2021 AVA Labs, Inc.
+// All rights reserved.
 
 // Package cmd implements cobra commander
 package cmd
@@ -42,7 +41,7 @@ type historyrecord struct {
 	flags []string
 }
 
-// Shell is a hlper struct for storing history and the instance of the shell prompt
+// Shell is a helper struct for storing history and the instance of the shell prompt
 type Shell struct {
 	history []historyrecord // array of maps, map keys are "command" and "stdout", "stderr"
 	rl      *readline.Instance

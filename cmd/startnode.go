@@ -1,12 +1,12 @@
-/*
-Copyright © 2019 AVA Labs <collin@avalabs.org>
-*/
+// Copyright © 2021 AVA Labs, Inc.
+// All rights reserved.
 
 package cmd
 
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/kennygrant/sanitize"
@@ -131,9 +131,12 @@ func init() {
 
 	StartnodeCmd.Flags().StringVar(&flags.BootstrapIPs, "bootstrap-ips", flags.BootstrapIPs, "Comma separated list of bootstrap nodes to connect to. Example: 127.0.0.1:9630,127.0.0.1:9620")
 	StartnodeCmd.Flags().StringVar(&flags.BootstrapIDs, "bootstrap-ids", flags.BootstrapIDs, "Comma separated list of bootstrap peer ids to connect to. Example: NodeID-JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,NodeID-8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
+	StartnodeCmd.Flags().StringVar(&flags.BootstrapBeaconConnectionTimeout, "bootstrap-beacon-connection-timeout", flags.BootstrapBeaconConnectionTimeout, "Timeout when attempting to connect to bootstrapping beacons.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.DBEnabled, "db-enabled", flags.DBEnabled, "Turn on persistent storage.")
 	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Avalanche state.")
+
+	StartnodeCmd.Flags().StringVar(&flags.BuildDir, "build-dir", flags.BuildDir, "Path to the build directory.")
 
 	StartnodeCmd.Flags().StringVar(&flags.LogLevel, "log-level", flags.LogLevel, "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")
 	StartnodeCmd.Flags().StringVar(&flags.LogDir, "log-dir", flags.LogDir, "Name of directory for the node's logging.")
@@ -159,7 +162,8 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.StakeMintingPeriod, "stake-minting-period", flags.StakeMintingPeriod, "Consumption period of the staking function, in seconds. The Default on Main Net is `8760h` (365 days).")
 	StartnodeCmd.Flags().IntVar(&flags.CreationTxFee, "creation-tx-fee", flags.CreationTxFee, "Transaction fee, in nAVAX, for transactions that create new state. Defaults to `1000000` nAVAX (.001 AVAX) per transaction.")
 
-	StartnodeCmd.Flags().BoolVar(&flags.P2PTLSEnabled, "p2p-tls-enabled", flags.P2PTLSEnabled, "Require TLS to authenticate network communications")
+	StartnodeCmd.Flags().BoolVar(&flags.FetchOnly, "fetch-only", flags.FetchOnly, "If true, bootstrap the current database version then stop. Defaults to false")
+
 	StartnodeCmd.Flags().BoolVar(&flags.StakingEnabled, "staking-enabled", flags.StakingEnabled, "Enable staking. If enabled, Network TLS is required.")
 	StartnodeCmd.Flags().UintVar(&flags.StakingPort, "staking-port", flags.StakingPort, "Port of the consensus server.")
 	StartnodeCmd.Flags().IntVar(&flags.StakingDisabledWeight, "staking-disabled-weight", flags.StakingDisabledWeight, "Weight to provide to each peer when staking is disabled. Defaults to `1`")
@@ -199,10 +203,15 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.NetworkHealthMinConnPeers, "network-health-min-conn-peers", flags.NetworkHealthMinConnPeers, "Network layer returns unhealthy if connected to less than this many peers")
 	StartnodeCmd.Flags().IntVar(&flags.NetworkTimeoutCoefficient, "network-timeout-coefficient", flags.NetworkTimeoutCoefficient, "Multiplied by average network response time to get the network timeout. Must be >= 1.")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkTimeoutHalflife, "network-timeout-halflife", flags.NetworkTimeoutHalflife, "Halflife of average network response time. Higher value --> network timeout is less volatile. Can't be 0.")
-
-	StartnodeCmd.Flags().BoolVar(&flags.RestartOnDisconnected, "restart-on-disconnected", flags.RestartOnDisconnected, "Defaults to `false`")
-	StartnodeCmd.Flags().StringVar(&flags.DisconnectedCheckFrequency, "disconnected-check-frequency", flags.DisconnectedCheckFrequency, "Defaults to `10s`")
-	StartnodeCmd.Flags().StringVar(&flags.DisconnectedRestartTimeout, "disconnected-restart-timeout", flags.DisconnectedRestartTimeout, "Defaults to `1m`")
+	gossipHelpMsg := fmt.Sprintf(
+		"Gossip [%s] peers to [%s] peers every [%s]",
+		"network-peer-list-size",
+		"network-peer-list-gossip-size",
+		"network-peer-list-gossip-frequency",
+	)
+	StartnodeCmd.Flags().StringVar(&flags.NetworkPeerListGossipFrequency, "network-peer-list-gossip-frequency", flags.NetworkPeerListGossipFrequency, gossipHelpMsg)
+	StartnodeCmd.Flags().IntVar(&flags.NetworkPeerListGossipSize, "network-peer-list-gossip-size", flags.NetworkPeerListGossipSize, gossipHelpMsg)
+	StartnodeCmd.Flags().IntVar(&flags.NetworkPeerListSize, "network-peer-list-size", flags.NetworkPeerListSize, gossipHelpMsg)
 
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
 
@@ -216,4 +225,5 @@ func init() {
 	StartnodeCmd.Flags().Float64Var(&flags.RouterHealthMaxDropRateKey, "router-health-max-drop-rate", flags.RouterHealthMaxDropRateKey, "Node reports unhealthy if the router drops more than this portion of messages.")
 
 	StartnodeCmd.Flags().BoolVar(&flags.IndexEnabled, "index-enabled", flags.IndexEnabled, "If true, index all accepted containers and transactions and expose them via an API")
+	StartnodeCmd.Flags().BoolVar(&flags.PluginModeEnabled, "plugin-mode-enabled", flags.PluginModeEnabled, "Whether the app should run as a plugin. Defaults to false.")
 }
