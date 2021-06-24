@@ -226,6 +226,24 @@ var PMRemoveCmd = &cobra.Command{
 	},
 }
 
+// PMRemoveAllCmd represents the list operation on the procmanager command
+var PMRemoveAllCmd = &cobra.Command{
+	Use:   "removeall [optional: delay in secs]",
+	Short: "Removes all processes.",
+	Long:  `Removes all processes. It will stop the process if it is running.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		log := cfg.Config.Log
+		delay := time.Duration(0)
+		if len(args) >= 1 {
+			if v, e := strconv.ParseInt(args[0], 10, 64); e == nil && v > 0 {
+				delay = time.Duration(v)
+				log.Info("all processes will be removed in %ds", int(delay))
+			}
+		}
+		delayRun(pmgr.ProcManager.RemoveAllProcesses, delay)
+	},
+}
+
 func delayRun(f func(), delay time.Duration) {
 	if delay == 0 {
 		f()
@@ -244,6 +262,7 @@ func init() {
 	ProcmanagerCmd.AddCommand(PMListCmd)
 	ProcmanagerCmd.AddCommand(PMMetadataCmd)
 	ProcmanagerCmd.AddCommand(PMRemoveCmd)
+	ProcmanagerCmd.AddCommand(PMRemoveAllCmd)
 	ProcmanagerCmd.AddCommand(PMStopCmd)
 	ProcmanagerCmd.AddCommand(PMStopAllCmd)
 	ProcmanagerCmd.AddCommand(PMStartAllCmd)
