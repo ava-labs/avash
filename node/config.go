@@ -87,11 +87,31 @@ type Flags struct {
 	MinValidatorStake           int
 	MaxStakeDuration            string
 	MaxValidatorStake           int
+	StakeMintingPeriod    string
 	CreationTxFee               int
+
+	// Message Handling
+	MaxNonStakerPendingMsgs int
+
+	// Network Timeout
+	NetworkInitialTimeout                   string
+	NetworkMinimumTimeout                   string
+	NetworkMaximumTimeout                   string
+	NetworkHealthMaxSendFailRateKey         float64
+	NetworkHealthMaxPortionSendQueueFillKey float64
+	NetworkHealthMaxTimeSinceMsgSentKey     string
+	NetworkHealthMaxTimeSinceMsgReceivedKey string
+	NetworkHealthMinConnPeers               int
+	NetworkTimeoutCoefficient               int
+	NetworkTimeoutHalflife                  string
+
+	// Peer List Gossiping
+	NetworkPeerListGossipFrequency string
+	NetworkPeerListGossipSize      int
+	NetworkPeerListSize            int
 
 	// Staking
 	StakingEnabled        bool
-	StakeMintingPeriod    string
 	StakingPort           uint
 	StakingDisabledWeight int
 	StakingTLSKeyFile     string
@@ -120,30 +140,10 @@ type Flags struct {
 	FDLimit int
 
 	// Benchlist
+	BenchlistDuration           string
 	BenchlistFailThreshold      int
 	BenchlistMinFailingDuration string
 	BenchlistPeerSummaryEnabled bool
-	BenchlistDuration           string
-
-	// Message Handling
-	MaxNonStakerPendingMsgs int
-
-	// Network Timeout
-	NetworkInitialTimeout                   string
-	NetworkMinimumTimeout                   string
-	NetworkMaximumTimeout                   string
-	NetworkHealthMaxSendFailRateKey         float64
-	NetworkHealthMaxPortionSendQueueFillKey float64
-	NetworkHealthMaxTimeSinceMsgSentKey     string
-	NetworkHealthMaxTimeSinceMsgReceivedKey string
-	NetworkHealthMinConnPeers               int
-	NetworkTimeoutCoefficient               int
-	NetworkTimeoutHalflife                  string
-
-	// Peer List Gossiping
-	NetworkPeerListGossipFrequency string
-	NetworkPeerListGossipSize      int
-	NetworkPeerListSize            int
 
 	// Uptime Requirement
 	UptimeRequirement float64
@@ -175,6 +175,7 @@ type FlagsYAML struct {
 	Version                                 *bool    `yaml:"version,omitempty"`
 	TxFee                                   *uint    `yaml:"tx-fee,omitempty"`
 	PublicIP                                *string  `yaml:"public-ip,omitempty"`
+	DynamicUpdateDuration                   *string  `yaml:"dynamic-update-duration,omitempty"`
 	DynamicPublicIP                         *string  `yaml:"dynamic-public-ip,omitempty"`
 	NetworkID                               *string  `yaml:"network-id,omitempty"`
 	SignatureVerificationEnabled            *bool    `yaml:"signature-verification-enabled,omitempty"`
@@ -182,6 +183,8 @@ type FlagsYAML struct {
 	APIIPCsEnabled                          *bool    `yaml:"api-ipcs-enabled,omitempty"`
 	APIKeystoreEnabled                      *bool    `yaml:"api-keystore-enabled,omitempty"`
 	APIMetricsEnabled                       *bool    `yaml:"api-metrics-enabled,omitempty"`
+	APIHealthEnabled                        *bool    `yaml:"api-health-enabled,omitempty"`
+	APIInfoEnabled                          *bool    `yaml:"api-info-enabled,omitempty"`
 	HTTPHost                                *string  `yaml:"http-host,omitempty"`
 	HTTPPort                                *uint    `yaml:"http-port,omitempty"`
 	HTTPTLSEnabled                          *bool    `yaml:"http-tls-enabled,omitempty"`
@@ -240,9 +243,7 @@ type FlagsYAML struct {
 	APIAuthPasswordFileKey                  *string  `yaml:"api-auth-password-file,omitempty"`
 	MinStakeDuration                        *string  `yaml:"min-stake-duration,omitempty"`
 	WhitelistedSubnets                      *string  `yaml:"whitelisted-subnets,omitempty"`
-	APIHealthEnabled                        *bool    `yaml:"api-health-enabled,omitempty"`
 	ConfigFile                              *string  `yaml:"config-file,omitempty"`
-	APIInfoEnabled                          *bool    `yaml:"api-info-enabled,omitempty"`
 	ConnMeterMaxConns                       *int     `yaml:"conn-meter-max-conns,omitempty"`
 	ConnMeterResetDuration                  *string  `yaml:"conn-meter-reset-duration,omitempty"`
 	IPCSChainIDs                            *string  `yaml:"ipcs-chain-ids,omitempty"`
@@ -308,6 +309,8 @@ func DefaultFlags() Flags {
 		APIIPCsEnabled:                          true,
 		APIKeystoreEnabled:                      true,
 		APIMetricsEnabled:                       true,
+		APIHealthEnabled:                        true,
+		APIInfoEnabled:                          true,
 		HTTPHost:                                "127.0.0.1",
 		HTTPPort:                                9650,
 		HTTPTLSEnabled:                          false,
@@ -365,10 +368,8 @@ func DefaultFlags() Flags {
 		APIAuthRequired:                         false,
 		APIAuthPasswordFileKey:                  "",
 		MinStakeDuration:                        "336h",
-		APIHealthEnabled:                        true,
-		ConfigFile:                              "",
 		WhitelistedSubnets:                      "",
-		APIInfoEnabled:                          true,
+		ConfigFile:                              "",
 		ConnMeterMaxConns:                       5,
 		ConnMeterResetDuration:                  "",
 		IPCSChainIDs:                            "",
