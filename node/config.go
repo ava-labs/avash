@@ -52,7 +52,7 @@ type Flags struct {
 	BootstrapBeaconConnectionTimeout string
 
 	// Database
-	DBName string
+	DBType string
 	DBDir  string
 
 	// Fetch
@@ -125,9 +125,6 @@ type Flags struct {
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
 
-	// Message Handling
-	MaxNonStakerPendingMsgs int
-
 	// Network Timeout
 	NetworkInitialTimeout                   string
 	NetworkMinimumTimeout                   string
@@ -190,7 +187,7 @@ type FlagsYAML struct {
 	BootstrapIPs                            *string  `yaml:"bootstrap-ips,omitempty"`
 	BootstrapIDs                            *string  `yaml:"bootstrap-ids,omitempty"`
 	BootstrapBeaconConnectionTimeout        *string  `yaml:"bootstrap-beacon-connection-timeout,omitempty"`
-	DBName                                  *bool    `yaml:"db-name,omitempty"`
+	DBType                                  *bool    `yaml:"db-type,omitempty"`
 	DBDir                                   *string  `yaml:"db-dir,omitempty"`
 	FetchOnly                               *bool    `yaml:"fetch-only,omitempty"`
 	BuildDir                                *string  `yaml:"build-dir,omitempty"`
@@ -217,7 +214,6 @@ type FlagsYAML struct {
 	MaxValidatorStake                       *int     `yaml:"max-validator-stake,omitempty"`
 	StakeMintingPeriod                      *string  `yaml:"stake-minting-period,omitempty"`
 	CreationTxFee                           *int     `yaml:"creation-tx-fee,omitempty"`
-	MaxNonStakerPendingMsgs                 *int     `yaml:"max-non-staker-pending-msgs,omitempty"`
 	NetworkInitialTimeout                   *string  `yaml:"network-initial-timeout,omitempty"`
 	NetworkMinimumTimeout                   *string  `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout                   *string  `yaml:"network-maximum-timeout,omitempty"`
@@ -316,7 +312,7 @@ func DefaultFlags() Flags {
 		BootstrapIPs:                            "",
 		BootstrapIDs:                            "",
 		BootstrapBeaconConnectionTimeout:        "60s",
-		DBName:                                  "memdb",
+		DBType:                                  "memdb",
 		DBDir:                                   "db",
 		FetchOnly:                               false,
 		BuildDir:                                "",
@@ -343,7 +339,6 @@ func DefaultFlags() Flags {
 		MaxValidatorStake:                       3000000000000000,
 		StakeMintingPeriod:                      "8760h",
 		CreationTxFee:                           1000000,
-		MaxNonStakerPendingMsgs:                 20,
 		NetworkInitialTimeout:                   "5s",
 		NetworkMinimumTimeout:                   "5s",
 		NetworkMaximumTimeout:                   "10s",

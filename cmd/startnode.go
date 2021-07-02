@@ -133,7 +133,7 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.BootstrapIDs, "bootstrap-ids", flags.BootstrapIDs, "Comma separated list of bootstrap peer ids to connect to. Example: NodeID-JR4dVmy6ffUGAKCBDkyCbeZbyHQBeDsET,NodeID-8CrVPQZ4VSqgL8zTdvL14G8HqAfrBr4z")
 	StartnodeCmd.Flags().StringVar(&flags.BootstrapBeaconConnectionTimeout, "bootstrap-beacon-connection-timeout", flags.BootstrapBeaconConnectionTimeout, "Timeout when attempting to connect to bootstrapping beacons.")
 
-	StartnodeCmd.Flags().StringVar(&flags.DBName, "db-name", flags.DBName, "Name of the DB to use.")
+	StartnodeCmd.Flags().StringVar(&flags.DBType, "db-type", flags.DBType, "Name of the DB to use.")
 	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Avalanche state.")
 
 	StartnodeCmd.Flags().StringVar(&flags.BuildDir, "build-dir", flags.BuildDir, "Path to the build directory.")
@@ -190,8 +190,6 @@ func init() {
 	StartnodeCmd.Flags().IntVar(&flags.BenchlistFailThreshold, "benchlist-fail-threshold", flags.BenchlistFailThreshold, "Number of consecutive failed queries to a node before benching it (assuming all queries to it will fail). Defaults to `10`")
 	StartnodeCmd.Flags().StringVar(&flags.BenchlistMinFailingDuration, "benchlist-min-failing-duration", flags.BenchlistMinFailingDuration, "Minimum amount of time messages to a peer must be failing before the peer is benched. Defaults to `5m`")
 	StartnodeCmd.Flags().BoolVar(&flags.BenchlistPeerSummaryEnabled, "benchlist-peer-summary-enabled", flags.BenchlistPeerSummaryEnabled, "Enables peer specific query latency metrics. Defaults to `false`")
-
-	StartnodeCmd.Flags().IntVar(&flags.MaxNonStakerPendingMsgs, "max-non-staker-pending-msgs", flags.MaxNonStakerPendingMsgs, "Maximum number of messages a non-staker is allowed to have pending. Defaults to `20`")
 
 	StartnodeCmd.Flags().StringVar(&flags.NetworkInitialTimeout, "network-initial-timeout", flags.NetworkInitialTimeout, "Initial timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
 	StartnodeCmd.Flags().StringVar(&flags.NetworkMinimumTimeout, "network-minimum-timeout", flags.NetworkMinimumTimeout, "Minimum timeout value of the adaptive timeout manager, in nanoseconds. Defaults to `5s`")
