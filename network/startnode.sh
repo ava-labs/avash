@@ -36,7 +36,7 @@ do
 		--bootstrap-ips=*|\
 		--bootstrap-ids=*|\
         --bootstrap-beacon-connection-timeout=*|\
-		--db-enabled=*|\
+		--db-name=*|\
 		--log-level=*|\
 		--benchlist-duration=*|\
 		--benchlist-fail-threshold=*|\

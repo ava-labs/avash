@@ -52,14 +52,14 @@ type Flags struct {
 	BootstrapBeaconConnectionTimeout string
 
 	// Database
-	DBEnabled bool
-	DBDir     string
+	DBName string
+	DBDir  string
 
 	// Fetch
 	FetchOnly bool
 
 	// Build
-	BuildDir     string
+	BuildDir string
 
 	// Plugins
 	PluginDir string
@@ -190,7 +190,7 @@ type FlagsYAML struct {
 	BootstrapIPs                            *string  `yaml:"bootstrap-ips,omitempty"`
 	BootstrapIDs                            *string  `yaml:"bootstrap-ids,omitempty"`
 	BootstrapBeaconConnectionTimeout        *string  `yaml:"bootstrap-beacon-connection-timeout,omitempty"`
-	DBEnabled                               *bool    `yaml:"db-enabled,omitempty"`
+	DBName                                  *bool    `yaml:"db-name,omitempty"`
 	DBDir                                   *string  `yaml:"db-dir,omitempty"`
 	FetchOnly                               *bool    `yaml:"fetch-only,omitempty"`
 	BuildDir                                *string  `yaml:"build-dir,omitempty"`
@@ -316,7 +316,7 @@ func DefaultFlags() Flags {
 		BootstrapIPs:                            "",
 		BootstrapIDs:                            "",
 		BootstrapBeaconConnectionTimeout:        "60s",
-		DBEnabled:                               true,
+		DBName:                                  "leveldb",
 		DBDir:                                   "db",
 		FetchOnly:                               false,
 		BuildDir:                                "",
