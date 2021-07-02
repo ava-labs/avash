@@ -316,7 +316,7 @@ func DefaultFlags() Flags {
 		BootstrapIPs:                            "",
 		BootstrapIDs:                            "",
 		BootstrapBeaconConnectionTimeout:        "60s",
-		DBName:                                  "leveldb",
+		DBName:                                  "memdb",
 		DBDir:                                   "db",
 		FetchOnly:                               false,
 		BuildDir:                                "",
