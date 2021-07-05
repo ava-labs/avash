@@ -15,7 +15,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 
 	// Paths/directories
 	dbPath := basedir + "/" + flags.DBDir
-	dbType := "memdb"
+	dbType := flags.DBType
 	dataPath := basedir + "/" + flags.DataDir
 	logPath := basedir + "/" + flags.LogDir
 	if sepBase {
