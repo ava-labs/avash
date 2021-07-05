@@ -53,6 +53,10 @@ var StartnodeCmd = &cobra.Command{
 		}
 
 		args, md := node.FlagsToArgs(flags, sanitize.Path(datapath), false)
+		defer func() {
+			// Set flags to default for next `startnode` call
+			flags = node.DefaultFlags()
+		}()
 		mdbytes, _ := json.MarshalIndent(md, " ", "    ")
 		metadata := string(mdbytes)
 		meta := flags.Meta
@@ -70,8 +74,6 @@ var StartnodeCmd = &cobra.Command{
 		}
 		log.Info("Created process %s.", name)
 		pmgr.ProcManager.StartProcess(name)
-		// Set flags to default for next `startnode` call
-		flags = node.DefaultFlags()
 	},
 }
 
