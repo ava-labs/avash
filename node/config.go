@@ -187,7 +187,7 @@ type FlagsYAML struct {
 	BootstrapIPs                            *string  `yaml:"bootstrap-ips,omitempty"`
 	BootstrapIDs                            *string  `yaml:"bootstrap-ids,omitempty"`
 	BootstrapBeaconConnectionTimeout        *string  `yaml:"bootstrap-beacon-connection-timeout,omitempty"`
-	DBType                                  *bool    `yaml:"db-type,omitempty"`
+	DBType                                  *string  `yaml:"db-type,omitempty"`
 	DBDir                                   *string  `yaml:"db-dir,omitempty"`
 	FetchOnly                               *bool    `yaml:"fetch-only,omitempty"`
 	BuildDir                                *string  `yaml:"build-dir,omitempty"`
