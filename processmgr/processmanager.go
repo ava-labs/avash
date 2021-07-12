@@ -152,6 +152,21 @@ func (pm *ProcessManager) RemoveProcess(name string) error {
 	return nil
 }
 
+// RemoveAllProcesses removes a process from the list of available named processes
+func (pm *ProcessManager) RemoveAllProcesses() {
+	pm.StopAllProcesses()
+	totalProcesses := len(pm.processes)
+	processesRemoved := 0
+	for name := range pm.processes {
+		if err := pm.RemoveProcess(name); err != nil {
+			cfg.Config.Log.Error(err.Error())
+			continue
+		}
+		processesRemoved++
+	}
+	cfg.Config.Log.Info("%d/%d processes removed", processesRemoved, totalProcesses)
+}
+
 // ProcessTable returns a formatted metadata table for the data provided
 func (pm *ProcessManager) ProcessTable(table *tablewriter.Table) *tablewriter.Table {
 	table.SetHeader([]string{"Name", "Status", "Metadata", "Command"})

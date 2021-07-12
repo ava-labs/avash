@@ -2,6 +2,7 @@ package processmgr
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 )
@@ -10,7 +11,7 @@ func TestAddProcess(t *testing.T) {
 	pm := ProcessManager{
 		processes: make(map[string]*Process),
 	}
-	
+
 	cmd0 := "cmd0"
 	proctype0 := "type0"
 	args0 := []string{"arg0"}
@@ -151,6 +152,21 @@ func TestStartProcess(t *testing.T) {
 			t.Fatalf("PM.Processes does not contain %s", name0)
 		}
 	})
+}
+
+func TestRemoveAllProcesses(t *testing.T) {
+	pm := ProcessManager{
+		processes: make(map[string]*Process),
+	}
+
+	name := "procname-"
+	for i := 0; i < 5; i++ {
+		_ = pm.AddProcess("cmd", "fake-cmd", []string{"arg"}, name+string(rune(i)), "data", nil, nil, nil)
+	}
+
+	assert.Len(t, pm.processes, 5)
+	pm.RemoveAllProcesses()
+	assert.Len(t, pm.processes, 0)
 }
 
 func TestStopProcess(t *testing.T) {
