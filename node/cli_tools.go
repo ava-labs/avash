@@ -15,6 +15,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 
 	// Paths/directories
 	dbPath := basedir + "/" + flags.DBDir
+	dbType := flags.DBType
 	dataPath := basedir + "/" + flags.DataDir
 	logPath := basedir + "/" + flags.LogDir
 	if sepBase {
@@ -67,7 +68,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--bootstrap-ips=" + flags.BootstrapIPs,
 		"--bootstrap-ids=" + flags.BootstrapIDs,
 		"--bootstrap-beacon-connection-timeout=" + flags.BootstrapBeaconConnectionTimeout,
-		"--db-enabled=" + strconv.FormatBool(flags.DBEnabled),
+		"--db-type=" + dbType,
 		"--db-dir=" + dbPath,
 		"--fetch-only=" + strconv.FormatBool(flags.FetchOnly),
 		"--plugin-dir=" + flags.PluginDir,
@@ -94,7 +95,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--snow-concurrent-repolls=" + strconv.Itoa(flags.SnowConcurrentRepolls),
 		"--stake-minting-period=" + flags.StakeMintingPeriod,
 		"--creation-tx-fee=" + strconv.Itoa(flags.CreationTxFee),
-		"--max-non-staker-pending-msgs=" + strconv.Itoa(flags.MaxNonStakerPendingMsgs),
 		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
 		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
 		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,

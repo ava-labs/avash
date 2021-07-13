@@ -36,7 +36,7 @@ do
 		--bootstrap-ips=*|\
 		--bootstrap-ids=*|\
         --bootstrap-beacon-connection-timeout=*|\
-		--db-enabled=*|\
+		--db-type=*|\
 		--log-level=*|\
 		--benchlist-duration=*|\
 		--benchlist-fail-threshold=*|\
@@ -60,7 +60,6 @@ do
 		--snow-concurrent-repolls=*|\
 		--stake-minting-period=*|\
 		--creation-tx-fee=*|\
-		--max-non-staker-pending-msgs=*|\
 		--network-initial-timeout=*|\
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
