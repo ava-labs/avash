@@ -92,8 +92,7 @@ do
         --api-health-enabled=*|\
         --config-file=*|\
         --api-info-enabled=*|\
-        --conn-meter-max-conns=*|\
-        --conn-meter-reset-duration=*|\
+        --network-compression-enabled=*|\
         --ipcs-chain-ids=*|\
         --ipcs-path=*|\
         --log-display-level=*|\
