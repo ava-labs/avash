@@ -16,6 +16,8 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 	// Paths/directories
 	dbPath := basedir + "/" + flags.DBDir
 	dbType := flags.DBType
+	keystoreDBPath := basedir + "/" + flags.KeystoreDBDir
+	keystoreDBType := flags.KeystoreDBType
 	dataPath := basedir + "/" + flags.DataDir
 	logPath := basedir + "/" + flags.LogDir
 	if sepBase {
@@ -70,6 +72,8 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--bootstrap-beacon-connection-timeout=" + flags.BootstrapBeaconConnectionTimeout,
 		"--db-type=" + dbType,
 		"--db-dir=" + dbPath,
+		"--keystore-db-type=" + keystoreDBType,
+		"--keystore-db-dir=" + keystoreDBPath,
 		"--fetch-only=" + strconv.FormatBool(flags.FetchOnly),
 		"--plugin-dir=" + flags.PluginDir,
 		"--build-dir=" + flags.BuildDir,
