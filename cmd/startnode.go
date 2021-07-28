@@ -138,6 +138,9 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.DBType, "db-type", flags.DBType, "Type of the DB to use (memdb|leveldb|rocksdb)")
 	StartnodeCmd.Flags().StringVar(&flags.DBDir, "db-dir", flags.DBDir, "Database directory for Avalanche state.")
 
+	StartnodeCmd.Flags().StringVar(&flags.KeystoreDBType, "keystore-db-type", flags.KeystoreDBType, "Type of the Keystore DB to use (memdb|leveldb|rocksdb)")
+	StartnodeCmd.Flags().StringVar(&flags.KeystoreDBDir, "keystore-db-dir", flags.KeystoreDBDir, "Keystore Database directory for storing keys.")
+
 	StartnodeCmd.Flags().StringVar(&flags.BuildDir, "build-dir", flags.BuildDir, "Path to the build directory.")
 
 	StartnodeCmd.Flags().StringVar(&flags.LogLevel, "log-level", flags.LogLevel, "Specify the log level. Should be one of {verbo, debug, info, warn, error, fatal, off}")

@@ -55,6 +55,10 @@ type Flags struct {
 	DBType string
 	DBDir  string
 
+	// Keystore Database
+	KeystoreDBType string
+	KeystoreDBDir  string
+
 	// Fetch
 	FetchOnly bool
 
@@ -121,7 +125,7 @@ type Flags struct {
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
 
-	// Network 
+	// Network
 	NetworkInitialTimeout                   string
 	NetworkMinimumTimeout                   string
 	NetworkMaximumTimeout                   string
