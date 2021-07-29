@@ -180,8 +180,7 @@ func init() {
 
 	StartnodeCmd.Flags().StringVar(&flags.ConfigFile, "config-file", flags.ConfigFile, "Config file specifies a JSON file to configure a node instead of specifying arguments via the command line. Command line arguments will override any options set in the config file.")
 
-	StartnodeCmd.Flags().IntVar(&flags.ConnMeterMaxConns, "conn-meter-max-conns", flags.ConnMeterMaxConns, "Upgrade at most `conn-meter-max-conns` connections from a given IP per `conn-meter-reset-duration`. If `conn-meter-reset-duration` is 0, incoming connections are not rate-limited.")
-	StartnodeCmd.Flags().StringVar(&flags.ConnMeterResetDuration, "conn-meter-reset-duration", flags.ConnMeterResetDuration, "Upgrade at most `conn-meter-max-conns` connections from a given IP per `conn-meter-reset-duration`. If `conn-meter-reset-duration` is 0, incoming connections are not rate-limited.")
+	StartnodeCmd.Flags().BoolVar(&flags.NetworkCompressionEnabled, "network-compression-enabled", flags.NetworkCompressionEnabled, "If true, compress Put, PushQuery, PeerList and Multiput messages sent to peers that support compression")
 
 	StartnodeCmd.Flags().StringVar(&flags.IPCSChainIDs, "ipcs-chain-ids", flags.IPCSChainIDs, "Comma separated list of chain ids to connect to. There is no default value.")
 	StartnodeCmd.Flags().StringVar(&flags.IPCSPath, "ipcs-path", flags.IPCSPath, "The directory (Unix) or named pipe prefix (Windows) for IPC sockets. Defaults to /tmp.")
