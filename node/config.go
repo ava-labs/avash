@@ -55,9 +55,6 @@ type Flags struct {
 	DBType string
 	DBDir  string
 
-	// Fetch
-	FetchOnly bool
-
 	// Build
 	BuildDir string
 
@@ -186,7 +183,6 @@ type FlagsYAML struct {
 	BootstrapBeaconConnectionTimeout        *string  `yaml:"bootstrap-beacon-connection-timeout,omitempty"`
 	DBType                                  *string  `yaml:"db-type,omitempty"`
 	DBDir                                   *string  `yaml:"db-dir,omitempty"`
-	FetchOnly                               *bool    `yaml:"fetch-only,omitempty"`
 	BuildDir                                *string  `yaml:"build-dir,omitempty"`
 	PluginDir                               *string  `yaml:"plugin-dir,omitempty"`
 	LogLevel                                *string  `yaml:"log-level,omitempty"`
@@ -310,7 +306,6 @@ func DefaultFlags() Flags {
 		BootstrapBeaconConnectionTimeout:        "60s",
 		DBType:                                  "memdb",
 		DBDir:                                   "db",
-		FetchOnly:                               false,
 		BuildDir:                                "",
 		PluginDir:                               "",
 		LogLevel:                                "info",

@@ -164,8 +164,6 @@ func init() {
 	StartnodeCmd.Flags().StringVar(&flags.StakeMintingPeriod, "stake-minting-period", flags.StakeMintingPeriod, "Consumption period of the staking function, in seconds. The Default on Main Net is `8760h` (365 days).")
 	StartnodeCmd.Flags().IntVar(&flags.CreationTxFee, "creation-tx-fee", flags.CreationTxFee, "Transaction fee, in nAVAX, for transactions that create new state. Defaults to `1000000` nAVAX (.001 AVAX) per transaction.")
 
-	StartnodeCmd.Flags().BoolVar(&flags.FetchOnly, "fetch-only", flags.FetchOnly, "If true, bootstrap the current database version then stop. Defaults to false")
-
 	StartnodeCmd.Flags().BoolVar(&flags.StakingEnabled, "staking-enabled", flags.StakingEnabled, "Enable staking. If enabled, Network TLS is required.")
 	StartnodeCmd.Flags().UintVar(&flags.StakingPort, "staking-port", flags.StakingPort, "Port of the consensus server.")
 	StartnodeCmd.Flags().IntVar(&flags.StakingDisabledWeight, "staking-disabled-weight", flags.StakingDisabledWeight, "Weight to provide to each peer when staking is disabled. Defaults to `1`")

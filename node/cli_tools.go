@@ -70,7 +70,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--bootstrap-beacon-connection-timeout=" + flags.BootstrapBeaconConnectionTimeout,
 		"--db-type=" + dbType,
 		"--db-dir=" + dbPath,
-		"--fetch-only=" + strconv.FormatBool(flags.FetchOnly),
 		"--plugin-dir=" + flags.PluginDir,
 		"--build-dir=" + flags.BuildDir,
 		"--log-level=" + flags.LogLevel,
