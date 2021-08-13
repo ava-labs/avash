@@ -93,7 +93,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--max-validator-stake=" + strconv.Itoa(flags.MaxValidatorStake),
 		"--snow-concurrent-repolls=" + strconv.Itoa(flags.SnowConcurrentRepolls),
 		"--stake-minting-period=" + flags.StakeMintingPeriod,
-		"--creation-tx-fee=" + strconv.Itoa(flags.CreationTxFee),
 		"--network-initial-timeout=" + flags.NetworkInitialTimeout,
 		"--network-minimum-timeout=" + flags.NetworkMinimumTimeout,
 		"--network-maximum-timeout=" + flags.NetworkMaximumTimeout,

@@ -2,9 +2,10 @@ package processmgr
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAddProcess(t *testing.T) {

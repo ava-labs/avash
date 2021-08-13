@@ -59,7 +59,6 @@ do
 		--max-validator-stake=*|\
 		--snow-concurrent-repolls=*|\
 		--stake-minting-period=*|\
-		--creation-tx-fee=*|\
 		--network-initial-timeout=*|\
 		--network-minimum-timeout=*|\
 		--network-maximum-timeout=*|\
