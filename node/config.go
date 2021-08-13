@@ -84,7 +84,6 @@ type Flags struct {
 	MinValidatorStake           int
 	MaxStakeDuration            string
 	MaxValidatorStake           int
-	CreationTxFee               int
 
 	// Staking
 	StakingEnabled        bool
@@ -118,7 +117,7 @@ type Flags struct {
 	BenchlistPeerSummaryEnabled bool
 	BenchlistDuration           string
 
-	// Network 
+	// Network
 	NetworkInitialTimeout                   string
 	NetworkMinimumTimeout                   string
 	NetworkMaximumTimeout                   string
@@ -206,7 +205,6 @@ type FlagsYAML struct {
 	MaxStakeDuration                        *string  `yaml:"max-stake-duration,omitempty"`
 	MaxValidatorStake                       *int     `yaml:"max-validator-stake,omitempty"`
 	StakeMintingPeriod                      *string  `yaml:"stake-minting-period,omitempty"`
-	CreationTxFee                           *int     `yaml:"creation-tx-fee,omitempty"`
 	NetworkInitialTimeout                   *string  `yaml:"network-initial-timeout,omitempty"`
 	NetworkMinimumTimeout                   *string  `yaml:"network-minimum-timeout,omitempty"`
 	NetworkMaximumTimeout                   *string  `yaml:"network-maximum-timeout,omitempty"`
@@ -329,7 +327,6 @@ func DefaultFlags() Flags {
 		MaxStakeDuration:                        "8760h",
 		MaxValidatorStake:                       3000000000000000,
 		StakeMintingPeriod:                      "8760h",
-		CreationTxFee:                           1000000,
 		NetworkInitialTimeout:                   "5s",
 		NetworkMinimumTimeout:                   "5s",
 		NetworkMaximumTimeout:                   "10s",
