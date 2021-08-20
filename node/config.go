@@ -139,8 +139,8 @@ type Flags struct {
 	UptimeRequirement float64
 
 	// Retry
-	RetryBootstrapMaxAttempts int
-	RetryBootstrap            bool
+	RetryBootstrapWarnFrequency int
+	RetryBootstrap              bool
 
 	// Health
 	HealthCheckAveragerHalflifeKey string
@@ -239,7 +239,7 @@ type FlagsYAML struct {
 	BenchlistMinFailingDuration             *string  `yaml:"benchlist-min-failing-duration,omitempty"`
 	BenchlistPeerSummaryEnabled             *bool    `yaml:"benchlist-peer-summary-enabled,omitempty"`
 	UptimeRequirement                       *float64 `yaml:"uptime-requirement,omitempty"`
-	RetryBootstrapMaxAttempts               *uint    `yaml:"bootstrap-retry-max-attempts,omitempty"`
+	RetryBootstrapWarnFrequency             *uint    `yaml:"bootstrap-retry-warn-frequency,omitempty"`
 	RetryBootstrap                          *bool    `yaml:"bootstrap-retry-enabled,omitempty"`
 	HealthCheckAveragerHalflifeKey          *string  `yaml:"health-check-averager-halflife,omitempty"`
 	HealthCheckFreqKey                      *string  `yaml:"health-check-frequency,omitempty"`
@@ -361,7 +361,7 @@ func DefaultFlags() Flags {
 		BenchlistMinFailingDuration:             "5m",
 		BenchlistPeerSummaryEnabled:             false,
 		UptimeRequirement:                       0.6,
-		RetryBootstrapMaxAttempts:               50,
+		RetryBootstrapWarnFrequency:             50,
 		RetryBootstrap:                          true,
 		HealthCheckAveragerHalflifeKey:          "10s",
 		HealthCheckFreqKey:                      "30s",
