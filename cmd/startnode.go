@@ -211,7 +211,7 @@ func init() {
 
 	StartnodeCmd.Flags().Float64Var(&flags.UptimeRequirement, "uptime-requirement", flags.UptimeRequirement, "Fraction of time a validator must be online to receive rewards. Defaults to `0.6`")
 
-	StartnodeCmd.Flags().IntVar(&flags.RetryBootstrapMaxAttempts, "bootstrap-retry-max-attempts", flags.RetryBootstrapMaxAttempts, "Specifies how many times bootstrap should be retried")
+	StartnodeCmd.Flags().IntVar(&flags.RetryBootstrapWarnFrequency, "bootstrap-retry-warn-frequency", flags.RetryBootstrapWarnFrequency, "Specifies how many times bootstrap should be retried")
 	StartnodeCmd.Flags().BoolVar(&flags.RetryBootstrap, "bootstrap-retry-enabled", flags.RetryBootstrap, "Specifies whether bootstrap should be retried")
 
 	StartnodeCmd.Flags().StringVar(&flags.HealthCheckFreqKey, "health-check-frequency", flags.HealthCheckFreqKey, "Time between health checks")
