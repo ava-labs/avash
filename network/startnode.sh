@@ -70,7 +70,7 @@ do
 		--network-health-min-conn-peers=*|\
 		--network-timeout-coefficient=*|\
 		--network-timeout-halflife=*|\
-		--bootstrap-retry-max-attempts=*|\
+		--bootstrap-retry-warn-frequency=*|\
 		--bootstrap-retry-enabled=*|\
 		--health-check-averager-halflife=*|\
 		--health-check-frequency=*|\

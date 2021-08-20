@@ -127,7 +127,6 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		"--benchlist-min-failing-duration=" + flags.BenchlistMinFailingDuration,
 		"--benchlist-peer-summary-enabled=" + strconv.FormatBool(flags.BenchlistPeerSummaryEnabled),
 		fmt.Sprintf("--uptime-requirement=%f", flags.UptimeRequirement),
-		"--bootstrap-retry-max-attempts=" + strconv.Itoa(flags.RetryBootstrapMaxAttempts),
 		"--bootstrap-retry-enabled=" + strconv.FormatBool(flags.RetryBootstrap),
 		"--health-check-averager-halflife=" + flags.HealthCheckAveragerHalflifeKey,
 		"--health-check-frequency=" + flags.HealthCheckFreqKey,
