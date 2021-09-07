@@ -1,6 +1,0 @@
-avalancheLocation: /home/roberto/Work/avalanchego-internal/build/avalanchego
-datadir: /home/roberto/Work/avash/stash
-log:
-  terminal: debug
-  logfile: debug
-  dir: /home/roberto/Work/avash/stash/logs
