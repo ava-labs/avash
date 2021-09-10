@@ -1,0 +1,34 @@
+hosts:
+  - name: host-1
+    user: ubuntu
+    ip: 0.0.0.0
+nodes:
+  - class: default
+deploys:
+  - host: host-1
+    nodes:
+      - name: n1
+        class: default
+
+# nodes:
+#   - class: default
+#   - class: staker
+#     flags:
+#       staking-enabled: true
+#       staking-tls-cert-file: certs/keys1/staker.crt
+#       staking-tls-key-file: certs/keys1/staker.key
+
+# deploys:
+#   - host: host-1
+#     nodes:
+#       - name: n1
+#         class: default
+#       - name: n2
+#         class: default
+#         flags:
+#           http-port: 9660
+#           staking-port: 9661
+#   - host: host-2
+#     nodes:
+#       - name: stake-node
+#         class: staker
