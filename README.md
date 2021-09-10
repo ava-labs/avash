@@ -129,3 +129,7 @@ The functions available to Lua are:
 * Track expected results and compare them with real nodes
 
 Example Lua scripts are in [the `./scripts` directory](./scripts/).
+
+### Funding a Wallet
+
+Local networks have a pre-funded "whale account", with the private key `PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN`. For more details, see https://docs.avax.network/build/tutorials/platform/create-a-local-test-network#getting-avax. 
