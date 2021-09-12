@@ -132,4 +132,4 @@ Example Lua scripts are in [the `./scripts` directory](./scripts/).
 
 ### Funding a Wallet
 
-Local networks have a pre-funded "whale account", with the private key `PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN`. For more details, see https://docs.avax.network/build/tutorials/platform/create-a-local-test-network#getting-avax. 
+On a local network, the 3 blockchains on the default subnet&mdash;the X-Chain, C-Chain and P-Chain&mdash;each have a pre-funded private key, `PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN`. This private key has 300m AVAX on the X-Chain, 50m AVAX on the C-Chain and 30m AVAX on the P-Chain&mdash;20m of which is unlocked and 10m which is locked and stakeable. For more details, see [Fund a local test network tutorial](https://docs.avax.network/build/tutorials/platform/fund-a-local-test-network).
