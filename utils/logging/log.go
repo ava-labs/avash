@@ -6,7 +6,7 @@ import (
 
 // Log is a wrapper struct for the shell output log
 type Log struct {
-	*logging.Log
+	logging.Logger
 }
 
 // Config is a struct representation of the `log` field in the config file
@@ -14,7 +14,8 @@ type Config = logging.Config
 
 // New ...
 func New(config Config) (*Log, error) {
-	log, err := logging.New(config)
+	logFactory := logging.NewFactory(config)
+	log, err := logFactory.Make("avash")
 	if err != nil {
 		return nil, err
 	}

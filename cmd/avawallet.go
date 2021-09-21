@@ -42,7 +42,7 @@ var AVAXWalletNewKeyCmd = &cobra.Command{
 		factory := crypto.FactorySECP256K1R{}
 		if skGen, err := factory.NewPrivateKey(); err == nil {
 			sk := skGen.(*crypto.PrivateKeySECP256K1R)
-			str, err := formatting.Encode(defaultEncoding, sk.Bytes())
+			str, err := formatting.EncodeWithChecksum(defaultEncoding, sk.Bytes())
 			if err != nil {
 				log.Error("could not encode private key")
 			}
