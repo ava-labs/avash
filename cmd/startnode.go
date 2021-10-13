@@ -222,4 +222,5 @@ func init() {
 
 	StartnodeCmd.Flags().BoolVar(&flags.IndexEnabled, "index-enabled", flags.IndexEnabled, "If true, index all accepted containers and transactions and expose them via an API")
 	StartnodeCmd.Flags().BoolVar(&flags.PluginModeEnabled, "plugin-mode-enabled", flags.PluginModeEnabled, "Whether the app should run as a plugin. Defaults to false.")
+	StartnodeCmd.Flags().BoolVar(&flags.MeterVMsEnabled, "meter-vms-enabled", flags.MeterVMsEnabled, "Whether the MeterVMs should be enabled on each VM.")
 }
