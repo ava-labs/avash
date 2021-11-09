@@ -134,6 +134,7 @@ func FlagsToArgs(flags Flags, basedir string, sepBase bool) ([]string, Metadata)
 		fmt.Sprintf("--router-health-max-drop-rate=%f", flags.RouterHealthMaxDropRateKey),
 		"--index-enabled=" + strconv.FormatBool(flags.IndexEnabled),
 		"--plugin-mode-enabled=" + strconv.FormatBool(flags.PluginModeEnabled),
+		"--meter-vms-enabled=" + strconv.FormatBool(flags.MeterVMsEnabled),
 	}
 	if sepBase {
 		args = append(args, "--data-dir="+basedir)

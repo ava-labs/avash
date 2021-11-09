@@ -153,6 +153,8 @@ type Flags struct {
 	IndexEnabled bool
 
 	PluginModeEnabled bool
+
+	MeterVMsEnabled bool
 }
 
 // FlagsYAML mimics Flags but uses pointers for proper YAML interpretation
@@ -369,5 +371,6 @@ func DefaultFlags() Flags {
 		RouterHealthMaxDropRateKey:              1,
 		IndexEnabled:                            false,
 		PluginModeEnabled:                       false,
+		MeterVMsEnabled:                         false,
 	}
 }
