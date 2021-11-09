@@ -87,6 +87,7 @@ do
 		--api-auth-required=*|\
 		--api-auth-password-file=*|\
         --min-stake-duration=*|\
+        --meter-vms-enabled=*|\
         --whitelisted-subnets=*|\
         --api-health-enabled=*|\
         --config-file=*|\
