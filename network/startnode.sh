@@ -76,8 +76,6 @@ do
 		--health-check-frequency=*|\
 		--router-health-max-outstanding-requests=*|\
 		--router-health-max-drop-rate=*|\
-        --snow-epoch-first-transition=*|\
-        --snow-epoch-duration=*|\
 		--staking-enabled=*|\
 		--staking-disabled-weight=*|\
 		--staking-tls-key-file=*|\
