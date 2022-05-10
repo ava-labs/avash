@@ -1,5 +1,7 @@
 # Avash &mdash; The Avalanche Shell Client
 
+> ⚠️ **DEPRECATED**: see [ava-labs/avalanche-network-runner](https://github.com/ava-labs/avalanche-network-runner)
+
 This is a temporary stateful shell execution environment used to deploy networks locally, manage their processes, and run network tests.
 
 Avash opens a shell environment of its own. This environment is completely wiped when Avash exits. Any Avalanche nodes deployed by Avash should be exited as well, leaving only their stash (containing only their log files) behind.
