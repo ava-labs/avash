@@ -1,5 +1,7 @@
 # Avash &mdash; The Avalanche Shell Client
 
+> ⚠️ **DEPRECATED**: see [ava-labs/avalanche-network-runner](https://github.com/ava-labs/avalanche-network-runner)
+
 This is a temporary stateful shell execution environment used to deploy networks locally, manage their processes, and run network tests.
 
 Avash opens a shell environment of its own. This environment is completely wiped when Avash exits. Any Avalanche nodes deployed by Avash should be exited as well, leaving only their stash (containing only their log files) behind.
@@ -15,18 +17,16 @@ Avash provides the ability to run Lua scripts which can execute a sequence of sh
 
 ### Quick Setup
 
-Install and build an Avalanche client
+Install an Avalanche client
 
 ```zsh
-go get github.com/ava-labs/avash
-cd $GOPATH/src/github.com/ava-labs/avash
-go build
+go install github.com/ava-labs/avash@latest
 ```
 
  Now you can fire up a 5 node staking network:
 
 ```zsh
-./avash
+avash
 Config file set: /Users/username/.avash.yaml
 Avash successfully configured.
 avash> runscript scripts/five_node_staking.lua
@@ -53,7 +53,7 @@ By default Avash will look for a configuration file named either `.avash.yaml` o
 If no config file is found then Avash will create one at `$HOME/.avash.yaml`.
 
 ```zsh
-./avash
+avash
 Config file not found: .avash.yaml
 Created empty config file: /Users/username/.avash.yaml
 ```
@@ -61,7 +61,7 @@ Created empty config file: /Users/username/.avash.yaml
 Alternatively you can pass in a `--config` flag with a path to your config file. **NOTE** you must put the full path. `~/` **will not** resolve to `$HOME/`.
 
 ```zsh
- ./avash --config=/Users/username/path/to/config/my-config-file.yaml
+ avash --config=/Users/username/path/to/config/my-config-file.yaml
 Config file set: /Users/username/path/to/config/my-config-file.yaml
 Avash successfully configured.
 ```
@@ -69,7 +69,7 @@ Avash successfully configured.
 If no config file is found at the path which was passed to `--config` then Avash will create one at `$HOME/`. Avash will use the filename which was passed to `--config`.
 
 ```zsh
-./avash --config=/Users/username/path/to/config/my-config-file.yaml
+avash --config=/Users/username/path/to/config/my-config-file.yaml
 Config file not found: /Users/username/path/to/config/my-config-file.yaml
 Created empty config file: /Users/username/my-config-file.yaml
 ```
